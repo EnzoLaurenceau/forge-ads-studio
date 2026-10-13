@@ -36,8 +36,8 @@ git --version
 | Tool | Used by | macOS | Windows | Linux |
 |---|---|---|---|---|
 | Node 18+ | video-edit (Remotion) | `brew install node` | `winget install OpenJS.NodeJS.LTS` | nodejs.org or your package manager |
-| ffmpeg | video-edit, long-to-short-videos, video-translate, video-publish | `brew install ffmpeg` | `winget install Gyan.FFmpeg` | `sudo apt install ffmpeg` |
-| yt-dlp | video-viral, long-to-short-videos, voice.md from videos | `brew install yt-dlp` | `winget install yt-dlp.yt-dlp` | `pipx install "yt-dlp[default]"` |
+| ffmpeg | video-edit, video-steal, long-to-short-videos, video-translate, video-publish | `brew install ffmpeg` | `winget install Gyan.FFmpeg` | `sudo apt install ffmpeg` |
+| yt-dlp | video-viral, video-steal, long-to-short-videos, voice.md from videos | `brew install yt-dlp` | `winget install yt-dlp.yt-dlp` | `pipx install "yt-dlp[default]"` |
 | deno | yt-dlp on YouTube (it needs a JavaScript runtime) | comes with yt-dlp | `winget install DenoLand.Deno` | `curl -fsSL https://deno.land/install.sh \| sh` |
 | git, build tools | video-edit (gets the Remotion template, builds whisper.cpp) | `xcode-select --install` | `winget install Git.Git` | `sudo apt install git build-essential` |
 | Codex (optional) | codex-images | `npm i -g @openai/codex`, then `codex login` | same | same |
@@ -135,7 +135,7 @@ Three things, each only if they want the skill that needs it. Ask once, in one m
 | For | What | Cost |
 |---|---|---|
 | `/video-audit` and `/video-publish` | Treg, with their Instagram, TikTok and YouTube connected | free on their own accounts |
-| `/video-translate` | an ElevenLabs API key | their ElevenLabs plan |
+| `/video-translate` (and `/video-steal`'s music level and sound effects, optional) | an ElevenLabs API key | their ElevenLabs plan |
 | `/codex-images` | Codex logged in with their ChatGPT account | their ChatGPT plan |
 
 **ElevenLabs**: they create a key at elevenlabs.io/app/settings/api-keys and paste it themselves into `video-agent/.env` as `ELEVENLABS_API_KEY=...` (create the empty file and open it for them). Never ask for a key in the chat. Check it is there without printing it: `grep -c ELEVENLABS_API_KEY video-agent/.env`.
@@ -192,10 +192,11 @@ Show what is ready (✓ or skipped, one line each) and the path forward:
 3. `/video-script`: this week's scripts, hooks first, humanized.
 4. Record them: phone, camera or webcam, one take per script, saved in `video-agent/takes/<slug>.mp4`.
 5. `/video-edit`: a short (vertical) or a full YouTube video (horizontal).
-6. `/long-to-short-videos`: a long video into finished shorts.
-7. `/video-translate`: a take in another language, in their voice.
-8. `/codex-images`: thumbnails and covers.
-9. `/video-publish`: YouTube, Instagram and TikTok.
+6. `/video-steal`: a creator's reel they love into a style `video-edit` can use.
+7. `/long-to-short-videos`: a long video into finished shorts.
+8. `/video-translate`: a take in another language, in their voice.
+9. `/codex-images`: thumbnails and covers.
+10. `/video-publish`: YouTube, Instagram and TikTok.
 
 ## Later
 

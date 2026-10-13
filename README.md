@@ -13,6 +13,7 @@ Only markdown. No app, no server. The skills tell Claude how to work and which t
 | `/video-viral` | Finds what over-performs in your niche: recent Shorts of 10 to 12 accounts near your size and above, outliers against each account's median, the first 3 seconds of each, saved to `swipe.md`. |
 | `/video-script` | A week of scripts from what really happened in your week, in your voice: 3 hooks per script from 22 formulas, scored, a re-hook, timing checked at your pace, visual notes, then a humanize pass (invisible characters, AI words in English and French, AI sentence shapes, facts checked). Also `hook <topic>` and `humanize <text>` for any caption or description. |
 | `/video-edit` | A raw take into a finished video: a short (1080×1920, captions in the platforms' safe zone, hook card) or a full YouTube video (1920×1080, chapters). Word-by-word captions, silences and retakes cut, simple motion design (callouts, punch-in zooms), voice at -14 LUFS, an .srt for CapCut or Premiere, and the post copy. |
+| `/video-steal` | Copies another creator's editing style from one of their reels: measures it with ffmpeg (cuts per second, layouts, captions, the beat and the sound effects on a spectrogram, the music level under the voice, the face size and the zooms), writes it to `video-agent/styles/<name>.md`, then edits a test video with `video-edit` and compares the two frame by frame. Then `/video-edit <take> style <name>` uses it. |
 | `/long-to-short-videos` | One long video (yours, a podcast, a live) into finished shorts: the moments that stand alone, each one edited with `video-edit` (captions, hook card, callouts), plus new scripts from the ideas too spread out to clip. |
 | `/video-translate` | A take in another language with your own cloned voice, through ElevenLabs Dubbing and your key, then edited with captions in the new language. |
 | `/codex-images` | Thumbnails, covers and stills generated with Codex's image tool (your ChatGPT plan), several in parallel, with your photos as reference. |
@@ -60,6 +61,7 @@ On claude.ai: zip one skill folder and upload it in the Skills part of the setti
 /video-viral           what works in your niche → swipe.md
 /video-script          this week's scripts → video-agent/scripts/
                        record them (phone, camera, webcam) → video-agent/takes/
+/video-steal           a creator's reel → a style video-edit can use
 /video-edit            each take → video-agent/edits/<slug>/final.mp4 (short or long)
 /long-to-short-videos  a long video → finished shorts
 /video-translate       a take → the same take in another language, your voice
@@ -77,6 +79,7 @@ video-agent/
 ├── log.md        one line per script, so nothing repeats
 ├── scripts/      one file per week
 ├── takes/        raw recordings
+├── styles/       styles copied with video-steal (<name>.md + its stills, sfx, stickers)
 ├── edits/        one folder per edited video (final.mp4, post.md, cover.jpg, published.md)
 ├── repurpose/    one plan per long video
 ├── images/       generated images not tied to a video
