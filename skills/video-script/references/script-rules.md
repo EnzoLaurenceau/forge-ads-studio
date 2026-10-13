@@ -6,8 +6,8 @@ Spoken seconds = words ÷ pace × 60. Pace comes from voice.md; without it, use 
 
 | Target | Words at 160 wpm | Use |
 |---|---|---|
-| 25 to 35 s | 70 to 95 | one sharp point, Opinion, a reply |
-| 35 to 50 s | 95 to 135 | default: Teach, Proof, Story |
+| 25 to 35 s | 70 to 95 | default: a free tool, one sharp point, Opinion, a reply |
+| 35 to 50 s | 95 to 135 | Teach, Proof, Story, a list of 3 to 5 |
 | 50 to 60 s | 135 to 160 | a story that needs its turn, a 3-step how-to |
 
 One idea per video. If a script needs "and also", it is two videos.
@@ -96,11 +96,12 @@ Each script gets a rung of voice.md "The ask": 0 (no ask or follow), 1 (a free t
 
 ## Quality gates
 
-Run the three gates on every script and hook before showing it. One fails: rewrite it, never show it with a warning.
+Run the four gates on every script and hook before showing it. One fails: rewrite it, never show it with a warning.
 
 1. **Generic**: could this line be in any AI-written script of the niche? Every script carries at least one thing only this creator has: their number, their screen, their phrase, their story.
 2. **Structureless**: name the hook formula, the type and its beats, the re-hook and the triggers. If one is missing, or the hook promises A and the body delivers B, it fails. One promise from the hook to the ask.
 3. **Interchangeable**: put another creator of the niche in their place. If the script still fits them as well, add the creator's angle, enemy, proof or words until it doesn't.
+4. **Viral**: the script sits on a concept of the swipe file's "Concepts", names the object or pain with a specific (number, brand, "free") in its first sentence, shows something at 0 s, keeps one promise and fits the length. The full gate is in [viral.md](viral.md).
 
 ## Week variety
 

@@ -14,10 +14,10 @@ Scripts that sound like the creator on their best day: short, concrete, with a h
 Read, in this order:
 
 1. `video-agent/voice.md`: who they are, who they talk to, how they sound, what they believe, their proof, the ask. Missing: offer `/video-setup` (about 10 minutes, recommended), or ask 4 questions now (what they do, for whom, the language they record in, what viewers should do after watching).
-2. `video-agent/swipe.md` if it exists: hooks that worked in their niche (from `/video-viral`).
+2. `video-agent/swipe.md`: hooks that worked in their niche and, on top, the "Concepts" that over-performed with their proof (from `/video-viral`). Every script sits on one of them ([references/viral.md](references/viral.md)). Missing: run `/video-viral` first (5 minutes); a week written without it is written blind.
 3. `video-agent/audit.md` if it exists: what works on their own account (from `/video-audit`). Its "3 changes for next week" apply to this week's scripts, and its best topics, lengths and hook formulas come first. Their own data beats the niche's.
 4. The last 20 lines of `video-agent/log.md`: topics and hook formulas already used. Never repeat a topic from the last 4 weeks unless they ask.
-5. [references/hooks.md](references/hooks.md), [references/script-rules.md](references/script-rules.md) and [references/humanize.md](references/humanize.md).
+5. [references/viral.md](references/viral.md), [references/hooks.md](references/hooks.md), [references/script-rules.md](references/script-rules.md) and [references/humanize.md](references/humanize.md).
 
 Talk to them in their language, and write the scripts in the language they record in.
 
@@ -25,7 +25,7 @@ Talk to them in their language, and write the scripts in the language they recor
 
 - `/video-script` → a week of scripts (default 5).
 - `/video-script <topic or idea>` → one script.
-- `/video-script hook <script or topic>` → the hook printer: 20 hooks from at least 10 formulas, filled with voice.md (the viewer's words, their phrases, their proof, their myths), scored, through the quality gates, best 3 on top. Each keeps its formula name, so a hook that works can be reposted with a new wording.
+- `/video-script hook <script or topic>` → the hook printer: 20 hooks from at least 10 formulas, grouped by concept of swipe.md (proven concepts first), filled with voice.md (the viewer's words, their phrases, their proof, their myths), scored, through the quality gates, best 3 on top. Each keeps its formula name, so a hook that works can be reposted with a new wording.
 - `/video-script rewrite <script>` → their script, tightened: same content and facts, better hook, shorter lines, timing checked, humanized. Show what changed.
 - `/video-script humanize <file, script slug or pasted text>` → any text (script, caption, description, post) made to sound like them: [references/humanize.md](references/humanize.md), with its before and after score. `humanize check` only reports.
 
@@ -35,7 +35,7 @@ For `hook` and `humanize`, skip "The week" and "The mix": read voice.md and the 
 
 Ask one question: **"What actually happened this week?"** Give prompts so it's easy: a result (with the number), a mistake, a question a client or a follower asked, something they learned or tested, a tool they used, an opinion that came up in a conversation, something they disagree with.
 
-Real material beats ideas. If they have nothing, propose 5 topics from voice.md (beliefs, mistakes their viewer makes, proof), audit.md (their topics that over-perform) and swipe.md, and let them pick.
+Real material beats ideas, as long as it fits a proven concept. Then check what is hot today in the niche (a launch, a trend, a price change of the week): one script rides it, first in the week. If they have nothing, propose 5 topics from voice.md (beliefs, mistakes their viewer makes, proof), audit.md (their topics that over-perform) and swipe.md, and let them pick.
 
 Then: how many videos (default 5) and is there something to promote this week (yes → one Offer video, no → none).
 
@@ -53,11 +53,11 @@ Each video gets a type. Plan the week before writing:
 
 Each video also gets its offer proximity, the rung of voice.md "The ask" it points to (0 to 3, script-rules.md), following the week mix there.
 
-Show the plan as a table (number, type, topic, hook formula you'll try first, offer proximity) and let them swap before you write. Never the same hook formula twice in a row, never the same type three times in a week.
+Show the plan as a table (number, type, topic, concept, hook formula you'll try first, offer proximity) and let them swap before you write. Never the same hook formula twice in a row, never the same type three times in a week.
 
 ## 3. Write each script
 
-0. **Aim**: the viewer it talks to, the false belief or myth it breaks (voice.md), and the ask line of its rung.
+0. **Aim**: the concept of swipe.md it rides (with its best video and its x), the fresh news if any, the viewer it talks to, the false belief or myth it breaks (voice.md), and the ask line of its rung.
 1. **3 hooks**, each from a different formula of [hooks.md](references/hooks.md). Score each with the rubric in [script-rules.md](references/script-rules.md). Keep the best; the other two go under "Other hooks". All below 7/10: write 3 more.
 2. **The on-screen hook**: 6 words or fewer, shown during the first seconds. It adds to the spoken hook, never repeats it word for word.
 3. **The body**, from the structure of its type (script-rules.md). One sentence per line. A re-hook near the middle.
@@ -66,7 +66,7 @@ Show the plan as a table (number, type, topic, hook formula you'll try first, of
 6. **Timing**: count the words, divide by their pace (voice.md, else 160 wpm). Check every beat rule in script-rules.md. Fix before showing.
 7. **Facts**: every number, name and result comes from voice.md or what they told you. Anything else becomes `{{your number}}`, `{{client name}}`, and is listed under "To fill".
 8. **Humanize**: run [references/humanize.md](references/humanize.md) on the script (steps 1 to 6, no report per script). Read it as if spoken aloud. Nothing they would never say (voice.md "Words I never use"), no em dash, no AI shape, every fact intact. Its score goes in the script's **Score** line.
-9. **Triggers and gates**: at least four triggers of script-rules.md at their place, then the three quality gates (generic, structureless, interchangeable). A failed gate is a rewrite before showing.
+9. **Triggers and gates**: at least four triggers of script-rules.md at their place, then the four quality gates (generic, structureless, interchangeable, viral). A failed gate is a rewrite before showing.
 
 ## 4. Format
 

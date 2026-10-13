@@ -103,6 +103,20 @@ Channels: @a (6K subs, median 12K views), @b (95K, median 85K), @c (3K, median 4
 
 Confidence: low under 5 outliers, medium 5 to 9, high 10 or more.
 
+Then update the **Concepts** section at the very top of swipe.md (under `# Swipe file`, kept across research runs). A concept is the topic shape the outliers share, not their words: "a free tool + its number", "N tools before you do X", "I asked AI to do a real task", "cheap vs expensive". Each outlier at 3x or more goes under its concept as evidence, or opens a new one:
+
+```markdown
+## Concepts
+
+### Cheap vs expensive, same result
+- Evidence: @b 9.1x, @d 4.2x, @a 3.3x (3 hits, 3 channels: a recipe)
+- Mold: two prices in the hook → the test, one line each → the verdict → the ask
+- Timing: evergreen
+- Flops: the same test without prices in the hook (@c 0.8x)
+```
+
+A concept with one hit is a bet; three hits on two channels or more is a recipe. `/video-script` writes every script on a concept from here ([viral.md](../video-script/references/viral.md)).
+
 Then sum it up in 3 lines: the formulas to favor, a topic pattern, and the first script worth writing. Offer `/video-script`.
 
 ## Honest limits
