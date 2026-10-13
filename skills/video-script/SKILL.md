@@ -1,6 +1,6 @@
 ---
 name: video-script
-description: Writes short-form video scripts (YouTube Shorts, TikTok, Instagram Reels, 30 to 60 s) in the creator's own voice from video-agent/voice.md, with optimized hooks and a humanize pass so nothing sounds like AI. Use when the user asks for scripts, script ideas, "write my shorts", this week's videos, a hook, a better hook, to rewrite or tighten a script, or to humanize any text (humanize, sounds like AI, sounds robotic, make it sound like me, a caption or description before posting). Starts from what happened in their week, writes 3 hooks per script from 22 formulas, scores them, adds a re-hook, checks timing at their pace, adds visual notes, removes AI tells (invisible characters, AI words in English and French, AI sentence shapes) while keeping every fact, and saves the week to video-agent/scripts/.
+description: Writes short-form video scripts (YouTube Shorts, TikTok, Instagram Reels, 30 to 60 s) in the creator's own voice from video-agent/voice.md (who they talk to, how they sound, their myths, their offer ladder), with optimized hooks and a humanize pass so nothing sounds like AI. Use when the user asks for scripts, script ideas, "write my shorts", this week's videos, a hook, a better hook, to rewrite or tighten a script, or to humanize any text (humanize, sounds like AI, sounds robotic, make it sound like me, a caption or description before posting). Starts from what happened in their week, writes 3 hooks per script from 22 formulas (or 20 with the hook printer), scores them, adds a re-hook, places psychological triggers, maps offer proximity across the week, rejects generic, structureless or interchangeable scripts, checks timing at their pace, adds visual notes, removes AI tells (invisible characters, AI words in English and French, AI sentence shapes) while keeping every fact, and saves the week to video-agent/scripts/.
 argument-hint: "[topic | hook <topic> | rewrite <script> | humanize [check] <text or file>]"
 allowed-tools: Bash(grep *) Bash(perl -CSD -pi -e *)
 ---
@@ -25,7 +25,7 @@ Talk to them in their language, and write the scripts in the language they recor
 
 - `/video-script` → a week of scripts (default 5).
 - `/video-script <topic or idea>` → one script.
-- `/video-script hook <script or topic>` → 10 hooks, scored, best 3 on top.
+- `/video-script hook <script or topic>` → the hook printer: 20 hooks from at least 10 formulas, filled with voice.md (the viewer's words, their phrases, their proof, their myths), scored, through the quality gates, best 3 on top. Each keeps its formula name, so a hook that works can be reposted with a new wording.
 - `/video-script rewrite <script>` → their script, tightened: same content and facts, better hook, shorter lines, timing checked, humanized. Show what changed.
 - `/video-script humanize <file, script slug or pasted text>` → any text (script, caption, description, post) made to sound like them: [references/humanize.md](references/humanize.md), with its before and after score. `humanize check` only reports.
 
@@ -51,10 +51,13 @@ Each video gets a type. Plan the week before writing:
 | Opinion | a position against the usual advice in the niche | 1 |
 | Offer | the problem, what they made for it, who it's for, the ask | 0 or 1, never 2 |
 
-Show the plan as a table (number, type, topic, hook formula you'll try first) and let them swap before you write. Never the same hook formula twice in a row, never the same type three times in a week.
+Each video also gets its offer proximity, the rung of voice.md "The ask" it points to (0 to 3, script-rules.md), following the week mix there.
+
+Show the plan as a table (number, type, topic, hook formula you'll try first, offer proximity) and let them swap before you write. Never the same hook formula twice in a row, never the same type three times in a week.
 
 ## 3. Write each script
 
+0. **Aim**: the viewer it talks to, the false belief or myth it breaks (voice.md), and the ask line of its rung.
 1. **3 hooks**, each from a different formula of [hooks.md](references/hooks.md). Score each with the rubric in [script-rules.md](references/script-rules.md). Keep the best; the other two go under "Other hooks". All below 7/10: write 3 more.
 2. **The on-screen hook**: 6 words or fewer, shown during the first seconds. It adds to the spoken hook, never repeats it word for word.
 3. **The body**, from the structure of its type (script-rules.md). One sentence per line. A re-hook near the middle.
@@ -63,6 +66,7 @@ Show the plan as a table (number, type, topic, hook formula you'll try first) an
 6. **Timing**: count the words, divide by their pace (voice.md, else 160 wpm). Check every beat rule in script-rules.md. Fix before showing.
 7. **Facts**: every number, name and result comes from voice.md or what they told you. Anything else becomes `{{your number}}`, `{{client name}}`, and is listed under "To fill".
 8. **Humanize**: run [references/humanize.md](references/humanize.md) on the script (steps 1 to 6, no report per script). Read it as if spoken aloud. Nothing they would never say (voice.md "Words I never use"), no em dash, no AI shape, every fact intact. Its score goes in the script's **Score** line.
+9. **Triggers and gates**: at least four triggers of script-rules.md at their place, then the three quality gates (generic, structureless, interchangeable). A failed gate is a rewrite before showing.
 
 ## 4. Format
 
@@ -71,9 +75,9 @@ Save to `video-agent/scripts/week-YYYY-MM-DD.md` (the Monday of the week). One f
 ````markdown
 # Week of 2026-10-05
 
-| # | Slug | Type | Formula | Length |
-|---|---|---|---|---|
-| 1 | hooks-too-long | Teach | The mistake | 40 s |
+| # | Slug | Type | Formula | Offer | Length |
+|---|---|---|---|---|---|
+| 1 | hooks-too-long | Teach | The mistake | 0 | 40 s |
 
 ## 1. hooks-too-long
 
@@ -107,7 +111,8 @@ Follow for one script fix a day.
 - (Stop / start) Stop explaining in your hook. Start with the result.
 - (Their words) "My hook is fine, it's the algorithm."
 
-**Score:** hook 8/10 · human 10/10 · 111 words · 40 s at 165 wpm
+**Triggers:** gap 0s, self-recognition 0s, proof 6s, pattern break 20s, specificity 28s
+**Score:** hook 8/10 · human 10/10 · 111 words · 40 s at 165 wpm · offer 0 · gates ✓
 **To fill:** {{number}}
 ````
 

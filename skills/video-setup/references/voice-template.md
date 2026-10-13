@@ -19,6 +19,7 @@ Copy this into `video-agent/voice.md` and fill it with the creator's real words.
 - {{the one viewer: job, level, situation}}
 - {{what that viewer is stuck on, in the viewer's own words}}
 - {{what that viewer already tried that didn't work}}
+- False beliefs: {{what they believe that keeps them stuck, e.g. "I need to know how to edit"}}
 
 ## How I sound
 - Pace: {{words per minute, e.g. 170 wpm. Measured from their videos, or 160 if unknown}}
@@ -34,6 +35,8 @@ Copy this into `video-agent/voice.md` and fill it with the creator's real words.
 - {{a position most people in the niche disagree with}}
 - {{a position they defend often}}
 - {{a mistake they see everywhere}}
+- Myths of my niche: {{what everyone repeats that they know is wrong; each one is a ready hook}}
+- What I stand against: {{a tool, a habit, a way of doing things. Never the viewer}}
 
 ## Proof I can use
 - {{real numbers, clients, results, screenshots they can show, with dates}}
@@ -43,8 +46,14 @@ Copy this into `video-agent/voice.md` and fill it with the creator's real words.
 - Claims I can't make: {{income or health promises, results that aren't theirs, anything their job or platform forbids}}
 
 ## The ask
-- Main CTA: {{what they want viewers to do: follow, comment a word, link in bio, newsletter}}
-- How often: {{every video / one in three / only on teaching videos}}
+From the lightest to the heaviest, each with the exact line they say (the scripts pick one rung per video):
+- 0, nothing or follow: {{"Follow for one fix a day."}}
+- 1, a free thing: {{"Comment GUIDE and I'll send it to you."}}
+- 2, the free entry of the offer: {{a free class, a lead magnet, the link in bio}}
+- 3, the offer itself: {{what they sell, price, where the link goes, or "nothing to sell yet"}}
+
+## Objections
+- {{a doubt people have before they buy or try}} → {{how they answer it}}
 
 ## Real samples
 {{3 short texts they wrote themselves, before any AI tool: a caption, a message, an email. Pasted as is, typos included.}}
@@ -74,6 +83,7 @@ A filled excerpt, for a made-up creator:
 - **Words I use a lot**: look for phrases that come back in 2 or more videos: openers ("Here's the thing"), fillers they keep on purpose, how they name their audience.
 - **How I open**: write down their first sentence in each video and look for the pattern.
 - **Beliefs and proof**: transcripts show them only when they said them out loud. Ask for the rest, never guess.
+- **The ask and objections**: from their sales page or what they say in DMs and calls. A rung they don't have stays `{{to fill}}`.
 
 ## Keeping it alive
 

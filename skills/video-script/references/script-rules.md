@@ -76,6 +76,32 @@ Kept apart from the spoken lines, keyed by line number, so the spoken script sta
 - Numbers, names, clients, results: only from voice.md or what the creator said in this conversation.
 - Anything missing becomes `{{placeholder}}` and is listed under "To fill". Never round up, never guess, never write "studies show".
 
+## Triggers, placed
+
+A script holds because each part pulls a lever at the right second. Use at least four, each at its place, and name them under the script (`Triggers: gap 0s, proof 6s, ...`):
+
+| Trigger | Where | What it does |
+|---|---|---|
+| Curiosity gap | the hook | opens a question the body closes, never before the end |
+| Self-recognition | hook or line 2 | the viewer sees their own scene or words |
+| Proof | before 8 s | a number, a screen, a receipt: why believe the rest |
+| Enemy | the problem | a tool, habit or myth from voice.md "What I stand against", never the viewer |
+| Pattern break | the re-hook, 40 to 60% | a twist or a number that resets attention |
+| Specificity | the fix | names, tools, steps exact enough to feel copyable |
+| Loss or urgency | before the ask | what they keep losing without it, or a real deadline; never fake scarcity |
+
+## Offer proximity
+
+Each script gets a rung of voice.md "The ask": 0 (no ask or follow), 1 (a free thing), 2 (the free entry of the offer), 3 (the offer, Offer type only). A week of 5: about two at 0-1, two at 1-2, at most one at 3, never two 3 in a row, and a 3 comes after the strongest value video of the week.
+
+## Quality gates
+
+Run the three gates on every script and hook before showing it. One fails: rewrite it, never show it with a warning.
+
+1. **Generic**: could this line be in any AI-written script of the niche? Every script carries at least one thing only this creator has: their number, their screen, their phrase, their story.
+2. **Structureless**: name the hook formula, the type and its beats, the re-hook and the triggers. If one is missing, or the hook promises A and the body delivers B, it fails. One promise from the hook to the ask.
+3. **Interchangeable**: put another creator of the niche in their place. If the script still fits them as well, add the creator's angle, enemy, proof or words until it doesn't.
+
 ## Week variety
 
 - Never the same hook formula twice in a row.
