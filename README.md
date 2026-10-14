@@ -14,7 +14,7 @@ Only markdown. No app, no server. The skills tell Claude how to work and which t
 | `/studio-script` | A week of scripts from what really happened in your week, in your voice: 3 hooks per script from 22 formulas, scored, a re-hook, timing checked at your pace, visual notes, then a humanize pass (invisible characters, AI words in English and French, AI sentence shapes, facts checked). Also `viral` (what over-performs in your niche: recent Shorts of 10 to 12 accounts, outliers against each account's median, the first 3 seconds of each, saved to `swipe.md`), `hook <topic>` and `humanize <text>` for any caption or description. |
 | `/short-editing` | A raw take into a finished video: a short (1080×1920, captions in the platforms' safe zone, hook card) or a full YouTube video (1920×1080, chapters). Word-by-word captions, silences and retakes cut, simple motion design (callouts, punch-in zooms), voice at -14 LUFS, an .srt for CapCut or Premiere, and the post copy. |
 | `/steal` | Copies another creator's editing style from one of their reels: measures it with ffmpeg (cuts per second, layouts, captions, the beat and the sound effects on a spectrogram, the music level under the voice, the face size and the zooms), writes it to `video-agent/styles/<name>.md`, then edits a test video with `short-editing` and compares the two frame by frame. Then `/short-editing <take> style <name>` uses it. |
-| `/long-to-short-videos` | One long video (yours, a podcast, a live) into finished shorts: the moments that stand alone, each one edited with `short-editing` (captions, hook card, callouts), plus new scripts from the ideas too spread out to clip. |
+| `/clips` | One long video (yours, a podcast, a live) into finished shorts: the moments that stand alone, each one edited with `short-editing` (captions, hook card, callouts), plus new scripts from the ideas too spread out to clip. |
 | `/short-translate` | A take in another language with your own cloned voice, through ElevenLabs Dubbing and your key, then edited with captions in the new language. |
 | `/codex-images` | Thumbnails, covers and stills generated with Codex's image tool (your ChatGPT plan), several in parallel, with your photos as reference. |
 | `/publish` | Publishes a finished video on YouTube (Shorts or long, scheduled or now), Instagram Reels and TikTok through Treg, with the light export, the cover, the caption and the title. Nothing goes out before your yes. Without Treg, a ready-to-post kit. |
@@ -32,11 +32,11 @@ Add `-g` to install them for every project. `npx skills update` gets the latest 
 Installed before October 2026, with the old `video-*` names? Remove them, then install again (add `-g` to both if you installed globally):
 
 ```bash
-npx skills remove video-setup video-script video-viral video-audit video-edit video-steal video-translate video-publish -y
+npx skills remove video-setup video-script video-viral video-audit video-edit video-steal video-translate video-publish long-to-short-videos -y
 npx skills add Melvynx/video-agent-skills -a claude-code
 ```
 
-`/video-setup` is now `/studio-setup`, `/video-script` `/studio-script`, `/video-viral` `/studio-script viral`, `/video-audit` `/insta-audit`, `/video-edit` `/short-editing`, `/video-steal` `/steal`, `/video-translate` `/short-translate`, `/video-publish` `/publish`.
+`/video-setup` is now `/studio-setup`, `/video-script` `/studio-script`, `/video-viral` `/studio-script viral`, `/video-audit` `/insta-audit`, `/video-edit` `/short-editing`, `/video-steal` `/steal`, `/video-translate` `/short-translate`, `/video-publish` `/publish`, `/long-to-short-videos` `/clips`.
 
 Or paste `https://github.com/Melvynx/video-agent-skills` into Claude Code and ask it to install these skills.
 
@@ -72,7 +72,7 @@ On claude.ai: zip one skill folder and upload it in the Skills part of the setti
                        record them (phone, camera, webcam) → video-agent/takes/
 /steal                 a creator's reel → a style short-editing can use
 /short-editing         each take → video-agent/edits/<slug>/final.mp4 (short or long)
-/long-to-short-videos  a long video → finished shorts
+/clips                 a long video → finished shorts
 /short-translate       a take → the same take in another language, your voice
 /codex-images          thumbnails and covers
 /publish               YouTube, Instagram, TikTok

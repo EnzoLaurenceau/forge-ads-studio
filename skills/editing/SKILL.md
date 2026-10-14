@@ -1,6 +1,6 @@
 ---
 name: editing
-description: Entry point for every video job - routes to studio-setup, insta-audit, studio-script, short-editing, steal, long-to-short-videos, short-translate, codex-images or publish, and continues the project already in progress. Use when the user says /editing, edit, montage, take, short, reel, video, script, audit, publish, or is not sure which video skill to use.
+description: Entry point for every video job - routes to studio-setup, insta-audit, studio-script, short-editing, steal, clips, short-translate, codex-images or publish, and continues the project already in progress. Use when the user says /editing, edit, montage, take, short, reel, video, script, audit, publish, or is not sure which video skill to use.
 argument-hint: "[take | url | slug | path] [brief]"
 ---
 
@@ -15,7 +15,7 @@ Route the request to the one skill that owns it, then do the work with that skil
    - Scripts, ideas for the week, hooks, rewrite, humanize a text, "sounds like AI", what goes viral in their niche, swipe file: `studio-script` (`viral` for the niche research).
    - A take or a local file, "my last take", a video URL to edit, an existing slug, short, reel, a full YouTube video: `short-editing`. "In the style of <name>" = `short-editing ... style <name>`.
    - Copy another creator's editing style ("steal", "edit like @x", a reel given as the model for a look rather than as the take to edit): `steal`.
-   - One long video (a podcast, a live, a long YouTube video) into several shorts: `long-to-short-videos`.
+   - One long video (a podcast, a live, a long YouTube video) into several shorts: `clips`.
    - A version of a take in another language: `short-translate`.
    - Thumbnails, covers, stills, any image: `codex-images`.
    - Publish or schedule a finished video ("post it", "publier", "mets-le en ligne"): `publish`.

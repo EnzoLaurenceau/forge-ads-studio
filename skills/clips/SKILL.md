@@ -1,11 +1,11 @@
 ---
-name: long-to-short-videos
+name: clips
 description: Turns one long video (YouTube link, podcast, webinar, livestream, or a local file) into finished vertical shorts. Use when the user says long to short, repurpose, long video to shorts, clips from my video, podcast clips, cut my YouTube video into shorts, or gives a long video link. Finds clips that stand alone (one idea, 20 to 60 seconds), scores them, cuts them and edits each one with short-editing (captions, cuts, hook card, callouts, 1080x1920), and writes new scripts in the studio-script format from the ideas too spread out to clip. Reads YouTube captions and chapters with yt-dlp, or transcribes a local file with the short-editing studio.
 argument-hint: "<YouTube link or video file>"
 allowed-tools: Bash(node -v) Bash(yt-dlp *) Bash(ffmpeg *) Bash(ffprobe *) Bash(node sub.mjs *) Bash(npx remotion *)
 ---
 
-# Long to short videos
+# Clips
 
 One long video in, finished shorts out. First a plan (`video-agent/repurpose/<source>.md`), then each picked clip is cut into a take and edited by `/short-editing` into `video-agent/edits/<slug>/final.mp4`. The ideas too spread out to clip become new scripts in `video-agent/scripts/`.
 

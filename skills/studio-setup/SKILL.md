@@ -36,8 +36,8 @@ git --version
 | Tool | Used by | macOS | Windows | Linux |
 |---|---|---|---|---|
 | Node 18+ | short-editing (Remotion) | `brew install node` | `winget install OpenJS.NodeJS.LTS` | nodejs.org or your package manager |
-| ffmpeg | short-editing, steal, long-to-short-videos, short-translate, publish | `brew install ffmpeg` | `winget install Gyan.FFmpeg` | `sudo apt install ffmpeg` |
-| yt-dlp | studio-script viral, steal, long-to-short-videos, voice.md from videos | `brew install yt-dlp` | `winget install yt-dlp.yt-dlp` | `pipx install "yt-dlp[default]"` |
+| ffmpeg | short-editing, steal, clips, short-translate, publish | `brew install ffmpeg` | `winget install Gyan.FFmpeg` | `sudo apt install ffmpeg` |
+| yt-dlp | studio-script viral, steal, clips, voice.md from videos | `brew install yt-dlp` | `winget install yt-dlp.yt-dlp` | `pipx install "yt-dlp[default]"` |
 | deno | yt-dlp on YouTube (it needs a JavaScript runtime) | comes with yt-dlp | `winget install DenoLand.Deno` | `curl -fsSL https://deno.land/install.sh \| sh` |
 | git, build tools | short-editing (gets the Remotion template, builds whisper.cpp) | `xcode-select --install` | `winget install Git.Git` | `sudo apt install git build-essential` |
 | Codex (optional) | codex-images | `npm i -g @openai/codex`, then `codex login` | same | same |
@@ -62,7 +62,7 @@ video-agent/
 ├── takes/        raw recordings (phone, camera, webcam, screen)
 ├── styles/       styles copied from other creators (steal): <name>.md + its stills, sfx, stickers
 ├── edits/        one folder per edited video (short-editing): final.mp4, post.md, cover.jpg, published.md
-├── repurpose/    one plan per long video (long-to-short-videos)
+├── repurpose/    one plan per long video (clips)
 ├── images/       generated images not tied to a video (codex-images)
 ├── studio/       the Remotion project (step 3)
 ├── .env          their API keys, never shared (step 6)
@@ -90,7 +90,7 @@ video-agent/.env
 
 The editing studio (Remotion, whisper.cpp for the captions, a speech model) takes 5 to 15 minutes and about 2 GB to set up. Ask: now (recommended if they will edit soon, the first edit then starts right away), or later (short-editing does it the first time it runs).
 
-Now: run step 2 of `short-editing` ("The studio"), including the `Short` and `Wide` compositions and the `npx tsc --noEmit` check. Say what is downloading and how big before starting. Only for short-editing, long-to-short-videos and short-translate; scripting-only users skip it.
+Now: run step 2 of `short-editing` ("The studio"), including the `Short` and `Wide` compositions and the `npx tsc --noEmit` check. Say what is downloading and how big before starting. Only for short-editing, clips and short-translate; scripting-only users skip it.
 
 ## 4. voice.md
 
@@ -195,7 +195,7 @@ Show what is ready (✓ or skipped, one line each) and the path forward. They ca
 4. Record them: phone, camera or webcam, one take per script, saved in `video-agent/takes/<slug>.mp4`.
 5. `/short-editing`: a short (vertical) or a full YouTube video (horizontal).
 6. `/steal`: a creator's reel they love into a style `short-editing` can use.
-7. `/long-to-short-videos`: a long video into finished shorts.
+7. `/clips`: a long video into finished shorts.
 8. `/short-translate`: a take in another language, in their voice.
 9. `/codex-images`: thumbnails and covers.
 10. `/publish`: YouTube, Instagram and TikTok.
