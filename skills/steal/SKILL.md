@@ -35,6 +35,8 @@ Read [references/learnings.md](references/learnings.md) before you start. Each r
 
 Do all three passes. A style copied from the frames alone misses half of it: the sound and the rhythm.
 
+**Faster with sub-agents.** If your agent can run sub-agents (Claude Code, Codex), make the sheets and `cuts.txt` yourself (first block below), then hand Frames, Sound and Zooms to three sub-agents at the same time. Give each one the absolute paths, its section copied whole, and one file to write: `W/notes-frames.md`, `W/notes-sound.md`, `W/notes-zooms.md`, numbers and timestamps only, never playing audio aloud. Look at the sheets yourself while they work: you judge the look, they bring the numbers. Then write the style from their notes. Without sub-agents, do the passes one after the other.
+
 ### Frames and cuts
 
 ```bash
@@ -171,7 +173,7 @@ Go tile by tile:
 
 Run the spectrogram on the copy too: the hits must land on the cuts, the beat must sit at the same level under the voice. Measure the face size on its sheets: no more zooms than the original, the face never bigger.
 
-Fix every gap before showing. The user should never be the one to spot it.
+With sub-agents, give the compare sheet, the key stills and the list above to a fresh-eyes sub-agent while you check the sound and the zooms: it reports every tile that differs. Fix every gap before showing. The user should never be the one to spot it.
 
 ## 6. Deliver
 
