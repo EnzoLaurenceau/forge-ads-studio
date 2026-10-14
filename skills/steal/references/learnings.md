@@ -38,6 +38,14 @@ Comparing the two side by side, tile by tile, showed:
 
 Where the original uses AI-generated action clips, use the user's REAL footage instead: 0.5 to 1.5 s, full screen, hard cut, on the action word. With no footage, use a callout or a punch-in, never a random stock clip. Paid AI video only if the user asks for it.
 
+## 5. Dense interface clicks copied: "a click every two seconds, unbearable"
+
+The original put a thin UI click on every element that enters. Copied as is, that was a click every second for the whole short, and it was rejected, angrily.
+
+- Never copy entrance clicks, ticks, taps or whooshes, even when the original has them: they are movement noise.
+- Keep only the sounds on real payoffs (a logo that breaks, the CTA word typing in): 2 or 3 per short, not one per element.
+- The colors can change: "same style, my primary color, a dark background that matches it" is a normal request. Swap the accent and tint the dark cards toward it instead of keeping the original's palette.
+
 ## Standing rules
 
 - Stickers come from the user's real photos, never a generated face.

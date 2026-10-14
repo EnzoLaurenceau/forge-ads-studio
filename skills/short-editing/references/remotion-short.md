@@ -21,6 +21,7 @@ import React, { useMemo } from "react";
 import {
   AbsoluteFill,
   CalculateMetadataFunction,
+  Img,
   interpolate,
   OffthreadVideo,
   Sequence,
@@ -44,6 +45,7 @@ export type ShortProps = {
   ranges: Range[]; // the kept parts of the take, in source ms, in order
   hook: { text: string; seconds: number } | null; // *word* = accent marker
   callouts: { text: string; atMs: number }[]; // atMs = source ms of the word
+  broll?: { src: string; atMs: number; toMs: number; startSec?: number }[]; // full-screen clip or photo in public/ over the words atMs..toMs (source ms), from startSec of the clip
   showCaptions?: boolean; // default true; false for a long video that gets an .srt instead
   words?: Caption[]; // filled by calculateShortMetadata, in output ms
 };
@@ -98,7 +100,7 @@ export const calculateShortMetadata: CalculateMetadataFunction<ShortProps> = asy
   };
 };
 
-export const Short: React.FC<ShortProps> = ({ video, accent, ranges, hook, callouts, showCaptions = true, words = [] }) => {
+export const Short: React.FC<ShortProps> = ({ video, accent, ranges, hook, callouts, broll = [], showCaptions = true, words = [] }) => {
   const parts = useMemo(() => layout(ranges), [ranges]);
   const { pages } = useMemo(
     () => createTikTokStyleCaptions({ captions: words, combineTokensWithinMilliseconds: 600 }),
@@ -129,6 +131,24 @@ export const Short: React.FC<ShortProps> = ({ video, accent, ranges, hook, callo
           </Series.Sequence>
         ))}
       </Series>
+
+      {broll.map((b, i) => {
+        const at = toOutputMs(b.atMs, parts);
+        if (at === null) return null;
+        const end = toOutputMs(b.toMs, parts) ?? at + (b.toMs - b.atMs);
+        const style = { width: "100%", height: "100%", objectFit: "cover" } as const;
+        return (
+          <Sequence key={`b${i}`} from={toFrame(at)} durationInFrames={Math.max(1, toFrame(end - at))}>
+            <AbsoluteFill>
+              {/\.(jpe?g|png|webp)$/i.test(b.src) ? (
+                <Img src={staticFile(b.src)} style={style} />
+              ) : (
+                <OffthreadVideo src={staticFile(b.src)} trimBefore={toFrame((b.startSec ?? 0) * 1000)} muted style={style} />
+              )}
+            </AbsoluteFill>
+          </Sequence>
+        );
+      })}
 
       {(showCaptions ? pages : []).map((page, i) => {
         const next = pages[i + 1];
@@ -345,6 +365,7 @@ One per video. Every time is in **source** milliseconds (the times in the captio
 - `ranges`: the parts to keep, in order, never overlapping. The output length is their sum.
 - `hook`: 6 words or fewer. `*word*` gets the accent marker. `null` for no card.
 - `callouts`: `atMs` = the `startMs` of the word the callout rides on. A callout inside a cut part is skipped.
+- `broll`: optional, the creator's own clips full screen over the voice (`/broll use` writes it). `src` = a file copied into `public/broll/`, `atMs` / `toMs` = source ms of the first and last word it covers (2 to 5 s), `startSec` = where to start in the clip. Captions stay on top.
 - `showCaptions`: optional, `false` to render without burned-in captions (a long YouTube video often ships its `.srt` instead).
 
 ## 5. Commands (from `video-agent/studio/`)
