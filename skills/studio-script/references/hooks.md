@@ -188,4 +188,4 @@ Templates are shapes, not sentences to fill word for word. Say it the way the cr
 
 ## Learning from the niche
 
-`video-agent/swipe.md` (built by `/video-viral`) lists hooks that over-performed in the creator's niche, each tagged with a formula above. Prefer formulas that show up there. Never copy a swipe hook; reuse its shape with the creator's own topic and words.
+`video-agent/swipe.md` (built by `/studio-script viral`) lists hooks that over-performed in the creator's niche, each tagged with a formula above. Prefer formulas that show up there. Never copy a swipe hook; reuse its shape with the creator's own topic and words.

@@ -1,6 +1,6 @@
 # Humanize
 
-Text that sounds like the creator talking, not like a chat model writing. Same meaning, same facts, fewer tells. Used as the last pass of every script, and on its own with `/video-script humanize <text>` for captions, descriptions, posts and emails.
+Text that sounds like the creator talking, not like a chat model writing. Same meaning, same facts, fewer tells. Used as the last pass of every script, and on its own with `/studio-script humanize <text>` for captions, descriptions, posts and emails.
 
 The goal is to sound like the person, not to fool a detector. Detectors are unreliable; viewers are not.
 

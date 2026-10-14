@@ -1,11 +1,11 @@
 ---
-name: video-setup
-description: First run of the video agent skills - sets up video editing on the creator's computer and in their project - tools, the video-agent/ folder, the Remotion studio, the creator's voice.md, permissions, and the optional accounts (Treg for Instagram, TikTok and YouTube, an ElevenLabs key, Codex). Use when the user says setup, onboarding, install, "start here", configure, connect my account, Treg, first time using video-script, video-edit, video-publish or any video skill, or wants to update their voice, niche, CTA or brand color. Checks Node, ffmpeg, yt-dlp and git with install commands for macOS, Windows and Linux, writes voice.md from their own videos or a short interview, pre-approves the tool commands in .claude/settings.json.
+name: studio-setup
+description: Sets up the creator's video editing studio, for shorts and YouTube videos, on their computer and in their project - tools, the video-agent/ folder, the Remotion studio, the creator's voice.md, permissions, and the optional accounts (Treg for Instagram, TikTok and YouTube, an ElevenLabs key, Codex). Use when the user says setup, onboarding, install, "start here", configure, connect my account, Treg, first time using studio-script, short-editing, publish or any video skill, or wants to update their voice, niche, CTA or brand color. Checks Node, ffmpeg, yt-dlp and git with install commands for macOS, Windows and Linux, writes voice.md from their own videos or a short interview, pre-approves the tool commands in .claude/settings.json.
 argument-hint: "[tools | studio | voice | permissions | treg | keys]"
 allowed-tools: Bash(node -v) Bash(ffmpeg -version) Bash(ffprobe -version) Bash(yt-dlp --version) Bash(deno --version) Bash(git --version) Bash(codex --version) Bash(treg --version)
 ---
 
-# Video Setup
+# Studio Setup
 
 Ten minutes, once. At the end the creator has:
 
@@ -35,14 +35,14 @@ git --version
 
 | Tool | Used by | macOS | Windows | Linux |
 |---|---|---|---|---|
-| Node 18+ | video-edit (Remotion) | `brew install node` | `winget install OpenJS.NodeJS.LTS` | nodejs.org or your package manager |
-| ffmpeg | video-edit, video-steal, long-to-short-videos, video-translate, video-publish | `brew install ffmpeg` | `winget install Gyan.FFmpeg` | `sudo apt install ffmpeg` |
-| yt-dlp | video-viral, video-steal, long-to-short-videos, voice.md from videos | `brew install yt-dlp` | `winget install yt-dlp.yt-dlp` | `pipx install "yt-dlp[default]"` |
+| Node 18+ | short-editing (Remotion) | `brew install node` | `winget install OpenJS.NodeJS.LTS` | nodejs.org or your package manager |
+| ffmpeg | short-editing, steal, long-to-short-videos, short-translate, publish | `brew install ffmpeg` | `winget install Gyan.FFmpeg` | `sudo apt install ffmpeg` |
+| yt-dlp | studio-script viral, steal, long-to-short-videos, voice.md from videos | `brew install yt-dlp` | `winget install yt-dlp.yt-dlp` | `pipx install "yt-dlp[default]"` |
 | deno | yt-dlp on YouTube (it needs a JavaScript runtime) | comes with yt-dlp | `winget install DenoLand.Deno` | `curl -fsSL https://deno.land/install.sh \| sh` |
-| git, build tools | video-edit (gets the Remotion template, builds whisper.cpp) | `xcode-select --install` | `winget install Git.Git` | `sudo apt install git build-essential` |
+| git, build tools | short-editing (gets the Remotion template, builds whisper.cpp) | `xcode-select --install` | `winget install Git.Git` | `sudo apt install git build-essential` |
 | Codex (optional) | codex-images | `npm i -g @openai/codex`, then `codex login` | same | same |
 
-Give the commands for what is missing and let them run them (or run them yourself if they say so). Scripting-only users (video-script, video-viral) only need yt-dlp and deno. Codex is only for `/codex-images` and needs a ChatGPT plan; skip it if they don't want images.
+Give the commands for what is missing and let them run them (or run them yourself if they say so). Scripting-only users (studio-script, its `viral` mode included) only need yt-dlp and deno. Codex is only for `/codex-images` and needs a ChatGPT plan; skip it if they don't want images.
 
 - Windows: after `winget`, close and reopen the terminal (and Claude Code), or the new commands are not found.
 - YouTube changes often. When yt-dlp fails on a link that plays in the browser, update it first (`brew upgrade yt-dlp`, `winget upgrade yt-dlp.yt-dlp`, `pipx upgrade yt-dlp`).
@@ -54,12 +54,14 @@ Create it at the root of the current project:
 ```text
 video-agent/
 ├── voice.md      who they are and how they talk (step 4)
-├── swipe.md      hooks that worked in their niche (video-viral)
-├── audit.md      what works on their own Instagram (video-audit)
+├── swipe.md      hooks that worked in their niche (`/studio-script viral`)
+├── audit.md      what works on their own Instagram (insta-audit)
+├── audits/       full Instagram reports, one folder per account and run (insta-audit @handle)
 ├── log.md        one line per script written, so nothing repeats
-├── scripts/      one file per week (video-script)
+├── scripts/      one file per week (studio-script)
 ├── takes/        raw recordings (phone, camera, webcam, screen)
-├── edits/        one folder per edited video (video-edit): final.mp4, post.md, cover.jpg, published.md
+├── styles/       styles copied from other creators (steal): <name>.md + its stills, sfx, stickers
+├── edits/        one folder per edited video (short-editing): final.mp4, post.md, cover.jpg, published.md
 ├── repurpose/    one plan per long video (long-to-short-videos)
 ├── images/       generated images not tied to a video (codex-images)
 ├── studio/       the Remotion project (step 3)
@@ -86,9 +88,9 @@ video-agent/.env
 
 ## 3. The studio
 
-The editing studio (Remotion, whisper.cpp for the captions, a speech model) takes 5 to 15 minutes and about 2 GB to set up. Ask: now (recommended if they will edit soon, the first edit then starts right away), or later (video-edit does it the first time it runs).
+The editing studio (Remotion, whisper.cpp for the captions, a speech model) takes 5 to 15 minutes and about 2 GB to set up. Ask: now (recommended if they will edit soon, the first edit then starts right away), or later (short-editing does it the first time it runs).
 
-Now: run step 2 of `video-edit` ("The studio"), including the `Short` and `Wide` compositions and the `npx tsc --noEmit` check. Say what is downloading and how big before starting. Only for video-edit, long-to-short-videos and video-translate; scripting-only users skip it.
+Now: run step 2 of `short-editing` ("The studio"), including the `Short` and `Wide` compositions and the `npx tsc --noEmit` check. Say what is downloading and how big before starting. Only for short-editing, long-to-short-videos and short-translate; scripting-only users skip it.
 
 ## 4. voice.md
 
@@ -104,7 +106,7 @@ First the two settings at the top of the file: the language they record in, and 
 
 Either way, ask them to paste 3 short texts they wrote themselves, before any AI tool (a caption, a message, an email). They go in "Real samples" and teach the scripts their rhythm.
 
-Write `video-agent/voice.md` from [references/voice-template.md](references/voice-template.md). Then read it back to them in 5 lines and ask what is wrong. A voice file is never finished: say they can run `/video-setup voice` any time to update it.
+Write `video-agent/voice.md` from [references/voice-template.md](references/voice-template.md). Then read it back to them in 5 lines and ask what is wrong. A voice file is never finished: say they can run `/studio-setup voice` any time to update it.
 
 ## 5. Permissions
 
@@ -134,8 +136,8 @@ Three things, each only if they want the skill that needs it. Ask once, in one m
 
 | For | What | Cost |
 |---|---|---|
-| `/video-audit` and `/video-publish` | Treg, with their Instagram, TikTok and YouTube connected | free on their own accounts |
-| `/video-translate` (and `/video-steal`'s music level and sound effects, optional) | an ElevenLabs API key | their ElevenLabs plan |
+| `/insta-audit` and `/publish` | Treg, with their Instagram, TikTok and YouTube connected | free on their own accounts |
+| `/short-translate` (and `/steal`'s music level and sound effects, optional) | an ElevenLabs API key | their ElevenLabs plan |
 | `/codex-images` | Codex logged in with their ChatGPT account | their ChatGPT plan |
 
 **ElevenLabs**: they create a key at elevenlabs.io/app/settings/api-keys and paste it themselves into `video-agent/.env` as `ELEVENLABS_API_KEY=...` (create the empty file and open it for them). Never ask for a key in the chat. Check it is there without printing it: `grep -c ELEVENLABS_API_KEY video-agent/.env`.
@@ -167,7 +169,7 @@ treg connections ls
 
 Each `connect` opens the platform's own login; they approve it there. Connect only the platforms they post on. Instagram needs a professional account (Creator or Business, a free switch in the app: Profile → menu → Account type and tools). Treg prints tips on stderr: add `2>/dev/null` when you read its JSON.
 
-Instagram connected: offer `/video-audit` right after, it is the best first look at what works for them.
+Instagram connected: offer `/insta-audit` right after, it is the best first look at what works for them.
 
 **How every Treg call works**, the rule for all the skills:
 
@@ -185,19 +187,19 @@ Permissions: add only the free, read-only commands, so every paid `treg call` st
 
 ## 7. Wrap up
 
-Show what is ready (✓ or skipped, one line each) and the path forward:
+Show what is ready (✓ or skipped, one line each) and the path forward. They can also just type `/editing <what they want>`: it picks the right skill.
 
-1. `/video-audit`: what works on their own Instagram (fills audit.md).
-2. `/video-viral`: what works in their niche (fills swipe.md; once a month).
-3. `/video-script`: this week's scripts, hooks first, humanized.
+1. `/insta-audit`: what works on their own Instagram (fills audit.md).
+2. `/studio-script viral`: what works in their niche (fills swipe.md; once a month).
+3. `/studio-script`: this week's scripts, hooks first, humanized.
 4. Record them: phone, camera or webcam, one take per script, saved in `video-agent/takes/<slug>.mp4`.
-5. `/video-edit`: a short (vertical) or a full YouTube video (horizontal).
-6. `/video-steal`: a creator's reel they love into a style `video-edit` can use.
+5. `/short-editing`: a short (vertical) or a full YouTube video (horizontal).
+6. `/steal`: a creator's reel they love into a style `short-editing` can use.
 7. `/long-to-short-videos`: a long video into finished shorts.
-8. `/video-translate`: a take in another language, in their voice.
+8. `/short-translate`: a take in another language, in their voice.
 9. `/codex-images`: thumbnails and covers.
-10. `/video-publish`: YouTube, Instagram and TikTok.
+10. `/publish`: YouTube, Instagram and TikTok.
 
 ## Later
 
-`/video-setup <part>` jumps to one part: `tools`, `studio`, `voice` (rebuild or update voice.md), `permissions`, `treg`, `keys`.
+`/studio-setup <part>` jumps to one part: `tools`, `studio`, `voice` (rebuild or update voice.md), `permissions`, `treg`, `keys`.

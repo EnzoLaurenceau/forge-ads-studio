@@ -1,11 +1,11 @@
 ---
-name: video-edit
+name: short-editing
 description: Edits a complete talking-head video end to end with free tools (Remotion, whisper.cpp, ffmpeg) - a vertical short (1080x1920) or a full horizontal YouTube video (1920x1080). Use when the user says edit, cut, captions, subtitles, motion design, montage, "make it a short", "edit my YouTube video", render, or gives a recording from video-agent/takes/. Transcribes locally with word timings, cuts silences and retakes against the script, adds punch-in zooms, word-by-word captions in the creator's accent color, a hook card, callouts and a progress bar, levels the voice to -14 LUFS, and writes an .srt, a cut list for CapCut or Premiere, chapters for a long video, and the post copy.
 argument-hint: "<take file or slug> [short | long] [style <name>]"
 allowed-tools: Bash(node -v) Bash(git --version) Bash(ffmpeg *) Bash(ffprobe *) Bash(npx remotion *) Bash(node sub.mjs *) Bash(npx tsc --noEmit)
 ---
 
-# Video Edit
+# Short Editing
 
 One raw take in, one finished video out: `video-agent/edits/<slug>/final.mp4`. Either a vertical short, or a full horizontal video for YouTube.
 
@@ -18,10 +18,10 @@ The look is fixed and simple: [references/style.md](references/style.md). The co
 
 ## How to run it
 
-- Preflight: `node -v && ffmpeg -version && git --version`. Anything missing: stop and send them to `/video-setup tools`.
+- Preflight: `node -v && ffmpeg -version && git --version`. Anything missing: stop and send them to `/studio-setup tools`.
 - Talk in the creator's language. Say what you do in one line before each long step (install, transcription, render) and how long it takes.
 - Read `video-agent/voice.md` for the language and the accent color. No voice file: ask both, or use English and `#FFD400`.
-- A named style (`style <name>` in the request, made by `/video-steal`): read `video-agent/styles/<name>.md` and apply it on top of [style.md](references/style.md). Its values win, its sound effects, stickers and grade go into the edit as it says, and everything it does not name stays as in style.md.
+- A named style (`style <name>` in the request, made by `/steal`): read `video-agent/styles/<name>.md` and apply it on top of [style.md](references/style.md). Its values win, its sound effects, stickers and grade go into the edit as it says, and everything it does not name stays as in style.md.
 - `<slug>`: lowercase, dashes, no dots or spaces (the transcriber cuts file names at the first dot).
 - Steps 1 and 2 run from the project root. From step 3 on, every command runs in `video-agent/studio/` and its paths are relative to it.
 
@@ -170,7 +170,7 @@ In `video-agent/edits/<slug>/`:
 - `post.md`: the text to paste when posting (below).
 - Long only, in `post.md`: **chapters** for the YouTube description, one every 1 to 3 minutes where the topic changes, times on the cut timeline (from `captions.srt`), the first at `0:00`, at least 3, each 10 s or longer.
 
-Then say: length, what was cut, where the files are, and offer one change ("shorter hook card? fewer callouts? another accent?"). A change = edit the JSON, render again (steps 6 and 7). Next: `/video-publish <slug>`.
+Then say: length, what was cut, where the files are, and offer one change ("shorter hook card? fewer callouts? another accent?"). A change = edit the JSON, render again (steps 6 and 7). Next: `/publish <slug>`.
 
 ## Post copy
 
@@ -182,7 +182,7 @@ Then say: length, what was cut, where the files are, and offer one change ("shor
 - **Hashtags**: 3 to 5 at the end, about the topic. No #fyp or #viral.
 - Nothing the video doesn't say: no new number, claim or promise.
 
-Run the humanize pass of `video-script` (its `references/humanize.md`) on it when that skill is installed.
+Run the humanize pass of `studio-script` (its `references/humanize.md`) on it when that skill is installed.
 
 ```text
 Title: Your hook is too long

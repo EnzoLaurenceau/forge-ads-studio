@@ -1,17 +1,17 @@
 ---
-name: video-steal
-description: Copies another creator's editing style into a named style that video-edit applies to your own takes. Use when the user says steal, "copy the style of", "edit like @x", "make a style from this reel", "vole le style de", or gives a reel or short as the model for a look. Downloads the reel (yt-dlp, or Treg for Instagram and TikTok), MEASURES the style with ffmpeg instead of eyeballing it (contact sheets, hard cuts per second, a spectrogram for the beat and the sound effects on the cuts, the music level under the voice, the face size and the zooms), writes video-agent/styles/<name>.md, then edits a test video with video-edit and compares it frame by frame with the original.
+name: steal
+description: Copies another creator's editing style into a named style that short-editing applies to your own takes. Use when the user says steal, "copy the style of", "edit like @x", "make a style from this reel", "vole le style de", or gives a reel or short as the model for a look. Downloads the reel (yt-dlp, or Treg for Instagram and TikTok), MEASURES the style with ffmpeg instead of eyeballing it (contact sheets, hard cuts per second, a spectrogram for the beat and the sound effects on the cuts, the music level under the voice, the face size and the zooms), writes video-agent/styles/<name>.md, then edits a test video with short-editing and compares it frame by frame with the original.
 argument-hint: "<reel URL or video file> [style name]"
 allowed-tools: Bash(yt-dlp *) Bash(ffmpeg *) Bash(ffprobe *) Bash(treg catalog *) Bash(treg balance)
 ---
 
-# Video Steal
+# Steal
 
 Someone's edit works and you want it on your own videos. This skill measures their edit, writes it down as a style, and proves it on one of your takes before you use it.
 
 Output:
 
-- `video-agent/styles/<name>.md`: the style, read by `/video-edit <take> style <name>`.
+- `video-agent/styles/<name>.md`: the style, read by `/short-editing <take> style <name>`.
 - `video-agent/styles/<name>/`: its stills, sound effects and stickers.
 - `video-agent/edits/<slug>-<name>/final.mp4`: the test video.
 
@@ -19,7 +19,7 @@ Read [references/learnings.md](references/learnings.md) before you start. Each r
 
 ## How to run it
 
-- Preflight: `ffmpeg -version && yt-dlp --version`. Missing: `/video-setup tools`.
+- Preflight: `ffmpeg -version && yt-dlp --version`. Missing: `/studio-setup tools`.
 - Talk in the creator's language. Say what you do in one line before each long step.
 - `<name>`: the creator's handle in lowercase with dashes, unless the user names the style.
 - Scratch files go in `video-agent/.tmp/steal-<name>/` (`W` below).
@@ -102,12 +102,12 @@ Write the range (e.g. face 12 to 25 % of the frame), the punch-ins per 10 s, and
 
 ## 3. Write the style
 
-`video-agent/styles/<name>.md`, in the user's language, with the same sections as `video-edit`'s [style.md](../video-edit/references/style.md). Each line gives a value and the measurement behind it:
+`video-agent/styles/<name>.md`, in the user's language, with the same sections as `short-editing`'s [style.md](../short-editing/references/style.md). Each line gives a value and the measurement behind it:
 
 ```markdown
 # Style: <name>
 
-Copied from <link>, measured on <date>. Applied on top of video-edit's style.md: what is not here stays as there.
+Copied from <link>, measured on <date>. Applied on top of short-editing's style.md: what is not here stays as there.
 
 ## Cuts
 - hard cut every 1.4 s on average (35 cuts in 50 s); no fade, no transition
@@ -124,7 +124,7 @@ Copied from <link>, measured on <date>. Applied on top of video-edit's style.md:
 - ffmpeg: eq=contrast=1.08:saturation=0.9,vignette=PI/5,unsharp=5:5:0.4
 ## Left out
 - the AI video clips: replaced by your own footage or a callout
-## How video-edit applies it
+## How short-editing applies it
 - the components to add to the composition and the props they take
 ```
 
@@ -149,7 +149,7 @@ Copied from <link>, measured on <date>. Applied on top of video-edit's style.md:
 ## 4. Test it
 
 1. Pick a 10 to 20 s take of the user from `video-agent/takes/`.
-2. Run `/video-edit <take> style <name>`. It reads the style file and adds what it describes to the composition: stickers on the word that names them, sound effects on the cuts, the grade.
+2. Run `/short-editing <take> style <name>`. It reads the style file and adds what it describes to the composition: stickers on the word that names them, sound effects on the cuts, the grade.
 3. The slug is `<take slug>-<name>`.
 
 ## 5. Compare before showing
@@ -181,4 +181,4 @@ Open `final.mp4`, then tell the user in a few lines:
 - what was copied, and what was left out and why
 - where the style lives
 
-From now on, `/video-edit <take> style <name>` uses it. Each time the user rejects something, write it in the style file. When the lesson is general, add it to [references/learnings.md](references/learnings.md).
+From now on, `/short-editing <take> style <name>` uses it. Each time the user rejects something, write it in the style file. When the lesson is general, add it to [references/learnings.md](references/learnings.md).

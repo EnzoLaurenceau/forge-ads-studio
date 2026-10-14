@@ -1,13 +1,13 @@
 ---
-name: video-translate
-description: Translates a talking-head take (or a finished video) into another language with the creator's own cloned voice through ElevenLabs Dubbing, using their ElevenLabs API key - sets the key up, trims the take first so no stutter is paid for, estimates the minutes, sends it after a yes, waits, lays the dubbed voice back on the image, then hands the translated take to video-edit for captions in the new language. Use when the user says translate, dub, dubbing, English version, Spanish version, traduis, version anglaise, doublage, ElevenLabs, or wants a second account in another language.
+name: short-translate
+description: Translates a talking-head take (or a finished video) into another language with the creator's own cloned voice through ElevenLabs Dubbing, using their ElevenLabs API key - sets the key up, trims the take first so no stutter is paid for, estimates the minutes, sends it after a yes, waits, lays the dubbed voice back on the image, then hands the translated take to short-editing for captions in the new language. Use when the user says translate, dub, dubbing, English version, Spanish version, traduis, version anglaise, doublage, ElevenLabs, or wants a second account in another language.
 argument-hint: "<take, slug or mp4> <target language> [from <source language>]"
 allowed-tools: Bash(ffmpeg *) Bash(ffprobe *)
 ---
 
-# Video Translate
+# Short Translate
 
-One take in, the same take in another language out, in the creator's own voice (ElevenLabs clones it from the take itself). The image stays the original: no lip-sync. Then `/video-edit` edits the translated take like any other, with captions in the new language.
+One take in, the same take in another language out, in the creator's own voice (ElevenLabs clones it from the take itself). The image stays the original: no lip-sync. Then `/short-editing` edits the translated take like any other, with captions in the new language.
 
 Talk to them in their language. `<slug>`: the take's slug; `<lang>`: the target language code (`en`, `es`, `fr`, `de`, `pt`, `it`, `ja`...), `<from>`: the source one.
 
@@ -29,15 +29,15 @@ Every command below loads it with `set -a; . video-agent/.env; set +a` and never
 
 ## 2. What to translate
 
-Translate the **take**, not a finished video: a finished video has captions burned in the old language. Then video-edit cuts, captions and times everything on the new voice.
+Translate the **take**, not a finished video: a finished video has captions burned in the old language. Then short-editing cuts, captions and times everything on the new voice.
 
-- **A take already edited** (`video-agent/edits/<slug>/edit.json` exists): send only the kept parts, so no silence, stutter or retake is paid for. Make the plain cut with video-edit's ranges (from `video-agent/studio/`):
+- **A take already edited** (`video-agent/edits/<slug>/edit.json` exists): send only the kept parts, so no silence, stutter or retake is paid for. Make the plain cut with short-editing's ranges (from `video-agent/studio/`):
   ```bash
   SEL=$(node -e 'const e=require("./public/<slug>.edit.json");console.log(e.ranges.map(r=>`between(t,${r.fromMs/1000},${r.toMs/1000})`).join("+"))')
   ffmpeg -y -i public/<slug>.mp4 -vf "select='$SEL',setpts=N/FRAME_RATE/TB" -af "aselect='$SEL',asetpts=N/SR/TB" -c:v libx264 -crf 18 -c:a aac -b:a 192k ../.tmp/<slug>-cut.mp4
   ```
   The source is `video-agent/.tmp/<slug>-cut.mp4`.
-- **A raw take**: offer to run `/video-edit` up to its cut list first (steps 1 to 4) for the same reason. In a hurry: send the raw take as it is.
+- **A raw take**: offer to run `/short-editing` up to its cut list first (steps 1 to 4) for the same reason. In a hurry: send the raw take as it is.
 
 ## 3. Estimate, then send
 
@@ -89,13 +89,13 @@ Check it: same length as the source (within a second). Then ask them to listen t
 
 ## 5. Edit the translated take
 
-`/video-edit <slug>-<lang>`, and tell it:
+`/short-editing <slug>-<lang>`, and tell it:
 
 - **The language changed**: in `video-agent/studio/whisper-config.mjs`, set `WHISPER_LANG` to `<lang>` for this transcription (English: `WHISPER_MODEL = "medium.en"` works best; any other language: `"medium"`), and put it back after. The hook card, callouts and `post.md` are written in `<lang>`.
 - **Same edit as the original** when there is one: same hook card and callouts (translated), placed on the matching words of the new transcript.
 - The ask (CTA) in `<lang>`: ask them once for its translation, or translate the one in voice.md and show it.
 
-Name everything `<slug>-<lang>` so both versions sit side by side. Then `/video-publish <slug>-<lang>` on the account for that language.
+Name everything `<slug>-<lang>` so both versions sit side by side. Then `/publish <slug>-<lang>` on the account for that language.
 
 Delete `video-agent/.tmp/<slug>-*` at the end, except the job file if they may want to download the dub again.
 

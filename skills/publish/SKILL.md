@@ -1,13 +1,13 @@
 ---
-name: video-publish
+name: publish
 description: Gets a finished video out on YouTube (Shorts or long), Instagram Reels and TikTok - picks the video, makes the light export for Instagram and TikTok, the cover, the caption and the YouTube title, sets the time, shows the plan, then after the creator's yes publishes through Treg on their own connected accounts (setup included), or hands a ready-to-post kit when Treg isn't set up. Use when the user says publish, post it, schedule, upload to YouTube, put it on Instagram, TikTok, publier, poster, programmer, mets-le en ligne.
 argument-hint: "[<slug or mp4>] [now | <date and time>] [youtube instagram tiktok]"
 allowed-tools: Bash(ffmpeg *) Bash(ffprobe *) Bash(treg --version) Bash(treg connections ls) Bash(treg catalog *) Bash(treg balance)
 ---
 
-# Video Publish
+# Publish
 
-One finished video out, on the creator's own accounts. Making it is `/video-edit`.
+One finished video out, on the creator's own accounts. Making it is `/short-editing`.
 
 **Nothing is posted before the creator's explicit yes on the plan of step 5.** That yes covers that video only.
 
@@ -70,20 +70,20 @@ They don't want Treg: the manual route (6a) works with no setup.
 
 ## 4. The texts
 
-From `<edit>/post.md` (written by video-edit) when it exists, else from the video's script or transcript and `video-agent/voice.md`, in the video's language:
+From `<edit>/post.md` (written by short-editing) when it exists, else from the video's script or transcript and `video-agent/voice.md`, in the video's language:
 
 - **Caption** (Instagram and TikTok): a first line that hooks without repeating the spoken hook word for word (the first 125 characters show before "more"), 2 to 4 short lines on what the viewer gets, the ask from voice.md, then 3 to 5 hashtags of the topic. No #fyp, no wall of emoji.
 - **TikTok caption** only when it should differ (shorter, other hashtags).
 - **YouTube title**: Shorts under 60 characters, long under 70, the promise of the video, true to it.
 - **YouTube description**: the caption, the chapters for a long video (from post.md), then their links (ask once and add them to voice.md).
 
-Run the humanize pass of `video-script` (its `references/humanize.md`) on all of them when that skill is installed. Every name, number and claim comes from the video; none is added. Save them in `<edit>/post.md`, one heading per text.
+Run the humanize pass of `studio-script` (its `references/humanize.md`) on all of them when that skill is installed. Every name, number and claim comes from the video; none is added. Save them in `<edit>/post.md`, one heading per text.
 
 ## 5. The plan (mandatory)
 
 - **Platforms**: a short goes to YouTube + Instagram + TikTok, a long video to YouTube, unless they name others.
 - **Time**: the one they give (written in their local time and in UTC), else **now**.
-- **Route** per platform: Treg (connected) or manual. Instagram and TikTok have no scheduling through Treg: they post **now**. YouTube can wait for a date (private + `publishAt`). A later time on Instagram or TikTok: run `/video-publish` again at that time, or go manual and use the app's scheduler.
+- **Route** per platform: Treg (connected) or manual. Instagram and TikTok have no scheduling through Treg: they post **now**. YouTube can wait for a date (private + `publishAt`). A later time on Instagram or TikTok: run `/publish` again at that time, or go manual and use the app's scheduler.
 
 Show it and wait for a clear yes:
 
@@ -140,7 +140,7 @@ No session URL in the answer: go manual for YouTube.
 
 Write `<edit>/published.md`, one line per platform: date, time, route, and the link (`https://youtube.com/shorts/<id>` or `https://youtu.be/<id>`, the reel, the TikTok) once live. Manual route: write it when they say it is posted.
 
-Then say what is live, the links, and offer `/video-audit` in a week to see how it did.
+Then say what is live, the links, and offer `/insta-audit` in a week to see how it did.
 
 ## Honest limits
 

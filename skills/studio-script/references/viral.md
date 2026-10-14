@@ -1,6 +1,6 @@
 # Viral: what makes a short leave the followers
 
-A clean, on-brand script gets the followers' views. A viral one gets 5x to 500x the account median, and that comes from the topic first, the hook second, the structure third. Measured on every account studied so far (outliers scored against each account's median by `/video-viral`): the CTA never makes the views (accounts with 40 to 60 ‰ comments sit at x1, their hits often have fewer comments), and the same creator, same voice, same edit, swings from x1 to x100 on the topic alone. So the viral work happens before writing: pick a concept that already over-performed, then write it in the creator's voice.
+A clean, on-brand script gets the followers' views. A viral one gets 5x to 500x the account median, and that comes from the topic first, the hook second, the structure third. Measured on every account studied so far (outliers scored against each account's median by `/studio-script viral`): the CTA never makes the views (accounts with 40 to 60 ‰ comments sit at x1, their hits often have fewer comments), and the same creator, same voice, same edit, swings from x1 to x100 on the topic alone. So the viral work happens before writing: pick a concept that already over-performed, then write it in the creator's voice.
 
 ## The concept bank: "Concepts" in `video-agent/swipe.md`
 
@@ -12,7 +12,7 @@ The top section of the swipe file. The concepts that over-performed in this nich
 - **Timing**: when it only works on fresh news (a repo trending today, a model out this week).
 - **Flops**: shapes that stayed at x1 or below in the same niche (they are as useful as the hits).
 
-Built and refreshed by `/video-viral`: every outlier at x3 or more goes in as evidence under its concept, or opens a new one. Without it, run `/video-viral` first: writing a week without it is writing blind.
+Built and refreshed by `/studio-script viral`: every outlier at x3 or more goes in as evidence under its concept, or opens a new one. Without it, run `/studio-script viral` first: writing a week without it is writing blind.
 
 ## The rules the data gives (every niche checked so far)
 

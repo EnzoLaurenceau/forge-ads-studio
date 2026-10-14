@@ -1,11 +1,11 @@
 ---
-name: video-script
-description: Writes short-form video scripts (YouTube Shorts, TikTok, Instagram Reels, 30 to 60 s) in the creator's own voice from video-agent/voice.md (who they talk to, how they sound, their myths, their offer ladder), with optimized hooks and a humanize pass so nothing sounds like AI. Use when the user asks for scripts, script ideas, "write my shorts", this week's videos, a hook, a better hook, to rewrite or tighten a script, or to humanize any text (humanize, sounds like AI, sounds robotic, make it sound like me, a caption or description before posting). Starts from what happened in their week, writes 3 hooks per script from 22 formulas (or 20 with the hook printer), scores them, adds a re-hook, places psychological triggers, maps offer proximity across the week, rejects generic, structureless or interchangeable scripts, checks timing at their pace, adds visual notes, removes AI tells (invisible characters, AI words in English and French, AI sentence shapes) while keeping every fact, and saves the week to video-agent/scripts/.
-argument-hint: "[topic | hook <topic> | rewrite <script> | humanize [check] <text or file>]"
-allowed-tools: Bash(grep *) Bash(perl -CSD -pi -e *)
+name: studio-script
+description: The scriptwriter of the creator's videos - short-form scripts (YouTube Shorts, TikTok, Instagram Reels, 30 to 60 s) in their own voice from video-agent/voice.md, each on a concept proven by the niche's outliers, with 3 scored hooks from 22 formulas, a re-hook, triggers, offer proximity, quality gates, timing at their pace and visual notes, then a humanize pass (invisible characters, AI words in English and French, AI sentence shapes, facts kept). Modes - the week (default), one topic, hook printer, rewrite, humanize, and viral (what over-performs in their niche, scored against each account's median, YouTube free with yt-dlp, TikTok and Instagram through Treg, into video-agent/swipe.md). Use when the user asks for scripts, ideas, this week's videos, a hook, a better hook, to rewrite a script, what goes viral, viral hooks, what works in my niche, competitor research, swipe file, outliers, or to humanize any text (sounds like AI, make it sound like me, a caption before posting).
+argument-hint: "[topic | hook <topic> | rewrite <script> | viral [@handles] | humanize [check] <text or file>]"
+allowed-tools: Bash(grep *) Bash(perl -CSD -pi -e *) Bash(yt-dlp *) Bash(treg catalog *) Bash(treg balance)
 ---
 
-# Video Script
+# Studio Script
 
 Scripts that sound like the creator on their best day: short, concrete, with a hook that earns the next 30 seconds. Everything comes from their real week and their own words. Nothing is invented.
 
@@ -13,9 +13,9 @@ Scripts that sound like the creator on their best day: short, concrete, with a h
 
 Read, in this order:
 
-1. `video-agent/voice.md`: who they are, who they talk to, how they sound, what they believe, their proof, the ask. Missing: offer `/video-setup` (about 10 minutes, recommended), or ask 4 questions now (what they do, for whom, the language they record in, what viewers should do after watching).
-2. `video-agent/swipe.md`: hooks that worked in their niche and, on top, the "Concepts" that over-performed with their proof (from `/video-viral`). Every script sits on one of them ([references/viral.md](references/viral.md)). Missing: run `/video-viral` first (5 minutes); a week written without it is written blind.
-3. `video-agent/audit.md` if it exists: what works on their own account (from `/video-audit`). Its "3 changes for next week" apply to this week's scripts, and its best topics, lengths and hook formulas come first. Their own data beats the niche's.
+1. `video-agent/voice.md`: who they are, who they talk to, how they sound, what they believe, their proof, the ask. Missing: offer `/studio-setup` (about 10 minutes, recommended), or ask 4 questions now (what they do, for whom, the language they record in, what viewers should do after watching).
+2. `video-agent/swipe.md`: hooks that worked in their niche and, on top, the "Concepts" that over-performed with their proof (from `/studio-script viral`). Every script sits on one of them ([references/viral.md](references/viral.md)). Missing: run `/studio-script viral` first (5 minutes); a week written without it is written blind.
+3. `video-agent/audit.md` if it exists: what works on their own account (from `/insta-audit`). Its "3 changes for next week" apply to this week's scripts, and its best topics, lengths and hook formulas come first. Their own data beats the niche's.
 4. The last 20 lines of `video-agent/log.md`: topics and hook formulas already used. Never repeat a topic from the last 4 weeks unless they ask.
 5. [references/viral.md](references/viral.md), [references/hooks.md](references/hooks.md), [references/script-rules.md](references/script-rules.md) and [references/humanize.md](references/humanize.md).
 
@@ -23,13 +23,14 @@ Talk to them in their language, and write the scripts in the language they recor
 
 ## Modes
 
-- `/video-script` → a week of scripts (default 5).
-- `/video-script <topic or idea>` → one script.
-- `/video-script hook <script or topic>` → the hook printer: 20 hooks from at least 10 formulas, grouped by concept of swipe.md (proven concepts first), filled with voice.md (the viewer's words, their phrases, their proof, their myths), scored, through the quality gates, best 3 on top. Each keeps its formula name, so a hook that works can be reposted with a new wording.
-- `/video-script rewrite <script>` → their script, tightened: same content and facts, better hook, shorter lines, timing checked, humanized. Show what changed.
-- `/video-script humanize <file, script slug or pasted text>` → any text (script, caption, description, post) made to sound like them: [references/humanize.md](references/humanize.md), with its before and after score. `humanize check` only reports.
+- `/studio-script` → a week of scripts (default 5).
+- `/studio-script <topic or idea>` → one script.
+- `/studio-script hook <script or topic>` → the hook printer: 20 hooks from at least 10 formulas, grouped by concept of swipe.md (proven concepts first), filled with voice.md (the viewer's words, their phrases, their proof, their myths), scored, through the quality gates, best 3 on top. Each keeps its formula name, so a hook that works can be reposted with a new wording.
+- `/studio-script rewrite <script>` → their script, tightened: same content and facts, better hook, shorter lines, timing checked, humanized. Show what changed.
+- `/studio-script viral [@handles or niche keywords]` → what over-performs in their niche, measured: recent Shorts of 10 to 12 accounts scored against each account's median, the first 3 seconds of every outlier, its hook formula, and the Concepts on top of `video-agent/swipe.md` ([references/viral-research.md](references/viral-research.md)). About 5 minutes, once a month.
+- `/studio-script humanize <file, script slug or pasted text>` → any text (script, caption, description, post) made to sound like them: [references/humanize.md](references/humanize.md), with its before and after score. `humanize check` only reports.
 
-For `hook` and `humanize`, skip "The week" and "The mix": read voice.md and the references, then do only that job.
+For `hook`, `humanize` and `viral`, skip "The week" and "The mix": read voice.md and the references, then do only that job.
 
 ## 1. The week
 
@@ -116,7 +117,7 @@ Follow for one script fix a day.
 **To fill:** {{number}}
 ````
 
-The `script` block holds only the spoken lines: the creator reads it while recording, and video-edit reads it to edit.
+The `script` block holds only the spoken lines: the creator reads it while recording, and short-editing reads it to edit.
 
 Then show a READY summary and wait:
 
@@ -135,7 +136,7 @@ After a yes, add one line per script to `video-agent/log.md`:
 
 ## 5. Hand off
 
-Show the week's table and the first script in full, then ask what to change. Next steps: record each script (phone, camera or webcam, one take per script, into `video-agent/takes/<slug>.mp4`), then `/video-edit <slug>`, then `/video-publish <slug>`.
+Show the week's table and the first script in full, then ask what to change. Next steps: record each script (phone, camera or webcam, one take per script, into `video-agent/takes/<slug>.mp4`), then `/short-editing <slug>`, then `/publish <slug>`.
 
 ## Honest limits
 

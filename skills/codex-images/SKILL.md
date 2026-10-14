@@ -1,6 +1,6 @@
 ---
 name: codex-images
-description: Generates images with Codex (OpenAI's coding agent and its built-in image tool, included in a ChatGPT plan) - YouTube thumbnails, covers, B-roll stills, callout visuals, profile pictures - one Codex job per image, several in parallel, with the creator's photos as reference when the face matters, then copies them into the project with a manifest. Use when the user says generate an image, a thumbnail, a cover, make me a visual, codex images, génère une image, miniature, or when video-publish or video-edit needs an image.
+description: Generates images with Codex (OpenAI's coding agent and its built-in image tool, included in a ChatGPT plan) - YouTube thumbnails, covers, B-roll stills, callout visuals, profile pictures - one Codex job per image, several in parallel, with the creator's photos as reference when the face matters, then copies them into the project with a manifest. Use when the user says generate an image, a thumbnail, a cover, make me a visual, codex images, génère une image, miniature, or when publish or short-editing needs an image.
 argument-hint: "<what to make> [x<count>] [ref <photo>...] [for <slug>]"
 allowed-tools: Bash(codex --version) Bash(codex login status) Bash(ls *) Bash(cp *) Bash(sips *) Bash(ffprobe *)
 ---
@@ -70,8 +70,8 @@ No `IMAGE_PATH` in the answer: the newest file in `~/.codex/generated_images/` (
 
 Write `<out>/manifest.json`: one entry per image with `file`, `prompt`, `refs`, `date`. Show the images, then:
 
-- A thumbnail or cover: `/video-publish` uses `<edit>/images/` (they pick one, it is copied as `<edit>/cover.jpg`, the cover and the YouTube thumbnail).
-- A still for a video: `/video-edit` can place it as a callout image (copy it into `video-agent/studio/public/`).
+- A thumbnail or cover: `/publish` uses `<edit>/images/` (they pick one, it is copied as `<edit>/cover.jpg`, the cover and the YouTube thumbnail).
+- A still for a video: `/short-editing` can place it as a callout image (copy it into `video-agent/studio/public/`).
 
 Delete `<out>/logs/` once everything is fine.
 

@@ -8,16 +8,16 @@ Only markdown. No app, no server. The skills tell Claude how to work and which t
 
 | Skill | What it does |
 |---|---|
-| `/video-setup` | Start here. Sets up video editing on your computer and in your project: checks the tools, creates `video-agent/`, prepares the editing studio, writes your `voice.md` from your own videos or a short interview, pre-approves the commands, and optionally connects Treg, ElevenLabs and Codex. |
-| `/video-audit` | Installs Treg if needed, connects your Instagram and audits it: your last reels with real stats (views, watch time, saves, shares), what over-performs against your own median, the first seconds of your best and worst reels, and the 3 changes to make, in `audit.md`. |
-| `/video-viral` | Finds what over-performs in your niche: recent Shorts of 10 to 12 accounts near your size and above, outliers against each account's median, the first 3 seconds of each, saved to `swipe.md`. |
-| `/video-script` | A week of scripts from what really happened in your week, in your voice: 3 hooks per script from 22 formulas, scored, a re-hook, timing checked at your pace, visual notes, then a humanize pass (invisible characters, AI words in English and French, AI sentence shapes, facts checked). Also `hook <topic>` and `humanize <text>` for any caption or description. |
-| `/video-edit` | A raw take into a finished video: a short (1080×1920, captions in the platforms' safe zone, hook card) or a full YouTube video (1920×1080, chapters). Word-by-word captions, silences and retakes cut, simple motion design (callouts, punch-in zooms), voice at -14 LUFS, an .srt for CapCut or Premiere, and the post copy. |
-| `/video-steal` | Copies another creator's editing style from one of their reels: measures it with ffmpeg (cuts per second, layouts, captions, the beat and the sound effects on a spectrogram, the music level under the voice, the face size and the zooms), writes it to `video-agent/styles/<name>.md`, then edits a test video with `video-edit` and compares the two frame by frame. Then `/video-edit <take> style <name>` uses it. |
-| `/long-to-short-videos` | One long video (yours, a podcast, a live) into finished shorts: the moments that stand alone, each one edited with `video-edit` (captions, hook card, callouts), plus new scripts from the ideas too spread out to clip. |
-| `/video-translate` | A take in another language with your own cloned voice, through ElevenLabs Dubbing and your key, then edited with captions in the new language. |
+| `/editing` | The entry point. Say what you want ("edit my last take", "scripts for this week", "publish it"), it picks the right skill and continues the video in progress instead of starting over. |
+| `/studio-setup` | Start here. Sets up video editing on your computer and in your project: checks the tools, creates `video-agent/`, prepares the editing studio, writes your `voice.md` from your own videos or a short interview, pre-approves the commands, and optionally connects Treg, ElevenLabs and Codex. |
+| `/insta-audit` | Installs Treg if needed, connects your Instagram and audits it: your last reels with real stats (views, watch time, saves, shares), what over-performs against your own median, the first seconds of your best and worst reels, and the 3 changes to make, in `audit.md`. `/insta-audit @handle` adds up to 5 competitors and a sourced HTML report (paid calls, price said first). |
+| `/studio-script` | A week of scripts from what really happened in your week, in your voice: 3 hooks per script from 22 formulas, scored, a re-hook, timing checked at your pace, visual notes, then a humanize pass (invisible characters, AI words in English and French, AI sentence shapes, facts checked). Also `viral` (what over-performs in your niche: recent Shorts of 10 to 12 accounts, outliers against each account's median, the first 3 seconds of each, saved to `swipe.md`), `hook <topic>` and `humanize <text>` for any caption or description. |
+| `/short-editing` | A raw take into a finished video: a short (1080×1920, captions in the platforms' safe zone, hook card) or a full YouTube video (1920×1080, chapters). Word-by-word captions, silences and retakes cut, simple motion design (callouts, punch-in zooms), voice at -14 LUFS, an .srt for CapCut or Premiere, and the post copy. |
+| `/steal` | Copies another creator's editing style from one of their reels: measures it with ffmpeg (cuts per second, layouts, captions, the beat and the sound effects on a spectrogram, the music level under the voice, the face size and the zooms), writes it to `video-agent/styles/<name>.md`, then edits a test video with `short-editing` and compares the two frame by frame. Then `/short-editing <take> style <name>` uses it. |
+| `/long-to-short-videos` | One long video (yours, a podcast, a live) into finished shorts: the moments that stand alone, each one edited with `short-editing` (captions, hook card, callouts), plus new scripts from the ideas too spread out to clip. |
+| `/short-translate` | A take in another language with your own cloned voice, through ElevenLabs Dubbing and your key, then edited with captions in the new language. |
 | `/codex-images` | Thumbnails, covers and stills generated with Codex's image tool (your ChatGPT plan), several in parallel, with your photos as reference. |
-| `/video-publish` | Publishes a finished video on YouTube (Shorts or long, scheduled or now), Instagram Reels and TikTok through Treg, with the light export, the cover, the caption and the title. Nothing goes out before your yes. Without Treg, a ready-to-post kit. |
+| `/publish` | Publishes a finished video on YouTube (Shorts or long, scheduled or now), Instagram Reels and TikTok through Treg, with the light export, the cover, the caption and the title. Nothing goes out before your yes. Without Treg, a ready-to-post kit. |
 
 ## Install
 
@@ -49,25 +49,27 @@ Copy-Item -Recurse -Force video-agent-skills\skills\* .claude\skills\
 
 To update a manual install: `git -C video-agent-skills pull`, then copy again.
 
-Then, in Claude Code: `/video-setup`.
+Then, in Claude Code: `/studio-setup`.
 
-On claude.ai: zip one skill folder and upload it in the Skills part of the settings. Only `video-script` works there (scripts, hooks, humanize); the others need your computer's tools.
+On claude.ai: zip one skill folder and upload it in the Skills part of the settings. Only `studio-script` works there (scripts, hooks, humanize); the others need your computer's tools.
 
 ## The flow
 
 ```text
-/video-setup           once: tools, studio, voice.md, permissions, accounts
-/video-audit           what works on your own Instagram → audit.md
-/video-viral           what works in your niche → swipe.md
-/video-script          this week's scripts → video-agent/scripts/
+/studio-setup          once: tools, studio, voice.md, permissions, accounts
+/insta-audit           what works on your own Instagram → audit.md
+/studio-script viral   what works in your niche → swipe.md
+/studio-script         this week's scripts → video-agent/scripts/
                        record them (phone, camera, webcam) → video-agent/takes/
-/video-steal           a creator's reel → a style video-edit can use
-/video-edit            each take → video-agent/edits/<slug>/final.mp4 (short or long)
+/steal                 a creator's reel → a style short-editing can use
+/short-editing         each take → video-agent/edits/<slug>/final.mp4 (short or long)
 /long-to-short-videos  a long video → finished shorts
-/video-translate       a take → the same take in another language, your voice
+/short-translate       a take → the same take in another language, your voice
 /codex-images          thumbnails and covers
-/video-publish         YouTube, Instagram, TikTok
+/publish               YouTube, Instagram, TikTok
 ```
+
+Not sure which one? `/editing <what you want>` picks it for you.
 
 Everything lives in one folder at the root of your project:
 
@@ -76,10 +78,11 @@ video-agent/
 ├── voice.md      who you are and how you talk
 ├── swipe.md      hooks that worked in your niche
 ├── audit.md      what works on your own Instagram
+├── audits/       full Instagram reports (insta-audit @handle)
 ├── log.md        one line per script, so nothing repeats
 ├── scripts/      one file per week
 ├── takes/        raw recordings
-├── styles/       styles copied with video-steal (<name>.md + its stills, sfx, stickers)
+├── styles/       styles copied with steal (<name>.md + its stills, sfx, stickers)
 ├── edits/        one folder per edited video (final.mp4, post.md, cover.jpg, published.md)
 ├── repurpose/    one plan per long video
 ├── images/       generated images not tied to a video
@@ -98,14 +101,14 @@ video-agent/
 | build tools | whisper.cpp compiles on the first edit (`xcode-select --install`, `build-essential`) | free |
 | Remotion + whisper.cpp | captions and motion design, downloaded on the first edit | free for individuals and small teams ([Remotion license](https://www.remotion.dev/license)) |
 | Treg (optional) | your Instagram audit, publishing on YouTube, Instagram and TikTok, TikTok and Instagram numbers of other accounts (CLI with Python 3.12+ on macOS and Linux, or the MCP on any OS) | your own accounts free, other accounts about $0.001 a call, $1 free credit on signup |
-| ElevenLabs (optional) | `video-translate`, with your API key | your ElevenLabs plan |
+| ElevenLabs (optional) | `short-translate`, with your API key | your ElevenLabs plan |
 | Codex (optional) | `codex-images` (`npm i -g @openai/codex`) | your ChatGPT plan |
 
-`video-setup` gives the install command for each, on macOS, Windows and Linux.
+`studio-setup` gives the install command for each, on macOS, Windows and Linux.
 
 ## Permissions
 
-`video-setup` merges a short allow list into `.claude/settings.json` (`yt-dlp`, `ffmpeg`, `ffprobe`, `npx remotion`, `node sub.mjs`, and Treg's free read-only commands). Never `Bash(*)`. Paid Treg calls always ask first, and the skills say the price before. Publishing and dubbing wait for your explicit yes. Keys live in `video-agent/.env`, never in a chat or a commit.
+`studio-setup` merges a short allow list into `.claude/settings.json` (`yt-dlp`, `ffmpeg`, `ffprobe`, `npx remotion`, `node sub.mjs`, and Treg's free read-only commands). Never `Bash(*)`. Paid Treg calls always ask first, and the skills say the price before. Publishing and dubbing wait for your explicit yes. Keys live in `video-agent/.env`, never in a chat or a commit.
 
 ## Honest limits
 
@@ -118,7 +121,7 @@ video-agent/
 
 ## Want the full version?
 
-These skills are the free base of [Editing IA Pro](https://codelynx.dev/editing/vsl?utm_source=github&utm_medium=readme&utm_campaign=video-agent-skill): the full motion design engine, styles, music, a review studio, faceless avatars, thumbnails and titles.
+These skills are the free base of [Editing IA Pro](https://codelynx.dev/editing/vsl?utm_source=github&utm_medium=readme&utm_campaign=video-agent-skill): the full motion design engine, styles, music, a review studio, faceless avatars, thumbnails and titles. Same skill names (`/editing`, `/studio-setup`, `/studio-script`, `/short-editing`, `/steal`, `/insta-audit`, `/publish`...), so moving up changes nothing in how you work.
 
 ## License
 
