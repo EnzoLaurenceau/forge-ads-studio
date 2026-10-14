@@ -29,6 +29,15 @@ npx skills add Melvynx/video-agent-skills -a claude-code
 
 Add `-g` to install them for every project. `npx skills update` gets the latest version.
 
+Installed before October 2026, with the old `video-*` names? Remove them, then install again (add `-g` to both if you installed globally):
+
+```bash
+npx skills remove video-setup video-script video-viral video-audit video-edit video-steal video-translate video-publish -y
+npx skills add Melvynx/video-agent-skills -a claude-code
+```
+
+`/video-setup` is now `/studio-setup`, `/video-script` `/studio-script`, `/video-viral` `/studio-script viral`, `/video-audit` `/insta-audit`, `/video-edit` `/short-editing`, `/video-steal` `/steal`, `/video-translate` `/short-translate`, `/video-publish` `/publish`.
+
 Or paste `https://github.com/Melvynx/video-agent-skills` into Claude Code and ask it to install these skills.
 
 Or copy them by hand (into `~/.claude/skills/` instead for every project). macOS and Linux:
