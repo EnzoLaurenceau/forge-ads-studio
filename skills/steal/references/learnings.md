@@ -46,6 +46,11 @@ The original put a thin UI click on every element that enters. Copied as is, tha
 - Keep only the sounds on real payoffs (a logo that breaks, the CTA word typing in): 2 or 3 per short, not one per element.
 - The colors can change: "same style, my primary color, a dark background that matches it" is a normal request. Swap the accent and tint the dark cards toward it instead of keeping the original's palette.
 
+## 6. Riser and grade copied: "this noise is wtf", "the color grade is ugly"
+
+- **Riser**: a short riser leading into the first beat, copied from the original, was rejected. A build-up sound that leads into a moment is movement noise too. Keep only the hit ON the payoff (impact, crash), never the swell before it.
+- **Grade**: matching the original's exposure with a custom chain (brighter, orange pulled out of the mids) left the creator's skin pale, grey and green; a plain natural grade then stayed dull next to a bright original. What worked: stretch the whites almost equally on red, green and blue, lift the mids a little, saturation +6 %, a touch of sharpening. Compare the face color with the original's (the skin's red/green balance must not move). Brighten, never strip red or orange from skin.
+
 ## Standing rules
 
 - Stickers come from the user's real photos, never a generated face.
