@@ -1,6 +1,6 @@
 ---
 name: editing
-description: Entry point for every video job - routes to studio-setup, insta-audit, studio-script, short-editing, broll, steal, clips, short-translate, codex-images or publish, and continues the project already in progress. Use when the user says /editing, edit, montage, take, short, reel, video, script, audit, publish, or is not sure which video skill to use.
+description: Entry point for every video job - routes to studio-setup, insta-audit, studio-script, short-editing, broll, steal, clips, short-translate, codex-images, vox or publish, and continues the project already in progress. Use when the user says /editing, edit, montage, take, short, reel, video, script, audit, publish, or is not sure which video skill to use.
 argument-hint: "[take | url | slug | path] [brief]"
 ---
 
@@ -19,6 +19,7 @@ Route the request to the one skill that owns it, then do the work with that skil
    - One long video (a podcast, a live, a long YouTube video) into several shorts: `clips`.
    - A version of a take in another language: `short-translate`.
    - Thumbnails, covers, stills, any image: `codex-images`.
+   - A photo into a paper-collage animation (Vox style, "anime cette photo"), or a change to one already made: `vox`.
    - Publish or schedule a finished video ("post it", "publier", "mets-le en ligne"): `publish`.
    - Still ambiguous: ask one question only.
 3. Load the target: invoke it with the Skill tool, else read `<skills folder>/<skill>/SKILL.md` (the skills installed next to this one) and follow it exactly as if the user had typed `/<skill> <args>`. Pass their words through as that skill's arguments.
