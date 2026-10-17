@@ -24,7 +24,7 @@ Deduplicate by stable post ID. Filter by publication date, not feed position; pi
 5. Public interaction rate = 100 × (likes + comments) / followers at retrieval, only with a positive denominator and both counts. Label it a follower-based proxy, not reach engagement. Saves/reach and shares/reach can be shown for owned media only when both measured values exist and refer to compatible metric windows.
 6. Unknown values stay unavailable, never zero. Report metric coverage (measured posts / collected posts). Separate paid, giveaway and collaboration posts when known; flag their confounding effect. Avoid timing recommendations without audience/timezone evidence and repeated comparable observations.
 
-Do calculations with local code or an available analysis tool, not mental arithmetic across a large sample. Preserve the computed cohorts, baselines and ranking values in `data.json` so the HTML can be checked. Use the environment's required job runner for bounded analysis if applicable.
+Do calculations with local code or an available analysis tool, not mental arithmetic across a large sample. Preserve the computed cohorts, baselines and ranking values in `data.json` so the HTML can be checked.
 
 ## HTML deliverable
 

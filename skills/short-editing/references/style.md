@@ -7,11 +7,11 @@ One take of a person talking, turned into a fast, clean short that holds attenti
 | Rule | Value | Why |
 |---|---|---|
 | Silences | cut every pause longer than 0.3 s | dead air is where people swipe |
-| Breathing room | keep 0.08 s before a word and 0.12 s after | word timings drift a little; this keeps every word whole |
+| Breathing room | keep 0.10 s before a word and 0.15 s after | word timings drift a little; this keeps every word whole |
 | Retakes | keep the last complete attempt of a line, drop the earlier ones | creators repeat a line until it sounds right |
 | False starts | drop a half word or "uh" right before a restart | |
 | Start | the first kept word is the first word of the hook | no breath, no "ok", no look at the camera before |
-| End | cut 0.3 s after the last word | a loop restarts faster |
+| End | cut 0.15 s after the last word | a loop restarts faster |
 | Off-script talk | drop "wait", "let me redo that", asides to someone in the room | |
 | Speed | the whole take plays at 1.15 (pitch kept) | ultra cut: no slack between sentences |
 | Sound at a cut | a 2-frame fade out and in | a cut never clicks |
@@ -53,7 +53,7 @@ A cut is only safe in a real silence: check the gaps between words against `sile
 
 ## Sound
 
-- Voice at -14 LUFS integrated, true peak under -1.5 dB.
+- Voice at -14 LUFS integrated, peak under -1 dBFS.
 - SFX: a quiet pop when a board or a list item arrives, a thud when a number lands or the "after" side of a compare appears, a boom on the hook. Nothing on cuts, no whooshes, no clicks, no risers.
 - Music is optional, royalty-free only, 22 dB under the voice. None is better than a wrong one.
 

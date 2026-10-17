@@ -25,7 +25,7 @@ Un skill pour Claude Code qui transforme une simple photo en animation façon do
 
    Puis modifie-la avec un autre prompt : « fais-le avec Napoléon », « ajoute un train », « passe en 16:9 ».
 
-Il te faut aussi ffmpeg et Node 18+ (Claude vérifie et te dit quoi installer).
+Il te faut aussi ffmpeg et Node 20+ (Claude vérifie et te dit quoi installer).
 
 ## Ce que fait le skill
 
@@ -44,6 +44,6 @@ npm i -g @openai/codex && codex login          # Codex makes the images with you
 npx skills add Melvynx/video-agent-skills --skill vox -a claude-code
 ```
 
-Then in Claude Code: `/vox <photo> <your animation idea>`. Needs ffmpeg and Node 18+.
+Then in Claude Code: `/vox <photo> <your animation idea>`. Needs ffmpeg and Node 20+.
 
 Part of [video-agent-skills](https://github.com/Melvynx/video-agent-skills): free skills to script, edit and publish your videos with Claude Code.

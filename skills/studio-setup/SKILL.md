@@ -7,7 +7,7 @@ allowed-tools: Bash(node -v) Bash(npx remotion still *) Bash(ffmpeg -version) Ba
 
 # Studio Setup
 
-Ten minutes, once. At the end the creator has:
+About 15 minutes, once. At the end the creator has:
 
 - the tools the other skills call, installed and checked,
 - `video-agent/voice.md`: who they are, how they talk, what they believe, what they can prove. Every script is written from it,
@@ -36,7 +36,7 @@ git --version
 
 | Tool | Used by | macOS | Windows | Linux |
 |---|---|---|---|---|
-| Node 18+ | short-editing (Remotion) | `brew install node` | `winget install OpenJS.NodeJS.LTS` | nodejs.org or your package manager |
+| Node 20+ (22 LTS recommended) | short-editing (Remotion) | `brew install node` | `winget install OpenJS.NodeJS.LTS` | nodejs.org or your package manager |
 | ffmpeg | short-editing, steal, clips, short-translate, publish | `brew install ffmpeg` | `winget install Gyan.FFmpeg` | `sudo apt install ffmpeg` |
 | yt-dlp | studio-script viral, steal, clips, voice.md from videos | `brew install yt-dlp` | `winget install yt-dlp.yt-dlp` | `pipx install "yt-dlp[default]"` |
 | deno | yt-dlp on YouTube (it needs a JavaScript runtime) | comes with yt-dlp | `winget install DenoLand.Deno` | `curl -fsSL https://deno.land/install.sh \| sh` |
@@ -113,7 +113,7 @@ Write `video-agent/voice.md` from [references/voice-template.md](references/voic
 
 Five minutes. Every edit has the same finished layout, the **split-screen paper look**: boards on a textured paper above the camera card, hard cuts between split, paper only and full camera, a hook with a boom, captions on the seam, a comment-sheet CTA ([style.md](../short-editing/references/style.md)). This step makes it theirs: `video-agent/styles/default.md` and `video-agent/styles/default/`. Format, keys and the tested looks: [looks.md](../short-editing/references/looks.md). Read both first.
 
-Say it in one line before starting: "The default already looks finished; I'll ask 8 quick questions to make it yours, then show it on your own video." Then **one question per message**, choices with the recommended one first, and their answer can always be "default" or "skip". Use what voice.md already says (niche, tone, the ask) to pick the recommendation and to skip a question it already answers.
+Say it in one line before starting: "The default already looks finished; I'll ask 8 quick questions to make it yours (plus your logo if you have one), then show it on your own video." Then **one question per message**, choices with the recommended one first, and their answer can always be "default" or "skip". Use what voice.md already says (niche, tone, the ask) to pick the recommendation and to skip a question it already answers.
 
 1. **Feel**: "In 3 words, how should your videos feel?" (e.g. "clear, fast, premium"). It goes in the file's `Feel:` line and steers the next recommendations: calm and premium → Night or soft sound; loud and fun → Warm, uppercase captions.
 2. **Accent color**: "Your brand color? A hex code, or a color in words." They name a color: turn it into a hex. None: the default blue `#258EFF`. It marks one word per title, the said word in the captions, numbers and pictos, so it must be strong (not a pastel).

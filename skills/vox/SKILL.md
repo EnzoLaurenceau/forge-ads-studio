@@ -31,7 +31,7 @@ node --version
 ```
 
 - Codex missing: `npm i -g @openai/codex` (Node 20+) or `brew install codex`. Not logged in: they run `codex login` themselves ("Sign in with ChatGPT"). Never ask for a key or a password in the chat.
-- ffmpeg missing: `brew install ffmpeg` (macOS), `sudo apt install ffmpeg` (Linux), `winget install ffmpeg` (Windows).
+- ffmpeg missing: `brew install ffmpeg` (macOS), `sudo apt install ffmpeg` (Linux), `winget install Gyan.FFmpeg` (Windows).
 - Then in `<dir>`: `npm init -y >/dev/null && npm i puppeteer@24` (headless Chrome for the capture, downloaded once).
 
 ## 2. The plan (one message, then their yes)
@@ -48,6 +48,7 @@ Show the layers as a numbered list (name, plate or cut-out, what it shows) and t
 ## 3. Their photo: cut out, never redrawn
 
 ```bash
+mkdir -p <dir>/layers <dir>/raw
 cp "<their photo>" <dir>/photo.jpg
 uvx --from "rembg[cpu,cli]" rembg i <dir>/photo.jpg <dir>/layers/hero.png
 ```

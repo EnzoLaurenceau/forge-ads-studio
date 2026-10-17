@@ -2,7 +2,7 @@
 
 Add this to the Remotion studio (`video-agent/studio/`) once. One component, two sizes: `Short` (1080x1920, vertical, for Shorts, Reels and TikTok) and `Wide` (1920x1080, horizontal, for a YouTube video). It plays the kept ranges of a take back to back, 15 % faster, and lays out the **split-screen paper look**: a textured paper on top with one board at a time (title, list, number, compare, terminal, image), the camera as a card under one fixed seam, word captions straddling the seam, hard cuts between three views (split, paper only, full camera) and a comment-CTA ending with an Instagram comment sheet. Sound: a pop on each arrival, a thud on payoffs, a boom + glitch on the hook. The rules are in [style.md](style.md); the look (colors, fonts, captions, grade, sound) comes from the creator's style file ([looks.md](looks.md)) through the `look` key of the edit file. Everything else comes from one edit file per video, so the code never changes between videos.
 
-Tested with Remotion 4.0.536 and the `template-tiktok` starter (its tsconfig targets es2015: the code avoids `flatMap`, `includes`, `Object.entries`).
+Tested with Remotion 4.0.536 and the `template-tiktok` starter (its tsconfig has lib es2015: the code avoids `flatMap`, `includes`, `Object.entries`).
 
 ## 1. Font package
 
@@ -142,7 +142,7 @@ type Side = { text: string; label?: string; atMs?: number };
 // view: "split" = board on the paper, camera card under the seam (default);
 // "paper" = the camera leaves, the board takes the whole frame (a big visual).
 type Common = { atMs: number; toMs: number; view?: "split" | "paper" };
-// icon = a drawn picto name (see PICTOS) or a file in public/ (a real logo: "logos/notion.png").
+// icon = a drawn picto name (see PICTOS) or a file in public/ (a real logo: "style/default/logos/notion.png").
 export type Board =
   | (Common & { type: "title"; title: string; icon?: string })
   | (Common & { type: "list"; items: { text: string; atMs?: number }[]; numbered?: boolean })
@@ -1123,7 +1123,7 @@ One per video. Every time is in **source** milliseconds (the times in the captio
       { "text": "Jusqu'à identique", "atMs": 28230 }
     ] },
     { "type": "compare", "left": { "label": "Avant", "text": "Le site de la pizzeria" }, "right": { "label": "Après", "text": "Ton site, ta marque", "atMs": 36210 }, "atMs": 34930, "toMs": 38350 },
-    { "type": "title", "title": "Avec *Notion*", "icon": "logos/notion.png", "atMs": 38350, "toMs": 40990 },
+    { "type": "title", "title": "Avec *Notion*", "icon": "style/default/logos/notion.png", "atMs": 38350, "toMs": 40990 },
     { "type": "cta", "word": "CLONE", "dm": "Voilà le skill CLONE, installe-le en 2 min", "atMs": 40990, "toMs": 46102 }
   ]
 }
@@ -1146,7 +1146,7 @@ One per video. Every time is in **source** milliseconds (the times in the captio
 | `cta` | `word`, `dm` | the comment ask: full face, an Instagram comment sheet where the word gets typed, then a DM notification |
 
 - `view` (any board but `cta`): `"split"` (default) or `"paper"` = the camera leaves for that board and it takes the whole frame. Use `paper` for one big moment per short (the number, the screenshot), not more.
-- `icon`: a drawn picto name or a file in `public/` (a real logo, `logos/notion.png`). Pictos: `check cross clock bolt folder globe browser code terminal euro user users star lock chart copy sparkle mail search warning play heart arrow rocket`. A named tool always gets its real logo, never a picto.
+- `icon`: a drawn picto name or a file in `public/` (a real logo copied with the style folder, `style/default/logos/notion.png`). Pictos: `check cross clock bolt folder globe browser code terminal euro user users star lock chart copy sparkle mail search warning play heart arrow rocket`. A named tool always gets its real logo, never a picto.
 - `broll`: optional, the creator's own clips full screen over the voice (`/broll use` writes it). `src` = a file in `public/broll/`, `atMs` / `toMs` = source ms of the first and last word it covers (2 to 5 s), `startSec` = where to start in the clip.
 - `showCaptions`: optional, `false` to render without burned-in captions (a long YouTube video often ships its `.srt` instead).
 
@@ -1158,9 +1158,8 @@ One per video. Every time is in **source** milliseconds (the times in the captio
 # QC frames (Read the PNGs and check them)
 npx remotion still <comp> out/<slug>-qc-<frame>.png --frame=<frame> --props=public/<slug>.edit.json
 
-# Full render, then loudness to -14 LUFS for the platforms
+# Full render (then level it to -14 LUFS: measure + gain, SKILL.md step 7, never a plain loudnorm)
 npx remotion render <comp> out/<slug>.mp4 --props=public/<slug>.edit.json
-ffmpeg -y -i out/<slug>.mp4 -c:v copy -af loudnorm=I=-14:TP=-1.5:LRA=11 -c:a aac -b:a 192k out/<slug>-final.mp4
 
 # Live preview in the browser, scrub and tweak (optional)
 npx remotion studio --props=public/<slug>.edit.json

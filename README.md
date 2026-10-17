@@ -129,6 +129,8 @@ video-agent/
 ├── edits/        one folder per edited video (final.mp4, post.md, cover.jpg, published.md)
 ├── repurpose/    one plan per long video
 ├── images/       generated images not tied to a video
+├── broll/        your B-roll library (index, frames, clips)
+├── vox/          one folder per Vox animation
 ├── studio/       the Remotion project
 ├── .env          your API keys (git-ignored)
 └── .tmp/         scratch files
@@ -138,7 +140,7 @@ video-agent/
 
 | Tool | For | Cost |
 |---|---|---|
-| Node 18+, git | the edit (Remotion) | free |
+| Node 20+, git | the edit (Remotion) | free |
 | ffmpeg | cuts, audio, conversions | free |
 | yt-dlp + deno | YouTube views, captions, transcripts | free |
 | build tools | whisper.cpp compiles on the first edit (`xcode-select --install`, `build-essential`) | free |
@@ -161,6 +163,10 @@ video-agent/
 - Translation has no lip-sync: the image stays the original.
 - Generated images need a check: text can come out misspelled.
 - Only download and cut videos you own or have the rights to.
+
+## Tell us how it went
+
+Your first video is out? Leave a one-minute review at [codelynx.dev/editing/feedbacks](https://codelynx.dev/editing/feedbacks?utm_source=github&utm_medium=readme&utm_campaign=video-agent-skill): what worked, where you got stuck, what to add. Every answer is read and the pack gets fixed from them.
 
 ## Want the full version?
 

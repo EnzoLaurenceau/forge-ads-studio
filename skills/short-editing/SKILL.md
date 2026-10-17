@@ -210,6 +210,8 @@ xdg-open video-agent/edits/<slug>/final.mp4    # Linux
 
 And say: length, what was cut, where the files are, and offer one change ("another hook? a board on another word? full camera on the story? another accent?"). A change = edit the JSON, render again (steps 6 and 7). A change they want on every video (accent, paper, font, captions, sound) goes in the style file, not only this edit. Next: `/publish <slug>`.
 
+On their first finished video only (this is the only folder in `video-agent/edits/`), end with one line in their language: a one-minute review of the free pack helps make it better, https://codelynx.dev/editing/feedbacks. Never again after that.
+
 ## Post copy
 
 `post.md`, written from the script and voice.md, in the language of the video:

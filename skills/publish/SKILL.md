@@ -61,7 +61,7 @@ They don't want Treg: the manual route (6a) works with no setup.
   ffmpeg -y -i <edit>/final.mp4 -c:v libx264 -preset slow -b:v <rate>k -maxrate <rate>k -bufsize <2x rate>k -pix_fmt yuv420p -c:a aac -b:a 160k -movflags +faststart <edit>/social.mp4
   ```
   Check its size, and that it decodes: `ffmpeg -v error -i <edit>/social.mp4 -f null -`.
-- **Cover**: `<edit>/cover.jpg`, always. Without one, Instagram takes frame 0, often a blink or a blank frame. Pick it from the hook: the face with the eyes open, the hook card fully in. Contact sheet of the first 3 seconds, read it, then extract the chosen time `<t>`:
+- **Cover**: `<edit>/cover.jpg`, always. Without one, Instagram takes frame 0, often a blink or a blank frame. Images already made with `/codex-images` in `<edit>/images/`: show them, the one they pick is copied as `<edit>/cover.jpg`. Otherwise pick it from the hook: the face with the eyes open, the hook card fully in. Contact sheet of the first 3 seconds, read it, then extract the chosen time `<t>`:
   ```bash
   ffmpeg -v error -y -ss 0.1 -t 3 -i <edit>/final.mp4 -vf "fps=10,scale=270:-1,tile=6x5" -frames:v 1 video-agent/.tmp/hook-sheet.jpg
   ffmpeg -v error -y -ss <t> -i <edit>/final.mp4 -frames:v 1 -q:v 2 <edit>/cover.jpg
