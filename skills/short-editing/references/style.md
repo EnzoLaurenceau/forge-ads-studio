@@ -1,6 +1,6 @@
 # The edit style
 
-Simple on purpose. One take of a person talking, made easy to watch on a phone with the sound off. No templates to pick, no effects to tune: the same rules every time, so a creator can post daily.
+Simple on purpose. One take of a person talking, made easy to watch on a phone with the sound off. The same rules every time, so a creator can post daily. These rules never change; the look (accent, font, caption mode, hook card colors, zoom strength, logo, end card, stickers) comes from the creator's style file, see [looks.md](looks.md). The values below are the Classic look.
 
 ## Cuts
 
@@ -26,8 +26,8 @@ A cut is only safe in a real silence: check the gaps between words against `sile
 
 ## Captions
 
-- 1 to 3 words at a time, uppercase, Montserrat 900, white with a thick black outline.
-- The word being said turns to the accent color.
+- 1 to 3 words at a time. Classic: uppercase, Montserrat 900, white with a thick black outline (the style picks the font, the case and the mode: `outline`, `box`, `clean`).
+- The word being said turns to the accent color (`box`: it sits on an accent block).
 - Pop in fast (about 4 frames, 0.85 → 1 scale).
 - In a box from y 1150 to 1410 and x 60 to 840: below the face, clear of the buttons on the right and the description at the bottom.
 - Always on. Most people watch muted.
@@ -40,9 +40,15 @@ A cut is only safe in a real silence: check the gaps between words against `sile
 
 ## Callouts
 
-- One big word or number, in the accent color with a black outline, at about 26% from the top for 1.2 s.
+- One big word or number, in the accent color with a black outline, at about 12% from the top (above the eyes) for 1.2 s.
 - Only where the script puts weight: a number, a result, the name of a tool. About one every 8 to 10 s, never two closer than 4 s.
 - A callout repeats a word the person says at that moment. It never adds information they don't say.
+
+## Stickers
+
+- An illustration from the style folder on the word it illustrates, 1.2 s, between the face and the captions.
+- At most one every 6 s, never within 2 s of a callout, only on a word in the style's `Stickers` table.
+- A tool or product named on screen: its real logo, never a look-alike.
 
 ## Progress bar
 
@@ -55,4 +61,4 @@ A 10 px bar in the accent color across the top, growing to the end. It tells the
 
 ## What this style is not
 
-No transitions, no sound effects on every cut, no emoji rain, no stock B-roll, no slanted or wobbling text. If the creator wants more, the composition is plain React: they can ask Claude to add a scene, but keep the defaults calm.
+No transitions, no sound effects on every cut, no emoji rain (a sticker is one illustration on one word), no stock B-roll, no slanted or wobbling text. If the creator wants more, the composition is plain React: they can ask Claude to add a scene, but keep the defaults calm.

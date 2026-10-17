@@ -7,7 +7,6 @@ Copy this into `video-agent/voice.md` and fill it with the creator's real words.
 
 ## Settings
 - Language: {{the language they record in, e.g. English, French}}
-- Accent color: {{#FFD400}}
 - Platforms: {{YouTube Shorts, TikTok, Instagram Reels, LinkedIn}}
 - On camera: {{face / voiceover over screen or b-roll / text only}}
 

@@ -1,8 +1,8 @@
 ---
 name: short-editing
-description: Edits a complete talking-head video end to end with free tools (Remotion, whisper.cpp, ffmpeg) - a vertical short (1080x1920) or a full horizontal YouTube video (1920x1080). Use when the user says edit, cut, captions, subtitles, motion design, montage, "make it a short", "edit my YouTube video", render, or gives a recording from video-agent/takes/. Transcribes locally with word timings, cuts silences and retakes against the script, adds punch-in zooms, word-by-word captions in the creator's accent color, a hook card, callouts and a progress bar, levels the voice to -14 LUFS, and writes an .srt, a cut list for CapCut or Premiere, chapters for a long video, and the post copy.
+description: Edits a complete talking-head video end to end with free tools (Remotion, whisper.cpp, ffmpeg) - a vertical short (1080x1920) or a full horizontal YouTube video (1920x1080). Use when the user says edit, cut, captions, subtitles, motion design, montage, "make it a short", "edit my YouTube video", render, or gives a recording from video-agent/takes/. Transcribes locally with word timings, cuts silences and retakes against the script, adds punch-in zooms, word-by-word captions, a hook card, callouts, stickers and a progress bar in the creator's style (video-agent/styles/default.md), levels the voice to -14 LUFS, and writes an .srt, a cut list for CapCut or Premiere, chapters for a long video, and the post copy.
 argument-hint: "<take file or slug> [short | long] [style <name>]"
-allowed-tools: Bash(node -v) Bash(git --version) Bash(ffmpeg *) Bash(ffprobe *) Bash(npx remotion *) Bash(node sub.mjs *) Bash(npx tsc --noEmit)
+allowed-tools: Bash(node -v) Bash(git --version) Bash(ffmpeg *) Bash(ffprobe *) Bash(npx remotion *) Bash(node sub.mjs *) Bash(npx tsc --noEmit) Bash(open video-agent/edits/*)
 ---
 
 # Short Editing
@@ -14,14 +14,14 @@ The tools are free and run on the creator's machine:
 - **Remotion** (videos written in React) and its official TikTok template, which ships local speech-to-text with word timings (whisper.cpp).
 - **ffmpeg** for the checks and the sound.
 
-The look is fixed and simple: [references/style.md](references/style.md). The code that draws it is in [references/remotion-short.md](references/remotion-short.md).
+The rules are fixed and simple: [references/style.md](references/style.md). The look comes from the creator's style file: [references/looks.md](references/looks.md). The code that draws both is in [references/remotion-short.md](references/remotion-short.md).
 
 ## How to run it
 
 - Preflight: `node -v && ffmpeg -version && git --version`. Anything missing: stop and send them to `/studio-setup tools`.
 - Talk in the creator's language. Say what you do in one line before each long step (install, transcription, render) and how long it takes.
-- Read `video-agent/voice.md` for the language and the accent color. No voice file: ask both, or use English and `#FFD400`.
-- A named style (`style <name>` in the request, made by `/steal`): read `video-agent/styles/<name>.md` and apply it on top of [style.md](references/style.md). Its values win, its sound effects, stickers and grade go into the edit as it says, and everything it does not name stays as in style.md.
+- Read `video-agent/voice.md` for the language. No voice file: ask it, or use English.
+- The style: `style <name>` in the request = `video-agent/styles/<name>.md`, else `video-agent/styles/default.md`. Its `Engine` block becomes the edit file's `look`, its `Stickers` table says which illustration goes on which words, and any rule written in it wins over [style.md](references/style.md). A style made by `/steal` also brings its sound effects and notes: apply them as it says. No style file at all: the Classic look of [looks.md](references/looks.md), and say once that `/studio-setup style` sets their own in 2 minutes.
 - `<slug>`: lowercase, dashes, no dots or spaces (the transcriber cuts file names at the first dot).
 - Steps 1 and 2 run from the project root. From step 3 on, every command runs in `video-agent/studio/` and its paths are relative to it.
 
@@ -34,6 +34,7 @@ ffprobe -v error -show_entries format=duration:stream=codec_type,codec_name,widt
 ```
 
 - No audio stream: stop and say so.
+- A muted mic still writes an audio stream. Measure it: `ffmpeg -nostats -i "<take>" -af ebur128 -f null - 2>&1 | grep -E "^\s+I:"`. Under -50 LUFS the take is silent (whisper then invents "Sous-titres réalisés par..." lines): stop and ask for a take with sound.
 - `color_transfer` is `smpte2084` or `arib-std-b67`: an HDR take (the iPhone default). Don't convert it: Remotion maps it to normal colors when it renders. Tell them to turn off HDR video in the camera settings for the next takes.
 - Otherwise, a `.webm` or a variable frame rate (`r_frame_rate` and `avg_frame_rate` differ): convert it, Remotion and the ffmpeg cut both drift on those. The new file is the take from now on:
   ```bash
@@ -78,26 +79,36 @@ cp "../takes/<take file>" public/<slug>.mp4
 node sub.mjs public/<slug>.mp4
 ```
 
+The style's images go next to it, so the render finds them (`<name>` = `default` or the named style; skip when the style has no folder):
+
+```bash
+mkdir -p public/style && cp -R ../styles/<name> public/style/
+```
+
 It writes `public/<slug>.json`: one entry per word, `{ "text": " word", "startMs", "endMs", "confidence" }`. It skips a file that already has its JSON: delete the JSON to transcribe again.
 
-Fix misheard words from the script (names, brands, numbers): change `text` only, never the times.
+whisper.cpp stretches the words around a pause over the silence (`startMs`/`endMs` run back to back). Its `timestampMs` (DTW) is the real time: move each word onto it.
+
+```bash
+node -e 'const f="./public/<slug>.json",w=require(f);w.forEach((x,i)=>{if(x.timestampMs!=null)x.startMs=Math.max(i?w[i-1].startMs+20:0,x.timestampMs-150)});w.forEach((x,i)=>{x.endMs=i<w.length-1?w[i+1].startMs:Math.max(x.endMs,x.startMs+150)});require("fs").writeFileSync(f,JSON.stringify(w,null,2))'
+```
+
+Run it once, right after `sub.mjs`. Fix misheard words from the script (names, brands, numbers): change `text` only, never the times.
 
 ## 4. The cut list
 
-Find the real silences, then list the gaps between words:
+The word times cannot show the pauses, so the cuts come from the sound: every silence over 0.35 s goes, keeping 0.15 s after the last word and 0.10 s before the next one.
 
 ```bash
-ffmpeg -nostats -i public/<slug>.mp4 -af silencedetect=noise=-35dB:d=0.3 -f null - 2>&1 | grep silence_
-node -e 'const w=require("./public/<slug>.json"),G=350,B=100,A=150,s=(ms)=>(ms/1000).toFixed(2);let r=[{fromMs:Math.max(0,w[0].startMs-B)}];for(let i=1;i<w.length;i++){const g=w[i].startMs-w[i-1].endMs;if(g>G){console.error(`gap ${s(w[i-1].endMs)} -> ${s(w[i].startMs)} (${g} ms) after "${w[i-1].text.trim()}"`);r[r.length-1].toMs=w[i-1].endMs+A;r.push({fromMs:w[i].startMs-B})}}r[r.length-1].toMs=w[w.length-1].endMs+300;console.log(JSON.stringify(r))'
+ffmpeg -nostats -i public/<slug>.mp4 -af silencedetect=noise=-35dB:d=0.3 -f null - 2>&1 | node -e 'const w=require("./public/<slug>.json"),G=350,B=100,A=150,s=(ms)=>(ms/1000).toFixed(2),a=w[0].startMs,z=w[w.length-1].endMs;let r=[{fromMs:0}],end=z+A,x=null;for(const m of require("fs").readFileSync(0,"utf8").matchAll(/silence_(start|end): (-?[\d.]+)/g)){const v=Math.max(0,Math.round(m[2]*1000));if(m[1]==="start"){x=v;continue}if(x===null||v-x<G)continue;if(x<=a){r[0].fromMs=Math.max(0,v-B)}else if(v>=z){end=Math.min(end,x+A)}else{const p=w.filter(q=>q.startMs<x).pop();console.error(`silence ${s(x)} -> ${s(v)} (${v-x} ms) after "${p.text.trim()}"`);r[r.length-1].toMs=x+A;r.push({fromMs:v-B})}x=null}if(x!==null&&x>a)end=Math.min(end,x+A);r[r.length-1].toMs=end;console.log(JSON.stringify(r))'
 ```
 
-The second command prints every gap over 0.35 s with the word before it, then the kept `ranges` with the margins of [style.md](references/style.md). Then fix the ranges:
+It prints every silence cut with the word before it, then the kept `ranges` (margins from [style.md](references/style.md)), the last one ending 0.15 s after the last word. Then fix the ranges:
 
-1. A gap that silencedetect does not report (a breath, a soft word, music): join its two ranges back.
-2. Retakes: walk the script line by line. When a line (or its first 3 words) appears more than once, keep the last complete attempt and drop the ranges from the first attempt's first word to the start of the kept one.
-3. Drop false starts (an "uh" or a half word before a restart), anything before the hook, and off-script talk.
+1. Retakes: walk the script line by line. When a line (or its first 3 words) appears more than once, keep the last complete attempt and drop the ranges from the first attempt's first word to the start of the kept one.
+2. Drop false starts (an "uh" or a half word before a restart), anything before the hook, and off-script talk.
 
-Long video: same rules, with gaps over 0.5 s instead of 0.35 s (`G=500`): a full video needs some air, a thinking pause can stay. Keep asides that add something; cut the ones that go nowhere. With no script, a retake is a sentence said twice in a row: keep the last one.
+Long video: same rules, with silences over 0.5 s instead of 0.35 s (`G=500`): a full video needs some air, a thinking pause can stay. Keep asides that add something; cut the ones that go nowhere. With no script, a retake is a sentence said twice in a row: keep the last one.
 
 Show the result before rendering, in a few lines:
 
@@ -114,6 +125,8 @@ From the script's visual notes (or your own picks when there are none):
 
 - **Hook card**: the on-screen hook, 6 words or fewer, one `*accent*` word, 2 to 3 s.
 - **Callouts**: a number, a result or a tool name the person says, about one every 8 to 10 s, never two within 4 s (Long: one every 30 to 60 s at most, only the key numbers). `atMs` = that word's `startMs` in the JSON.
+- **Stickers**: when the style has a `Stickers` table, an illustration on a word it lists, at most one every 6 s and never within 2 s of a callout. `src` = `style/<name>/stickers/<file>`. None fits: none.
+- **Look**: copy the style's `Engine` block as is into `look`.
 
 Write `public/<slug>.edit.json` (format in [remotion-short.md](references/remotion-short.md) section 4).
 
@@ -126,7 +139,7 @@ npx remotion still <comp> out/<slug>-qc-30.png --frame=30 --props=public/<slug>.
 ffmpeg -y -v error -i out/<slug>-qc-30.png -vf "drawbox=x=0:y=0:w=iw:h=230:color=red@0.35:t=fill,drawbox=x=0:y=1440:w=iw:h=480:color=red@0.35:t=fill,drawbox=x=850:y=900:w=230:h=540:color=red@0.35:t=fill" out/<slug>-qc-30-safe.png
 ```
 
-Read each `-safe` PNG (Long: each still): no text in a red zone (the app's buttons, name and description cover it), captions below the face, hook card readable, callout not covering the eyes, accent color right. Fix the edit file, then:
+Add a still on a sticker when there is one. Read each `-safe` PNG (Long: each still): no text in a red zone (the app's buttons, name and description cover it), captions below the face, hook card readable, callout and sticker not covering the eyes, the style's font and accent showing. Fix the edit file, then:
 
 ```bash
 npx remotion render <comp> out/<slug>.mp4 --props=public/<slug>.edit.json
@@ -170,7 +183,15 @@ In `video-agent/edits/<slug>/`:
 - `post.md`: the text to paste when posting (below).
 - Long only, in `post.md`: **chapters** for the YouTube description, one every 1 to 3 minutes where the topic changes, times on the cut timeline (from `captions.srt`), the first at `0:00`, at least 3, each 10 s or longer.
 
-Then say: length, what was cut, where the files are, and offer one change ("shorter hook card? fewer callouts? another accent?"). A change = edit the JSON, render again (steps 6 and 7). Next: `/publish <slug>`.
+Then open the video so they watch it right away (from the project root):
+
+```bash
+open video-agent/edits/<slug>/final.mp4        # macOS
+start "" video-agent\edits\<slug>\final.mp4   # Windows
+xdg-open video-agent/edits/<slug>/final.mp4    # Linux
+```
+
+And say: length, what was cut, where the files are, and offer one change ("shorter hook card? fewer callouts? another look?"). A change = edit the JSON, render again (steps 6 and 7). A change they want on every video (font, color, caption mode) goes in the style file, not only this edit. Next: `/publish <slug>`.
 
 ## Post copy
 

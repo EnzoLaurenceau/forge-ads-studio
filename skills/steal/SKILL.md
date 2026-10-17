@@ -130,6 +130,8 @@ Copied from <link>, measured on <date>. Applied on top of short-editing's style.
 - the components to add to the composition and the props they take
 ```
 
+End the file with the two sections short-editing reads, in the format of its [looks.md](../short-editing/references/looks.md): a `Stickers` table when the style has stickers (files in `video-agent/styles/<name>/stickers/`), and the `Engine` block with the closest values the free engine has (font, caption mode and case, hook card colors, zoom, grade as a CSS filter). What the engine can't draw stays in the sections above as notes for Claude.
+
 **Sound effects** (in `video-agent/styles/<name>/sfx/`):
 
 - With an ElevenLabs key, generate 2 or 3 takes per sound and keep the one closest to the original on the spectrogram:
