@@ -1,64 +1,66 @@
 # The edit style
 
-Simple on purpose. One take of a person talking, made easy to watch on a phone with the sound off. The same rules every time, so a creator can post daily. These rules never change; the look (accent, font, caption mode, hook card colors, zoom strength, logo, end card, stickers) comes from the creator's style file, see [looks.md](looks.md). The values below are the Classic look.
+One take of a person talking, turned into a fast, clean short that holds attention with the sound off. The same rules every time, so a creator can post daily. These rules never change; the colors, fonts, captions, grade and sound come from the creator's style file ([looks.md](looks.md)).
 
 ## Cuts
 
 | Rule | Value | Why |
 |---|---|---|
-| Silences | cut every pause longer than 0.35 s | dead air is where people swipe |
-| Breathing room | keep 0.10 s before a word and 0.15 s after | word timings drift a little; this keeps every word whole |
+| Silences | cut every pause longer than 0.3 s | dead air is where people swipe |
+| Breathing room | keep 0.08 s before a word and 0.12 s after | word timings drift a little; this keeps every word whole |
 | Retakes | keep the last complete attempt of a line, drop the earlier ones | creators repeat a line until it sounds right |
 | False starts | drop a half word or "uh" right before a restart | |
 | Start | the first kept word is the first word of the hook | no breath, no "ok", no look at the camera before |
 | End | cut 0.3 s after the last word | a loop restarts faster |
 | Off-script talk | drop "wait", "let me redo that", asides to someone in the room | |
+| Speed | the whole take plays at 1.15 (pitch kept) | ultra cut: no slack between sentences |
 | Sound at a cut | a 2-frame fade out and in | a cut never clicks |
 
 A cut is only safe in a real silence: check the gaps between words against `silencedetect` (see the skill) before cutting.
 
-## Framing
+## The three views (hard cuts, never a slide or a resize)
 
-- Short: 1080x1920, 30 fps. A horizontal take is cropped to the center (the face must be near the middle).
-- Long (a full YouTube video): 1920x1080, 30 fps, from a horizontal take. Captions low in the frame (y 800 to 980), callouts small in the upper right so they never cover the face, pauses over 0.5 s cut instead of 0.35 s.
-- **Punch-in**: every cut alternates between full frame (1.0) and a light zoom (1.12). A piece shorter than 0.8 s keeps the previous framing. That hides the jump of the cut and gives rhythm without effects.
-- **Safe zone**: all text stays between y 230 and y 1440, and left of x 850 from y 900 down. The apps cover the rest with their tabs, buttons, name and description.
+| view | what's on screen | when |
+|---|---|---|
+| **split** (default) | paper on top with one board, the camera as a card under one seam at y 1160 (white 6 px top border, bleeds to the left, right and bottom) | most of the short |
+| **paper** | the camera leaves, one big board takes the whole frame | one big moment per short: the key number, a screenshot |
+| **full camera** | the face fills the frame | on its own when no board is planned for 5 s or more: a story, an emotion, a punchline |
+| **cta** | full face, an Instagram comment sheet slides up, the comment word gets typed, then a DM notification drops in | the comment ask at the end |
+
+- The seam never moves and the camera card never resizes: one layout for the whole short.
+- Every cut alternates the camera framing between 1 and the style's `zoom` (a piece under 0.8 s keeps the previous one). That hides the jump and gives rhythm.
+- 16:9 (`Wide`): the same, with the seam vertical at x 900 and the camera on the right.
+
+## Boards
+
+- One every 2 to 3 s while the person explains something, each on the exact word it illustrates (`atMs` = that word's `startMs`), held until the next one. Boards **illustrate**, they never paraphrase whole sentences: 2 to 4 words, a number, a list of steps, a before/after, a command.
+- Types: `title` (picto or real logo + 2-4 words, one `*accent*` word), `list` (items light up on their word), `number` (counts to the value, thud on landing), `compare` (before / after), `terminal` (a prompt or an agent working), `image` (a real screenshot in a browser frame), `cta`. Details in [remotion-short.md](remotion-short.md).
+- A named tool always shows its real logo ([looks.md](looks.md)). Everything else gets a drawn picto. Never emojis, never stock illustrations.
+- Vary the types: never three `title` boards in a row.
+- No kicker, no label above a board, no slanted or wobbling text, no text on the camera.
+
+## Hook
+
+- The first 2 to 3 s: the on-screen hook on the paper above the camera, with one picto, a boom and a quick punch-in on the face.
+- 6 words or fewer, one `*word*` in the accent, never the same words as the spoken hook (it adds to it).
+- It hands off to the first board or to the content with a zhhh and a 4-frame glitch.
 
 ## Captions
 
-- 1 to 3 words at a time. Classic: uppercase, Montserrat 900, white with a thick black outline (the style picks the font, the case and the mode: `outline`, `box`, `clean`).
-- The word being said turns to the accent color (`box`: it sits on an accent block).
-- Pop in fast (about 4 frames, 0.85 → 1 scale).
-- In a box from y 1150 to 1410 and x 60 to 840: below the face, clear of the buttons on the right and the description at the bottom.
-- Always on. Most people watch muted.
+- 1 to 3 words at a time, one line, as spoken (not uppercase), DM Sans 900.
+- White with a dark outline; the word being said sits on an accent block that blurs in. Words never move or bounce.
+- They straddle the seam in split view (half on the paper, half on the camera), sit low in paper view and lower third in full camera. Always on: most people watch muted.
 
-## Hook card
+## Sound
 
-- The on-screen hook from the script: 6 words or fewer, never the same words as the spoken hook (it adds to it).
-- White card, black text, at 12% from the top, for the first 2 to 3 s, then fades out.
-- One `*word*` in accent color: the word that carries the tension.
-
-## Callouts
-
-- One big word or number, in the accent color with a black outline, at about 12% from the top (above the eyes) for 1.2 s.
-- Only where the script puts weight: a number, a result, the name of a tool. About one every 8 to 10 s, never two closer than 4 s.
-- A callout repeats a word the person says at that moment. It never adds information they don't say.
-
-## Stickers
-
-- An illustration from the style folder on the word it illustrates, 1.2 s, between the face and the captions.
-- At most one every 6 s, never within 2 s of a callout, only on a word in the style's `Stickers` table.
-- A tool or product named on screen: its real logo, never a look-alike.
-
-## Progress bar
-
-A 10 px bar in the accent color across the top, growing to the end. It tells the viewer the video is short.
-
-## Audio
-
-- Voice at -14 LUFS integrated, sample peaks limited at -2 dBFS (about -1.5 dB true peak after AAC).
+- Voice at -14 LUFS integrated, true peak under -1.5 dB.
+- SFX: a quiet pop when a board or a list item arrives, a thud when a number lands or the "after" side of a compare appears, a boom on the hook. Nothing on cuts, no whooshes, no clicks, no risers.
 - Music is optional, royalty-free only, 22 dB under the voice. None is better than a wrong one.
 
-## What this style is not
+## CTA
 
-No transitions, no sound effects on every cut, no emoji rain (a sticker is one illustration on one word), no stock B-roll, no slanted or wobbling text. If the creator wants more, the composition is plain React: they can ask Claude to add a scene, but keep the defaults calm.
+When the person asks for a comment ("comment GUIDE and I'll send it to you"): a `cta` board with that word, from the ask to the end of the sentence. The handle shown is the creator's (`handle` in the style).
+
+## Safe zone
+
+Text stays between y 170 and y 1500 and clear of the right 220 px from y 1100 down: the apps cover the rest with their tabs, buttons, name and description. The boards and captions are already placed inside it.

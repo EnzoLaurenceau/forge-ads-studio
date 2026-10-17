@@ -1,6 +1,6 @@
 ---
 name: studio-setup
-description: Sets up the creator's video editing studio, for shorts and YouTube videos, on their computer and in their project - tools, the video-agent/ folder, the Remotion studio, the creator's voice.md, their default editing style (look, brand color, logo, sticker illustrations, end card), permissions, and the optional accounts (Treg for Instagram, TikTok and YouTube, an ElevenLabs key, Codex). Use when the user says setup, onboarding, install, "start here", configure, connect my account, Treg, first time using studio-script, short-editing, publish or any video skill, or wants to update their voice, niche, CTA, brand color, look, font, logo or stickers (`/studio-setup style`). Checks Node, ffmpeg, yt-dlp and git with install commands for macOS, Windows and Linux, writes voice.md from their own videos or a short interview, pre-approves the tool commands in .claude/settings.json.
+description: Sets up the creator's video editing studio, for shorts and YouTube videos, on their computer and in their project - tools, the video-agent/ folder, the Remotion studio, the creator's voice.md, their default editing style (an onboarding on their colors, paper, fonts, captions, sound, Instagram CTA, real tool logos, logo and end card, with a preview on their own footage), permissions, and the optional accounts (Treg for Instagram, TikTok and YouTube, an ElevenLabs key, Codex). Use when the user says setup, onboarding, install, "start here", configure, connect my account, Treg, first time using studio-script, short-editing, publish or any video skill, or wants to update their voice, niche, CTA, brand color, look, font, captions, sound effects, logo or tool logos (`/studio-setup style`). Checks Node, ffmpeg, yt-dlp and git with install commands for macOS, Windows and Linux, writes voice.md from their own videos or a short interview, pre-approves the tool commands in .claude/settings.json.
 argument-hint: "[tools | studio | voice | style | permissions | treg | keys]"
 allowed-tools: Bash(node -v) Bash(npx remotion still *) Bash(ffmpeg -version) Bash(ffprobe -version) Bash(yt-dlp --version) Bash(deno --version) Bash(git --version) Bash(codex --version) Bash(treg --version)
 ---
@@ -11,7 +11,7 @@ Ten minutes, once. At the end the creator has:
 
 - the tools the other skills call, installed and checked,
 - `video-agent/voice.md`: who they are, how they talk, what they believe, what they can prove. Every script is written from it,
-- `video-agent/styles/default.md`: their look (one of 3 starting looks in their brand color), with their logo and a few sticker illustrations. Every edit uses it,
+- `video-agent/styles/default.md`: their look on top of the split-screen paper layout (their color, paper, fonts, captions, sound, Instagram CTA), with their logo and the real logos of the tools they talk about. Every edit uses it,
 - the editing studio ready, so the first edit starts right away,
 - permission rules, so Claude can run ffmpeg, yt-dlp and Remotion without asking each time,
 - if they want: their accounts connected through Treg (audit and publishing), and the keys for translation and images.
@@ -111,22 +111,50 @@ Write `video-agent/voice.md` from [references/voice-template.md](references/voic
 
 ## 5. Style
 
-Two minutes. Their look for every edit: `video-agent/styles/default.md` and `video-agent/styles/default/`. Format, keys and the 3 looks: the `short-editing` skill's [references/looks.md](../short-editing/references/looks.md). Read it first.
+Five minutes. Every edit has the same finished layout, the **split-screen paper look**: boards on a textured paper above the camera card, hard cuts between split, paper only and full camera, a hook with a boom, captions on the seam, a comment-sheet CTA ([style.md](../short-editing/references/style.md)). This step makes it theirs: `video-agent/styles/default.md` and `video-agent/styles/default/`. Format, keys and the tested looks: [looks.md](../short-editing/references/looks.md). Read both first.
 
-1. **Brand color**: a hex code, or a color in words that you turn into one. None: the look's own accent.
-2. **The look**, one question with the 3 choices, the one that fits their niche (voice.md) first: **Classic** (heavy uppercase captions with a black outline, white hook card), **Clean** (round font as spoken, soft shadow, dark card), **Bold** (tall font, the said word on a color block, strong zoom).
-3. **Preview**, when the studio is installed (step 3): one still per look on a frame of their own footage, so they pick with their eyes. Use their newest take in `video-agent/takes/`, else the template's `public/sample-video.mp4`. From `video-agent/studio/`, copy it to `public/preview.mp4`, write `public/preview.json` with three made-up words (`[{"text":" THIS","startMs":0,"endMs":400,"confidence":1},{"text":" IS","startMs":400,"endMs":700,"confidence":1},{"text":" YOURS","startMs":700,"endMs":1500,"confidence":1}]`, in their language), then one props file per look, `public/preview-<look>.json`:
-   ```json
-   { "video": "preview.mp4", "captions": "preview.json", "look": <the look's Engine block, accent = their color, and Bold's hookCard.bg too>, "ranges": [{ "fromMs": 0, "toMs": 3000 }], "hook": { "text": "Your *new* look", "seconds": 3 }, "callouts": [] }
-   ```
-   ```bash
-   npx remotion still Short out/preview-<look>.png --frame=24 --props=public/preview-<look>.json
-   ```
-   Read the 3 PNGs yourself first (accent readable on their footage, text inside the frame), then show them. No studio yet: they pick from the descriptions, the first edit shows it.
-4. **Logo** (optional): a PNG of their logo or name, transparent background, to `video-agent/styles/default/logo.png`. They give the file; never draw one.
-5. **Stickers**: propose 6 illustrations for the words their videos say most (their niche, from voice.md: money, a result, a mistake, a tool, a time...), as Noto emoji downloaded into `video-agent/styles/default/stickers/` (URLs in looks.md), plus the real logos of the tools they talk about if they have them. They keep, swap or skip each one. Generated stickers: `/codex-images`, later.
-6. **End card** (optional): an image 1080x1920 for the last 2 s (follow, their offer). They give it, or skip; `/codex-images` can make one later.
-7. Write `video-agent/styles/default.md` from the template in looks.md: the look, its `Engine` block with their accent, `logo` and `endCard` only when the files exist, one `Stickers` row per kept file. Read it back in 3 lines and ask what to change.
+Say it in one line before starting: "The default already looks finished; I'll ask 8 quick questions to make it yours, then show it on your own video." Then **one question per message**, choices with the recommended one first, and their answer can always be "default" or "skip". Use what voice.md already says (niche, tone, the ask) to pick the recommendation and to skip a question it already answers.
+
+1. **Feel**: "In 3 words, how should your videos feel?" (e.g. "clear, fast, premium"). It goes in the file's `Feel:` line and steers the next recommendations: calm and premium → Night or soft sound; loud and fun → Warm, uppercase captions.
+2. **Accent color**: "Your brand color? A hex code, or a color in words." They name a color: turn it into a hex. None: the default blue `#258EFF`. It marks one word per title, the said word in the captions, numbers and pictos, so it must be strong (not a pastel).
+3. **Paper**: "Behind the boards: **Paper** (warm white, the default), **Night** (dark, for a dark or moody camera), or **Warm** (cream)?" Night with a dark accent (navy, black): suggest a brighter one.
+4. **Fonts**: "Titles in **Bricolage Grotesque** (modern, tight, the default), **Poppins** (round, friendly), **Montserrat** (classic, heavy) or **Anton** (tall, loud)?" Captions stay DM Sans unless they ask for the same font as the titles.
+5. **Captions**: "Captions **as spoken** (the default) or in **UPPERCASE**?" Then "Normal size, or bigger?" (bigger = `size` 96).
+6. **Rhythm and sound**: "**Fast** (1.15x, pop and thud sounds, boom + glitch on the hook: the default), **Soft** (1.1x, sounds on, no glitch) or **Silent** (1x, no sound effects)?" → `Speed:` line, `sfx`, `glitch`.
+7. **Instagram CTA**: "Your Instagram handle, and the word you ask people to comment (GUIDE, LINK, the product name)?" → `handle` (no @) and the `Instagram:` line. No Instagram: skip, the CTA board is then never used.
+8. **Tools you talk about**: "Which apps or tools do you name most in your videos?" Up to 8. For each, fetch the real logo ([looks.md](../short-editing/references/looks.md), "Logos": press kit, App Store icon, the official repo or site), save it as `video-agent/styles/default/logos/<tool>.png` and add a `Logos` row. A logo you can't find for sure: ask them for the file, never draw a look-alike.
+9. **Logo and end card** (optional, one message): a PNG of their logo or name (transparent background, top-left corner) to `default/logo.png`, and an image 1080x1920 for the last 2 s (follow, their offer) to `default/end.png`. They give the files, or skip; `/codex-images` can make an end card later.
+
+**Preview**, when the studio is installed (step 3). Use their newest take in `video-agent/takes/` (10 s or more), else the template's `public/sample-video.mp4`. From `video-agent/studio/`, copy it to `public/preview.mp4`, and write `public/preview.json` with made-up words in their language, spread over 9 s (one word every 400 ms is enough: `[{"text":" Here","startMs":0,"endMs":400,"confidence":1}, ...]`). Then copy the style folder (`mkdir -p public/style && cp -R ../styles/default public/style/`) and write `public/preview-style.json`:
+
+```json
+{
+  "video": "preview.mp4",
+  "captions": "preview.json",
+  "look": <the Engine block you are about to write>,
+  "speed": 1,
+  "ranges": [{ "fromMs": 0, "toMs": 9000 }],
+  "hook": { "text": "Your *new* style", "seconds": 2, "icon": "sparkle" },
+  "boards": [
+    { "type": "title", "title": "Made with *<their first tool>*", "icon": "style/default/logos/<tool>.png", "atMs": 2000, "toMs": 4000 },
+    { "type": "list", "numbered": true, "atMs": 4000, "toMs": 6000, "items": [{ "text": "Record", "atMs": 4100 }, { "text": "Edit", "atMs": 4600 }, { "text": "Post", "atMs": 5100 }] },
+    { "type": "cta", "word": "<their comment word>", "dm": "Here it is!", "atMs": 6000, "toMs": 9000 }
+  ]
+}
+```
+
+No tool logo: `"icon": "bolt"`. No Instagram: drop the `cta` board and the range ends at 6000. Then render four stills:
+
+```bash
+npx remotion still Short out/style-hook.png --frame=20 --props=public/preview-style.json
+npx remotion still Short out/style-title.png --frame=80 --props=public/preview-style.json
+npx remotion still Short out/style-list.png --frame=170 --props=public/preview-style.json
+npx remotion still Short out/style-cta.png --frame=250 --props=public/preview-style.json
+```
+
+Read the PNGs yourself first: the accent readable on the paper, white caption text readable on its accent block, the logo crisp, nothing cut at the edges. Fix what fails (a pale accent on Paper → a darker shade or Night), then show them and ask: "Keep it, or change one thing?" A change = one more question and new stills. No studio yet: describe the look in 3 lines, the first edit shows it.
+
+**Write** `video-agent/styles/default.md` from the template in looks.md: `Look:` (Paper, Night or Warm) and the accent, `Feel:`, `Speed:`, `Instagram:`, one `Logos` row per file, and the `Engine` block with only the keys that differ from the default plus `handle` (`logo` and `endCard` only when the files exist). Read it back in 3 lines.
 
 They can run `/studio-setup style` any time to change it. A creator's style copied with `/steal` sits next to it (`video-agent/styles/<name>.md`) and is used with `/short-editing <take> style <name>`.
 
@@ -221,10 +249,10 @@ The shortest path to a first video: record one take (phone, camera or webcam) in
 6. `/steal`: a creator's reel they love into a second style.
 7. `/clips`: a long video into finished shorts.
 8. `/short-translate`: a take in another language, in their voice.
-9. `/codex-images`: thumbnails, covers, stickers.
+9. `/codex-images`: thumbnails, covers, end cards.
 10. `/vox`: a photo into a paper-collage animation.
 11. `/publish`: YouTube, Instagram and TikTok.
 
 ## Later
 
-`/studio-setup <part>` jumps to one part: `tools`, `studio`, `voice` (rebuild or update voice.md), `style` (their look, logo, stickers, end card), `permissions`, `treg`, `keys`.
+`/studio-setup <part>` jumps to one part: `tools`, `studio`, `voice` (rebuild or update voice.md), `style` (their look, sound, CTA, tool logos, logo, end card), `permissions`, `treg`, `keys`.

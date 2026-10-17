@@ -1,6 +1,6 @@
 ---
 name: short-editing
-description: Edits a complete talking-head video end to end with free tools (Remotion, whisper.cpp, ffmpeg) - a vertical short (1080x1920) or a full horizontal YouTube video (1920x1080). Use when the user says edit, cut, captions, subtitles, motion design, montage, "make it a short", "edit my YouTube video", render, or gives a recording from video-agent/takes/. Transcribes locally with word timings, cuts silences and retakes against the script, adds punch-in zooms, word-by-word captions, a hook card, callouts, stickers and a progress bar in the creator's style (video-agent/styles/default.md), levels the voice to -14 LUFS, and writes an .srt, a cut list for CapCut or Premiere, chapters for a long video, and the post copy.
+description: Edits a complete talking-head video end to end with free tools (Remotion, whisper.cpp, ffmpeg) - a vertical short (1080x1920) or a full horizontal YouTube video (1920x1080). Use when the user says edit, cut, captions, subtitles, motion design, montage, "make it a short", "edit my YouTube video", render, or gives a recording from video-agent/takes/. Transcribes locally with word timings, cuts silences and retakes against the script, lays it out in the split-screen paper look (boards on a textured paper above the camera card, hard cuts between split, paper-only and full-camera views, a hook with a boom, word-by-word captions on the seam, pop and thud sound effects, an Instagram comment-sheet CTA, 1.15x speed) in the creator's style (video-agent/styles/default.md), levels the voice to -14 LUFS, and writes an .srt, a cut list for CapCut or Premiere, chapters for a long video, and the post copy.
 argument-hint: "<take file or slug> [short | long] [style <name>]"
 allowed-tools: Bash(node -v) Bash(git --version) Bash(ffmpeg *) Bash(ffprobe *) Bash(npx remotion *) Bash(node sub.mjs *) Bash(npx tsc --noEmit) Bash(open video-agent/edits/*)
 ---
@@ -21,7 +21,7 @@ The rules are fixed and simple: [references/style.md](references/style.md). The 
 - Preflight: `node -v && ffmpeg -version && git --version`. Anything missing: stop and send them to `/studio-setup tools`.
 - Talk in the creator's language. Say what you do in one line before each long step (install, transcription, render) and how long it takes.
 - Read `video-agent/voice.md` for the language. No voice file: ask it, or use English.
-- The style: `style <name>` in the request = `video-agent/styles/<name>.md`, else `video-agent/styles/default.md`. Its `Engine` block becomes the edit file's `look`, its `Stickers` table says which illustration goes on which words, and any rule written in it wins over [style.md](references/style.md). A style made by `/steal` also brings its sound effects and notes: apply them as it says. No style file at all: the Classic look of [looks.md](references/looks.md), and say once that `/studio-setup style` sets their own in 2 minutes.
+- The style: `style <name>` in the request = `video-agent/styles/<name>.md`, else `video-agent/styles/default.md`. Its `Engine` block becomes the edit file's `look`, its `Logos` table says which real logo goes on which words, its Instagram line gives the CTA word, and any rule written in it wins over [style.md](references/style.md). A style made by `/steal` also brings its sound effects and notes: apply them as it says. No style file at all: the Paper look of [looks.md](references/looks.md) (`look: {}`), and say once that `/studio-setup style` makes it theirs in 2 minutes.
 - `<slug>`: lowercase, dashes, no dots or spaces (the transcriber cuts file names at the first dot).
 - Steps 1 and 2 run from the project root. From step 3 on, every command runs in `video-agent/studio/` and its paths are relative to it.
 
@@ -44,8 +44,8 @@ Then the format. They said it (`short`, `long`, "for YouTube", "a reel"): take i
 
 | Format | Composition | When | Defaults |
 |---|---|---|---|
-| **Short** | `Short`, 1080x1920 | a take under 90 s, or they want a short, a reel, a TikTok | captions on, hook card, a callout every 8 to 10 s |
-| **Long** | `Wide`, 1920x1080 | a horizontal take over 90 s, a full YouTube video, a tutorial, a vlog | captions on (ask: YouTube viewers often prefer the .srt alone, `showCaptions: false`), no hook card unless they want one, a callout every 30 to 60 s at most, chapters |
+| **Short** | `Short`, 1080x1920 | a take under 90 s, or they want a short, a reel, a TikTok | captions on, hook, a board every 2 to 3 s, speed 1.15 |
+| **Long** | `Wide`, 1920x1080 | a horizontal take over 90 s, a full YouTube video, a tutorial, a vlog | captions on (ask: YouTube viewers often prefer the .srt alone, `showCaptions: false`), no hook unless they want one, boards only on the key moments (one every 20 to 40 s, full camera in between), speed 1 or 1.1, chapters |
 
 - Horizontal take in Short: it is cropped to the center. Warn them if they are not in the middle of the frame.
 - Vertical take in Long: it would be cropped to a thin band. Don't; offer Short.
@@ -69,7 +69,7 @@ npm i
 - Language, in `whisper-config.mjs`:
   - English: keep `WHISPER_MODEL = "medium.en"` and `WHISPER_LANG = "en"`.
   - Any other language: `WHISPER_MODEL = "medium"` (or `"small"` on a slower machine, 466 MB) and `WHISPER_LANG` = its code (`"fr"`, `"es"`, `"de"`, `"pt"`...).
-- Add the `Short` and `Wide` compositions and the font package: follow [references/remotion-short.md](references/remotion-short.md) sections 1 to 3, then `npx tsc --noEmit`. A studio made before `Wide` existed: replace `src/Short/index.tsx` and `src/Root.tsx` with the current sections 2 and 3.
+- Add the `Short` and `Wide` compositions and the font package: follow [references/remotion-short.md](references/remotion-short.md) sections 1 to 4 (fonts, the four sound effects in `public/sfx/`, the engine, Root), then `npx tsc --noEmit`. A studio made with an older engine (no `boards` in its props): replace `src/Short/index.tsx` and `src/Root.tsx` with the current sections 3 and 4 and generate `public/sfx/`.
 - Optional, better Remotion code from Claude: `npx skills add remotion-dev/skills`.
 
 ## 3. Transcribe
@@ -79,7 +79,7 @@ cp "../takes/<take file>" public/<slug>.mp4
 node sub.mjs public/<slug>.mp4
 ```
 
-The style's images go next to it, so the render finds them (`<name>` = `default` or the named style; skip when the style has no folder):
+The style's images (logo, end card, real logos of tools) go next to it, so the render finds them (`<name>` = `default` or the named style; skip when the style has no folder):
 
 ```bash
 mkdir -p public/style && cp -R ../styles/<name> public/style/
@@ -97,10 +97,10 @@ Run it once, right after `sub.mjs`. Fix misheard words from the script (names, b
 
 ## 4. The cut list
 
-The word times cannot show the pauses, so the cuts come from the sound: every silence over 0.35 s goes, keeping 0.15 s after the last word and 0.10 s before the next one.
+The word times cannot show the pauses, so the cuts come from the sound: every silence over 0.3 s goes, keeping 0.15 s after the last word and 0.10 s before the next one.
 
 ```bash
-ffmpeg -nostats -i public/<slug>.mp4 -af silencedetect=noise=-35dB:d=0.3 -f null - 2>&1 | node -e 'const w=require("./public/<slug>.json"),G=350,B=100,A=150,s=(ms)=>(ms/1000).toFixed(2),a=w[0].startMs,z=w[w.length-1].endMs;let r=[{fromMs:0}],end=z+A,x=null;for(const m of require("fs").readFileSync(0,"utf8").matchAll(/silence_(start|end): (-?[\d.]+)/g)){const v=Math.max(0,Math.round(m[2]*1000));if(m[1]==="start"){x=v;continue}if(x===null||v-x<G)continue;if(x<=a){r[0].fromMs=Math.max(0,v-B)}else if(v>=z){end=Math.min(end,x+A)}else{const p=w.filter(q=>q.startMs<x).pop();console.error(`silence ${s(x)} -> ${s(v)} (${v-x} ms) after "${p.text.trim()}"`);r[r.length-1].toMs=x+A;r.push({fromMs:v-B})}x=null}if(x!==null&&x>a)end=Math.min(end,x+A);r[r.length-1].toMs=end;console.log(JSON.stringify(r))'
+ffmpeg -nostats -i public/<slug>.mp4 -af silencedetect=noise=-35dB:d=0.3 -f null - 2>&1 | node -e 'const w=require("./public/<slug>.json"),G=300,B=100,A=150,s=(ms)=>(ms/1000).toFixed(2),a=w[0].startMs,z=w[w.length-1].endMs;let r=[{fromMs:0}],end=z+A,x=null;for(const m of require("fs").readFileSync(0,"utf8").matchAll(/silence_(start|end): (-?[\d.]+)/g)){const v=Math.max(0,Math.round(m[2]*1000));if(m[1]==="start"){x=v;continue}if(x===null||v-x<G)continue;if(x<=a){r[0].fromMs=Math.max(0,v-B)}else if(v>=z){end=Math.min(end,x+A)}else{const p=w.filter(q=>q.startMs<x).pop();console.error(`silence ${s(x)} -> ${s(v)} (${v-x} ms) after "${p.text.trim()}"`);r[r.length-1].toMs=x+A;r.push({fromMs:v-B})}x=null}if(x!==null&&x>a)end=Math.min(end,x+A);r[r.length-1].toMs=end;console.log(JSON.stringify(r))'
 ```
 
 It prints every silence cut with the word before it, then the kept `ranges` (margins from [style.md](references/style.md)), the last one ending 0.15 s after the last word. Then fix the ranges:
@@ -108,7 +108,7 @@ It prints every silence cut with the word before it, then the kept `ranges` (mar
 1. Retakes: walk the script line by line. When a line (or its first 3 words) appears more than once, keep the last complete attempt and drop the ranges from the first attempt's first word to the start of the kept one.
 2. Drop false starts (an "uh" or a half word before a restart), anything before the hook, and off-script talk.
 
-Long video: same rules, with silences over 0.5 s instead of 0.35 s (`G=500`): a full video needs some air, a thinking pause can stay. Keep asides that add something; cut the ones that go nowhere. With no script, a retake is a sentence said twice in a row: keep the last one.
+Long video: same rules, with silences over 0.5 s instead of 0.3 s (`G=500`): a full video needs some air, a thinking pause can stay. Keep asides that add something; cut the ones that go nowhere. With no script, a retake is a sentence said twice in a row: keep the last one.
 
 Show the result before rendering, in a few lines:
 
@@ -119,33 +119,50 @@ Take 1:42 → short 0:47 (-55 s)
 - dropped "ok let me do that again" at 0:58
 ```
 
-## 5. Motion
+## 5. Boards
 
-From the script's visual notes (or your own picks when there are none):
+Set `"speed": 1.15` (Long: 1 or 1.1). Then plan the screen from the script's visual notes (or your own picks when there are none), reading the transcript with its `startMs`:
 
-- **Hook card**: the on-screen hook, 6 words or fewer, one `*accent*` word, 2 to 3 s.
-- **Callouts**: a number, a result or a tool name the person says, about one every 8 to 10 s, never two within 4 s (Long: one every 30 to 60 s at most, only the key numbers). `atMs` = that word's `startMs` in the JSON.
-- **Stickers**: when the style has a `Stickers` table, an illustration on a word it lists, at most one every 6 s and never within 2 s of a callout. `src` = `style/<name>/stickers/<file>`. None fits: none.
+- **Hook**: the on-screen hook, 6 words or fewer, one `*accent*` word, a picto (`icon`), 2 to 3 s. It adds to the spoken hook, never repeats it.
+- **Boards**: one every 2 to 3 s while they explain, each on the exact word it illustrates (`atMs` = that word's `startMs`, `toMs` = the end of the idea). Pick the type from what is said:
+  - a key idea → `title`, 2 to 4 words, a picto or the real logo of the tool named;
+  - steps, features, reasons → `list`, each item's `atMs` on its own word;
+  - a figure (price, time, views, %) → `number`, counting up (or down from `from` for "it went from 99 € to 0");
+  - before / after, them / you, old / new → `compare`;
+  - a command, a prompt, "I ask Claude to..." → `terminal`, 2 to 4 short lines, the last one a `✓` result;
+  - a real screen they show or describe → `image` (a screenshot in `public/`).
+  - Never three `title` in a row. One board per short may take the whole frame: `"view": "paper"` on the biggest moment (usually the number).
+- **Full camera**: leave 5 s or more without a board where the face carries it (a story, a reaction, the punchline). The engine switches on its own.
+- **CTA**: "comment X and I'll send it" → a `cta` board with that word and the DM text, from the ask to the end of the sentence.
+- **Logos**: a tool named on a board = its real logo from the style's `Logos` table (`style/<name>/logos/<file>`). Not in the table: fetch it ([looks.md](references/looks.md), "Logos"), save it there and add the row. Never a look-alike, never an emoji.
 - **Look**: copy the style's `Engine` block as is into `look`.
 
-Write `public/<slug>.edit.json` (format in [remotion-short.md](references/remotion-short.md) section 4).
+Write `public/<slug>.edit.json` (format and every board type in [remotion-short.md](references/remotion-short.md) section 5).
 
 ## 6. QC, then render
 
-Render 3 or 4 stills: the hook (frame 30), a callout, a caption mid-video, the last second (Long: 6 to 8 stills spread over the video). Short only: lay the platforms' safe zone over each one:
+Render one still per board type used, plus the hook (frame 20), the CTA and the last second (Long: 6 to 8 stills spread over the video). A board's frame = its output time × 30: output ms = the range's start in the output + (ms - range `fromMs`) / speed. Short only: lay the platforms' safe zone over each one:
 
 ```bash
-npx remotion still <comp> out/<slug>-qc-30.png --frame=30 --props=public/<slug>.edit.json
-ffmpeg -y -v error -i out/<slug>-qc-30.png -vf "drawbox=x=0:y=0:w=iw:h=230:color=red@0.35:t=fill,drawbox=x=0:y=1440:w=iw:h=480:color=red@0.35:t=fill,drawbox=x=850:y=900:w=230:h=540:color=red@0.35:t=fill" out/<slug>-qc-30-safe.png
+npx remotion still <comp> out/<slug>-qc-20.png --frame=20 --props=public/<slug>.edit.json
+ffmpeg -y -v error -i out/<slug>-qc-20.png -vf "drawbox=x=0:y=0:w=iw:h=150:color=red@0.35:t=fill,drawbox=x=0:y=1520:w=iw:h=400:color=red@0.35:t=fill,drawbox=x=860:y=1100:w=220:h=420:color=red@0.35:t=fill" out/<slug>-qc-20-safe.png
 ```
 
-Add a still on a sticker when there is one. Read each `-safe` PNG (Long: each still): no text in a red zone (the app's buttons, name and description cover it), captions below the face, hook card readable, callout and sticker not covering the eyes, the style's font and accent showing. Fix the edit file, then:
+Read each `-safe` PNG (Long: each still) and check:
+
+- no text in a red zone (the app's buttons, name and description cover it);
+- each board fills the paper (no tiny card in the middle), text on 1 to 3 lines, nothing cut at the edges;
+- the accent word, the pictos and the real logos show; no emoji, no look-alike logo;
+- the captions sit on the seam, one line, the said word on its block;
+- the CTA sheet shows their handle and word.
+
+Fix the edit file, then:
 
 ```bash
 npx remotion render <comp> out/<slug>.mp4 --props=public/<slug>.edit.json
 ```
 
-About 3 to 5 s of render per second of video on a laptop. Run it in the background and say how long.
+About 3 s of render per second of video on a laptop. Run it in the background and say how long.
 
 ## 7. Sound
 
@@ -177,7 +194,7 @@ In `video-agent/edits/<slug>/`:
 - `final.mp4`, ready to post.
 - `captions.srt`: the words moved to the cut timeline, up to 7 words per cue, a new cue after each sentence. Platforms read it as closed captions.
   ```bash
-  node -e 'const e=require("./public/<slug>.edit.json"),w=require("./public/"+e.captions),F=30,fr=(ms)=>Math.round(ms/1000*F);let at=0;const p=e.ranges.map(r=>{const f=fr(r.fromMs),n=Math.max(1,fr(r.toMs)-f),q={...r,s:(at-f)/F*1000};at+=n;return q});const o=w.flatMap(x=>{const q=p.find(q=>x.startMs>=q.fromMs&&x.startMs<q.toMs);return q?[{t:x.text.trim(),a:x.startMs+q.s,b:Math.min(x.endMs,q.toMs)+q.s}]:[]});const ts=(ms)=>new Date(Math.max(0,Math.round(ms))).toISOString().slice(11,23).replace(".",",");let c=[],n=0,out="";const flush=()=>{if(c.length)out+=`${++n}\n${ts(c[0].a)} --> ${ts(c[c.length-1].b)}\n${c.map(x=>x.t).join(" ")}\n\n`;c=[]};for(const x of o){c.push(x);if(c.length===7||/[.?!]$/.test(x.t))flush()}flush();process.stdout.write(out)' > ../edits/<slug>/captions.srt
+  node -e 'const e=require("./public/<slug>.edit.json"),w=require("./public/"+e.captions),F=30,v=e.speed||1;let at=0;const p=e.ranges.map(r=>{const n=Math.max(1,Math.round((r.toMs-r.fromMs)/v/1000*F)),q={...r,o:at/F*1000};at+=n;return q});const m=(q,ms)=>q.o+(ms-q.fromMs)/v;const o=w.flatMap(x=>{const q=p.find(q=>x.startMs>=q.fromMs&&x.startMs<q.toMs);return q?[{t:x.text.trim(),a:m(q,x.startMs),b:m(q,Math.min(x.endMs,q.toMs))}]:[]});const ts=(ms)=>new Date(Math.max(0,Math.round(ms))).toISOString().slice(11,23).replace(".",",");let c=[],n=0,out="";const flush=()=>{if(c.length)out+=`${++n}\n${ts(c[0].a)} --> ${ts(c[c.length-1].b)}\n${c.map(x=>x.t).join(" ")}\n\n`;c=[]};for(const x of o){c.push(x);if(c.length===7||/[.?!]$/.test(x.t))flush()}flush();process.stdout.write(out)' > ../edits/<slug>/captions.srt
   ```
 - `edit.json`: a copy of `public/<slug>.edit.json`, to redo the video later.
 - `post.md`: the text to paste when posting (below).
@@ -191,7 +208,7 @@ start "" video-agent\edits\<slug>\final.mp4   # Windows
 xdg-open video-agent/edits/<slug>/final.mp4    # Linux
 ```
 
-And say: length, what was cut, where the files are, and offer one change ("shorter hook card? fewer callouts? another look?"). A change = edit the JSON, render again (steps 6 and 7). A change they want on every video (font, color, caption mode) goes in the style file, not only this edit. Next: `/publish <slug>`.
+And say: length, what was cut, where the files are, and offer one change ("another hook? a board on another word? full camera on the story? another accent?"). A change = edit the JSON, render again (steps 6 and 7). A change they want on every video (accent, paper, font, captions, sound) goes in the style file, not only this edit. Next: `/publish <slug>`.
 
 ## Post copy
 
@@ -215,7 +232,7 @@ Follow for one script fix a day.
 
 ## CapCut, Premiere or no Remotion
 
-Some creators prefer their editor, and Remotion needs a paid license for companies of more than 3 people. Do steps 1 to 4, write `public/<slug>.edit.json` with the ranges (`"hook": null`, `"callouts": []`), skip steps 5 to 7, and give them `captions.srt` (step 8) plus:
+Some creators prefer their editor, and Remotion needs a paid license for companies of more than 3 people. Do steps 1 to 4, write `public/<slug>.edit.json` with the ranges (`"hook": null`, `"boards": []`, `"speed": 1`), skip steps 5 to 7, and give them `captions.srt` (step 8) plus:
 
 - `cuts.md`, the kept ranges to cut by hand:
   ```bash

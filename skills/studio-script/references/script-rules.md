@@ -58,15 +58,15 @@ Check each script at the creator's pace before showing it:
 
 - The hook is said in 3 seconds or less.
 - No single line takes more than 4 seconds (about 11 words at 165 wpm).
-- The first callout or visual change comes before second 5.
-- Something changes on screen at least every 4 to 5 seconds (a cut, a callout, a "show:" note).
+- The first board or visual change comes before second 5.
+- Something changes on screen at least every 4 to 5 seconds (a cut, a board, a "show:" note).
 - Total within the target length.
 
 ## Visual notes
 
 Kept apart from the spoken lines, keyed by line number, so the spoken script stays clean to read while recording:
 
-- `line N → callout: <1 to 4 words>`: a number, a result or a tool name said on that line. About one per 8 to 10 seconds.
+- `line N → board: <1 to 4 words>`: a number, a result, a tool name or a list of steps said on that line. About one every 3 to 5 seconds.
 - `line N → show: <what>`: a screenshot, a screen recording, a product. Only if they have it.
 - The on-screen hook goes in its own field, with one `*accent*` word.
 - Voiceover or text only ("On camera" in voice.md): write for the ear, and every line gets a `show:` note.

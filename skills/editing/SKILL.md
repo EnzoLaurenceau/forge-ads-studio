@@ -16,7 +16,7 @@ Route the request to the one skill that owns it, then do the work with that skil
    - Instagram reels that blew up for their competitors or for one account, turned into 5 remake scripts ("outliers", "what works for my competitors", "videos to remake", "ideas from @someone"): `outliers`.
    - A take or a local file, "my last take", a video URL to edit, an existing slug, short, reel, a full YouTube video: `short-editing`. "In the style of <name>" = `short-editing ... style <name>`.
    - Their B-roll ("add these clips", "my B-roll", "put my B-roll on this short", find a shot, drop a clip): `broll` (`setup`, `add`, `use`, `search`, `reject`).
-   - Their own look (brand color, font, caption style, logo, stickers, end card, "change my style"): `studio-setup style`.
+   - Their own look (brand color, paper, font, captions, sound, Instagram CTA, tool logos, logo, end card, "change my style"): `studio-setup style`.
    - Copy another creator's editing style ("steal", "edit like @x", a reel given as the model for a look rather than as the take to edit): `steal`.
    - One long video (a podcast, a live, a long YouTube video) into several shorts: `clips`.
    - A version of a take in another language: `short-translate`.

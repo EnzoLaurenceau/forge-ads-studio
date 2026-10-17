@@ -12,7 +12,7 @@ Someone's edit works and you want it on your own videos. This skill measures the
 Output:
 
 - `video-agent/styles/<name>.md`: the style, read by `/short-editing <take> style <name>`.
-- `video-agent/styles/<name>/`: its stills, sound effects and stickers.
+- `video-agent/styles/<name>/`: its stills, sound effects and logos.
 - `video-agent/edits/<slug>-<name>/final.mp4`: the test video.
 
 Read [references/learnings.md](references/learnings.md) before you start. Each rule in it comes from a copy that got rejected.
@@ -52,7 +52,7 @@ Read EVERY sheet and write down:
 
 - **Layouts**: full camera, split screen (where the seam sits), flat color with text, cut-out person on a color, B-roll, screenshots.
 - **Captions, per layout**: font feel (condensed, rounded, serif), case, weight, size, where they sit on the body, how a word appears, which word gets emphasised and how.
-- **Stickers and images**: type, border, size, when they land (on the word that names them?), whether they stack.
+- **Boards and images**: type, border, size, when they land (on the word that names them?), whether they stack.
 - **Hook** (first 2 s), **CTA** (last 3 s), **color grade** (bright and flat, or contrasty and dark).
 
 Save 6 to 10 key stills to `video-agent/styles/<name>/`:
@@ -90,7 +90,7 @@ awk '$1>-30' W/rms-voice.txt | sort -n | awk '{a[NR]=$1}END{print "voice while t
 - Never subtract the isolated voice from the mix: it is not in phase with the original, so the result comes out louder than the voice.
 - Without a key, judge the level on the spectrogram.
 
-Write down where the music starts and which event gets which sound: cut, sticker, zoom, impact.
+Write down where the music starts and which event gets which sound: cut, board, zoom, impact.
 
 ### Zooms
 
@@ -117,20 +117,20 @@ Copied from <link>, measured on <date>. Applied on top of short-editing's style.
 - face 12 to 25 % of the frame; punch-in 1.1 at most, about every 4 s, held until the next cut; slow push 0.6 %/s
 ## Captions
 - ...
-## Stickers and images
+## Boards and images
 - ...
 ## Sound
 - boom bap beat ~90 BPM from the hook impact, 12 dB under the voice, drops out 0.3 s on punch-ins
-- a dry high click on most cuts (sfx/cut.wav), a pop on each sticker (sfx/pop.wav)
+- a dry high click on most cuts (sfx/cut.wav), a pop on each board (sfx/pop.wav)
 ## Grade
 - ffmpeg: eq=contrast=1.08:saturation=0.9,vignette=PI/5,unsharp=5:5:0.4
 ## Left out
-- the AI video clips: replaced by your own footage or a callout
+- the AI video clips: replaced by your own footage or a board
 ## How short-editing applies it
 - the components to add to the composition and the props they take
 ```
 
-End the file with the two sections short-editing reads, in the format of its [looks.md](../short-editing/references/looks.md): a `Stickers` table when the style has stickers (files in `video-agent/styles/<name>/stickers/`), and the `Engine` block with the closest values the free engine has (font, caption mode and case, hook card colors, zoom, grade as a CSS filter). What the engine can't draw stays in the sections above as notes for Claude.
+End the file with the two sections short-editing reads, in the format of its [looks.md](../short-editing/references/looks.md): a `Logos` table for the tools it shows (files in `video-agent/styles/<name>/logos/`), and the `Engine` block with the closest values the free engine has (accent, paper, ink, font, captions size and case, zoom, grade as a CSS filter, sfx, glitch). The layout stays the engine's split screen: a creator with flat color boards becomes a `paper` in that color. What the engine can't draw stays in the sections above as notes for Claude.
 
 **Sound effects** (in `video-agent/styles/<name>/sfx/`):
 
@@ -140,20 +140,14 @@ End the file with the two sections short-editing reads, in the format of its [lo
   ```
 - Otherwise, use a royalty-free library.
 
-**Stickers**:
-
-1. Generate them with `/codex-images`. Use the user's REAL photos as the face reference, never a generated face. Ask for a flat #00FF00 background, no shadow, no text.
-2. Key the background out to a transparent PNG:
-   ```bash
-   ffmpeg -v error -y -i sticker.png -vf "colorkey=0x00FF00:0.3:0.08,despill=type=green" -pix_fmt rgba sticker-cut.png
-   ```
+**Images**: a picture the creator puts on screen (a product, a screenshot) becomes an `image` board; generate one with `/codex-images` only when they have none, never a generated face.
 
 **Logos**: every app named on screen shows its real logo, never a letter in a circle.
 
 ## 4. Test it
 
 1. Pick a 10 to 20 s take of the user from `video-agent/takes/`.
-2. Run `/short-editing <take> style <name>`. It reads the style file and adds what it describes to the composition: stickers on the word that names them, sound effects on the cuts, the grade.
+2. Run `/short-editing <take> style <name>`. It reads the style file and adds what it describes to the composition: boards on the word that names them, its sound effects, the grade.
 3. The slug is `<take slug>-<name>`.
 
 ## 5. Compare before showing
@@ -167,7 +161,7 @@ ffmpeg -v error -y -i W/reel.mp4 -i video-agent/edits/<slug>/final.mp4 -filter_c
 Go tile by tile:
 
 - type size and weight
-- sticker and logo size (they fill the space like in the original)
+- board and logo size (they fill the space like in the original)
 - grade
 - no fade where the original cuts hard
 - captions off the mouth

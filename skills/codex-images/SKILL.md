@@ -1,6 +1,6 @@
 ---
 name: codex-images
-description: Generates images with Codex (OpenAI's coding agent and its built-in image tool, included in a ChatGPT plan) - YouTube thumbnails, covers, B-roll stills, callout visuals, profile pictures - one Codex job per image, several in parallel, with the creator's photos as reference when the face matters, then copies them into the project with a manifest. Use when the user says generate an image, a thumbnail, a cover, make me a visual, codex images, génère une image, miniature, or when publish or short-editing needs an image.
+description: Generates images with Codex (OpenAI's coding agent and its built-in image tool, included in a ChatGPT plan) - YouTube thumbnails, covers, B-roll stills, board images, profile pictures - one Codex job per image, several in parallel, with the creator's photos as reference when the face matters, then copies them into the project with a manifest. Use when the user says generate an image, a thumbnail, a cover, make me a visual, codex images, génère une image, miniature, or when publish or short-editing needs an image.
 argument-hint: "<what to make> [x<count>] [ref <photo>...] [for <slug>]"
 allowed-tools: Bash(codex --version) Bash(codex login status) Bash(ls *) Bash(cp *) Bash(sips *) Bash(ffprobe *)
 ---
@@ -27,7 +27,7 @@ One image = one prompt. Never pack several ideas into one job.
 
 Ask only what is missing, in one message:
 
-- **What for**: thumbnail (1280x720, 16:9), short cover (1080x1920, 9:16), square post (1:1), a still for a callout or B-roll (the video's format).
+- **What for**: thumbnail (1280x720, 16:9), short cover (1080x1920, 9:16), square post (1:1), a still for an image board or B-roll (the video's format).
 - **How many**: 1 by default; 3 variants for a thumbnail (a different idea each, not the same one three times).
 - **Their face**: a thumbnail with them in it needs 1 to 3 clear photos (a frame of a take works: `ffmpeg -v error -y -ss <t> -i <take> -frames:v 1 -q:v 2 <out>/ref-face.jpg`). Pass the absolute paths.
 
@@ -71,7 +71,7 @@ No `IMAGE_PATH` in the answer: the newest file in `~/.codex/generated_images/` (
 Write `<out>/manifest.json`: one entry per image with `file`, `prompt`, `refs`, `date`. Show the images, then:
 
 - A thumbnail or cover: `/publish` uses `<edit>/images/` (they pick one, it is copied as `<edit>/cover.jpg`, the cover and the YouTube thumbnail).
-- A still for a video: `/short-editing` can place it as a callout image (copy it into `video-agent/studio/public/`).
+- A still for a video: `/short-editing` can place it as an `image` board (copy it into `video-agent/studio/public/`).
 
 Delete `<out>/logs/` once everything is fine.
 

@@ -1,108 +1,114 @@
 # Styles: the look of every edit
 
+Every edit has the same layout: the **split-screen paper look** ([style.md](style.md)). A textured paper on top with one board at a time, the camera as a card under one fixed seam, hard cuts between split, paper only and full camera. A style only changes how it looks and sounds: colors, fonts, captions, grade, sound, the creator's handle, their logo and end card.
+
 A style is one markdown file plus one folder of images, in the creator's project:
 
 ```text
 video-agent/styles/
 ├── default.md        the style every edit uses when none is named
 ├── default/          its images
-│   ├── logo.png      optional, small, in a corner
+│   ├── logo.png      optional, small, top-left corner
 │   ├── end.png       optional, the last 2 s (follow card, offer)
-│   └── stickers/     3 to 12 illustrations that pop on a word (fire.png, money.png...)
+│   └── logos/        real logos of the tools the creator talks about (notion.png, claude.png...)
 ├── <name>.md         other styles (made by /steal or copied from default.md)
 └── <name>/
 ```
 
-`/studio-setup style` writes `default.md` and its folder. `/short-editing <take> style <name>` uses another one. No style file at all: the edit uses the **Classic** look below.
+`/studio-setup style` asks the creator a few questions and writes `default.md` and its folder. `/short-editing <take> style <name>` uses another one. No style file at all: the edit uses the **Paper** look below (an empty `look: {}`), which is already finished.
 
 ## The style file
 
 ````markdown
 # Style: default
 
-Look: Classic, accent #FFD400.
+Look: Paper, accent #258EFF.
 Feel: one line in the creator's words ("clear, fast, no gimmicks").
+Instagram: @moncompte, comment word: GUIDE.
 
-## Stickers
+## Logos
 | file | put it on |
 |---|---|
-| stickers/money.png | money, price, revenue, euros, dollars |
-| stickers/fire.png | a result that blew up, "viral", "exploded" |
-| stickers/warning.png | a mistake, "never", "stop" |
+| logos/notion.png | Notion |
+| logos/claude.png | Claude, Claude Code |
 
 ## Engine
 ```json
 {
-  "accent": "#FFD400",
-  "font": "Montserrat",
-  "captions": { "mode": "outline", "upper": true, "size": 110 },
-  "hookCard": { "bg": "#FFFFFF", "color": "#111111" },
-  "zoom": 1.12,
-  "progressBar": true,
-  "grade": "none",
+  "accent": "#258EFF",
+  "paper": "#F4F1EA",
+  "font": "Bricolage Grotesque",
+  "captionFont": "DM Sans",
+  "captions": { "size": 82, "upper": false },
+  "zoom": 1.08,
+  "grade": "brightness(1.05) saturate(0.9) contrast(0.96)",
+  "sfx": true,
+  "glitch": true,
+  "handle": "moncompte",
   "logo": "style/default/logo.png",
   "endCard": { "src": "style/default/end.png", "seconds": 2 }
 }
 ```
 ````
 
-The `Engine` block is the only part the code reads: `short-editing` copies it into the edit file as `look`. The rest tells Claude how to use the style (which sticker goes on which words). Text the creator writes under the sections (a note like "never zoom on my face") is a rule too: follow it.
+The `Engine` block is the only part the code reads: `short-editing` copies it into the edit file as `look`. The rest tells Claude how to use the style (which logo goes on which words, the comment word of the CTA). Text the creator writes under the sections (a note like "never zoom on my face") is a rule too: follow it.
 
-`logo` and `endCard` are optional: leave them out when the folder has no such file. Their paths start with `style/<name>/`: `short-editing` copies the style folder to `video-agent/studio/public/style/<name>/` before rendering.
+`logo`, `endCard` and the `logos/` files are paths from `public/`: `short-editing` copies the style folder to `video-agent/studio/public/style/<name>/` before rendering, so a board icon is `style/default/logos/notion.png`. Leave `logo` and `endCard` out when the folder has no such file.
 
 ## Engine keys
 
-| key | values | default |
+Every key is optional; a missing key takes the Paper value.
+
+| key | values | Paper |
 |---|---|---|
-| `accent` | hex color: the word being said, callouts, progress bar | `#FFD400` |
-| `font` | `Montserrat` (heavy, classic), `Anton` (tall, loud), `Poppins` (round, clean) | `Montserrat` |
-| `captions.mode` | `outline` white text, thick black outline, the said word in accent; `box` the said word on an accent block; `clean` white text with a soft shadow, no outline | `outline` |
-| `captions.upper` | `true` uppercase, `false` as spoken | `true` |
-| `captions.size` | max font size in px (they shrink to fit) | `110` |
-| `hookCard` | `{ "bg", "color" }`, or `null` for no hook card in this style | white card, black text |
-| `zoom` | punch-in on every other cut: `1` = off, `1.08` soft, `1.12` normal, `1.18` strong | `1.12` |
-| `progressBar` | `true` / `false` | `true` |
-| `grade` | a CSS filter on the video, e.g. `"contrast(1.06) saturate(1.08)"`, or `"none"` | `"none"` |
-| `logo` | image path in `public/`, drawn small in the top-left corner (safe zone) | none |
+| `accent` | hex: the marked word of a title, the said word's block in the captions, checks, numbers, pictos | `#258EFF` |
+| `paper` | hex: the background behind the boards. Light = warm paper with grain and fibers; dark (`#141416`) = a dark board with grain, text turns white on its own | `#F4F1EA` |
+| `ink` | hex: text and drawn lines on the paper | `#111111` on light paper, white on dark |
+| `font` | boards: `Bricolage Grotesque` (modern, tight), `Poppins` (round, friendly), `Montserrat` (classic, heavy), `Anton` (tall, loud) | `Bricolage Grotesque` |
+| `captionFont` | same list, plus `DM Sans` | `DM Sans` |
+| `captions.size` | max px (they shrink to fit one line) | `82` |
+| `captions.upper` | `true` uppercase, `false` as spoken | `false` |
+| `zoom` | the camera alternates between 1 and this on each cut: `1` = off, `1.08` soft, `1.12` strong | `1.08` |
+| `grade` | a CSS filter on the camera, `"none"` to turn off | `brightness(1.05) saturate(0.9) contrast(0.96)` (bright, a little desaturated) |
+| `sfx` | `true` / `false`: pop on arrivals, thud on payoffs, boom on the hook | `true` |
+| `glitch` | `true` / `false`: zhhh + a 4-frame glitch when the hook hands over to the content | `true` |
+| `handle` | the Instagram handle (no @) shown in the CTA comment sheet and the DM notification | `toncompte` |
+| `logo` | image drawn small in the top-left corner | none |
 | `endCard` | `{ "src", "seconds" }`: an image full screen over the last seconds | none |
+| `progressBar` | `true` / `false`: a thin accent bar across the top | `false` |
 
 Nothing else is configurable in this free engine on purpose: one clean look per creator, the same every day.
 
-## The 3 starting looks
+## Starting looks
 
-`/studio-setup style` shows these three on one frame of the creator's take, then writes the one they pick into `default.md` with their brand color as `accent`.
+`/studio-setup style` starts from Paper and changes only what the creator asks for. These are tested combinations to offer when they hesitate:
 
-**Classic**: the safe pick, for any niche. Yellow accent, heavy uppercase captions with a black outline, white hook card.
-
-```json
-{ "accent": "#FFD400", "font": "Montserrat", "captions": { "mode": "outline", "upper": true, "size": 110 }, "hookCard": { "bg": "#FFFFFF", "color": "#111111" }, "zoom": 1.12, "progressBar": true, "grade": "none" }
-```
-
-**Clean**: calm and premium, for tech, finance, coaching. Round font as spoken, soft shadow, dark hook card, soft zoom.
+**Paper** (the default): warm white paper, ink black, one blue accent, Bricolage + DM Sans. Works for any niche, reads on every camera.
 
 ```json
-{ "accent": "#3B82F6", "font": "Poppins", "captions": { "mode": "clean", "upper": false, "size": 92 }, "hookCard": { "bg": "#111111", "color": "#FFFFFF" }, "zoom": 1.08, "progressBar": false, "grade": "contrast(1.04) saturate(1.04)" }
+{}
 ```
 
-**Bold**: loud and fast, for opinion, entertainment, podcasts. Tall font, the said word on a color block, strong zoom.
+**Night**: dark board, yellow accent. For tech, finance, late-night talk, a creator whose camera is dark.
 
 ```json
-{ "accent": "#FF3B30", "font": "Anton", "captions": { "mode": "box", "upper": true, "size": 120 }, "hookCard": { "bg": "#FF3B30", "color": "#FFFFFF" }, "zoom": 1.18, "progressBar": true, "grade": "contrast(1.08) saturate(1.1)" }
+{ "paper": "#141416", "accent": "#FFD400" }
 ```
 
-Bold's hook card is the accent: with their color, set its `hookCard.bg` to the same hex (else a red card carries a block of their color).
+**Warm**: cream paper, orange-red accent, round Poppins. For lifestyle, food, coaching.
 
-Pick the accent so the said word reads on their footage: a yellow on a yellow wall disappears. Their brand color first, then check it on the preview frame.
+```json
+{ "paper": "#FBF3E4", "accent": "#FF5A36", "font": "Poppins" }
+```
 
-## Stickers (the illustrations)
+Pick the accent from their brand color, then check it on the preview still: it must read on the paper (a pale yellow on white paper disappears, use Night then) and white caption text must read on its block.
 
-Small PNG illustrations with a transparent background, about 512 px, that pop for 1.2 s on the word they illustrate. Three ways to get them, cheapest first:
+## Logos (the real ones)
 
-1. **Their own**: logos of their tools, their product, a drawing. Transparent PNG, dropped in `stickers/`.
-2. **Noto emoji** (free, Google, Apache 2.0): one file per emoji at `https://fonts.gstatic.com/s/e/notoemoji/latest/<code>/512.png`, `<code>` = the emoji's code point in lowercase hex (💰 `1f4b0`, 🔥 `1f525`, ⚠️ `26a0_fe0f`, 🚀 `1f680`, 🤯 `1f92f`, ✅ `2705`, ❌ `274c`, 📈 `1f4c8`, 💡 `1f4a1`, ⏱️ `23f1_fe0f`). A code with no file returns 404: try it without `_fe0f`.
-   ```bash
-   curl -fsSL -o video-agent/styles/default/stickers/money.png https://fonts.gstatic.com/s/e/notoemoji/latest/1f4b0/512.png
-   ```
-3. **Generated** with `/codex-images` in one consistent look ("flat sticker, thick white border, transparent background").
+A tool, app or product named on screen shows its **real** logo, never a look-alike and never a drawn picto. Put each one in `styles/<name>/logos/` (square PNG or SVG, transparent background, 256 px or more) and add a row to the `Logos` table. Where to get them:
 
-Every sticker gets a row in the `Stickers` table: the file and the words it goes on. A real product or tool named in the video uses its real logo, never a look-alike.
+1. The tool's own press kit or brand page (search "<tool> brand assets").
+2. Its app icon: `https://itunes.apple.com/search?term=<tool>&entity=software&limit=1` returns `artworkUrl512`.
+3. Its repository's `logo.svg` / `icon.png`, or the site's `apple-touch-icon.png`.
+
+Everything else (an idea, a step, a feeling) uses a drawn picto from the engine (`check`, `bolt`, `folder`, `rocket`...), never an emoji.

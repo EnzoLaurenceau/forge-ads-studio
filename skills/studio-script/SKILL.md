@@ -63,7 +63,7 @@ Show the plan as a table (number, type, topic, concept, hook formula you'll try 
 2. **The on-screen hook**: 6 words or fewer, shown during the first seconds. It adds to the spoken hook, never repeats it word for word.
 3. **The body**, from the structure of its type (script-rules.md). One sentence per line. A re-hook near the middle.
 4. **The end**: the ask from voice.md, said once, or a last line that loops into the first.
-5. **Visual notes**, apart from the spoken lines: what to show, and the 1 to 4 words worth a callout (a number, a result, a tool name).
+5. **Visual notes**, apart from the spoken lines: what to show, and the 1 to 4 words worth a board (a number, a result, a tool name, a list of steps).
 6. **Timing**: count the words, divide by their pace (voice.md, else 160 wpm). Check every beat rule in script-rules.md. Fix before showing.
 7. **Facts**: every number, name and result comes from voice.md or what they told you. Anything else becomes `{{your number}}`, `{{client name}}`, and is listed under "To fill".
 8. **Humanize**: run [references/humanize.md](references/humanize.md) on the script (steps 1 to 6, no report per script). Read it as if spoken aloud. Nothing they would never say (voice.md "Words I never use"), no em dash, no AI shape, every fact intact. Its score goes in the script's **Score** line.
@@ -102,8 +102,8 @@ Follow for one script fix a day.
 ```
 
 **Visual notes**
-- line 1 → callout: 20
-- line 5 → callout: 12 words
+- line 1 → board: 20
+- line 5 → board: 12 words
 - line 9 → show: the long hook, crossed out
 
 **Ask:** Follow for one script fix a day.

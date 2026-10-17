@@ -1,6 +1,6 @@
 ---
 name: clips
-description: Turns one long video (YouTube link, podcast, webinar, livestream, or a local file) into finished vertical shorts. Use when the user says long to short, repurpose, long video to shorts, clips from my video, podcast clips, cut my YouTube video into shorts, or gives a long video link. Finds clips that stand alone (one idea, 20 to 60 seconds), scores them, cuts them and edits each one with short-editing (captions, cuts, hook card, callouts, 1080x1920), and writes new scripts in the studio-script format from the ideas too spread out to clip. Reads YouTube captions and chapters with yt-dlp, or transcribes a local file with the short-editing studio.
+description: Turns one long video (YouTube link, podcast, webinar, livestream, or a local file) into finished vertical shorts. Use when the user says long to short, repurpose, long video to shorts, clips from my video, podcast clips, cut my YouTube video into shorts, or gives a long video link. Finds clips that stand alone (one idea, 20 to 60 seconds), scores them, cuts them and edits each one with short-editing (split-screen paper look, captions, cuts, hook, boards, 1080x1920), and writes new scripts in the studio-script format from the ideas too spread out to clip. Reads YouTube captions and chapters with yt-dlp, or transcribes a local file with the short-editing studio.
 argument-hint: "<YouTube link or video file>"
 allowed-tools: Bash(node -v) Bash(yt-dlp *) Bash(ffmpeg *) Bash(ffprobe *) Bash(node sub.mjs *) Bash(npx remotion *)
 ---
@@ -108,7 +108,7 @@ Inside: 4 claims, 2 stories, 6 numbers, 3 mistakes, 5 how-tos, 1 answer
 ### 1. posting-daily-myth
 **Why it stands alone:** a claim, the reason, one example, in one go.
 **On screen:** Daily posting *hurt me*
-**Callouts:** 00:12:20 → 3 months · 00:12:39 → 40%
+**Boards:** 00:12:20 → number: 3 months · 00:12:39 → number: 40%
 
 ## New scripts
 Written to scripts/week-2026-10-05.md: margin-before-ads, first-client-story
@@ -132,7 +132,7 @@ ffmpeg -ss <start in seconds minus 0.5> -i "video-agent/takes/<source>-long.mp4"
 
 ## 7. Edit the clips
 
-Each clip is now a take. Edit them one by one with the `short-editing` skill, in 9:16, with the plan's on-screen hook as the hook card and its callouts. The transcript of the long video is only a guide: short-editing transcribes each clip again for word-exact captions, and trims the 0.5 s margins to the word.
+Each clip is now a take. Edit them one by one with the `short-editing` skill, in 9:16, with the plan's on-screen hook as the hook and its boards. The transcript of the long video is only a guide: short-editing transcribes each clip again for word-exact captions, and trims the 0.5 s margins to the word.
 
 - The studio is set up once (short-editing step 2); every clip after the first goes straight to transcription.
 - Several clips: say the total time first (about 1 minute of transcription plus 3 to 5 minutes of render per clip on a laptop). With sub-agents available, run one agent per clip, at most 2 at a time (renders share the machine); each one follows short-editing for its slug and nothing else.

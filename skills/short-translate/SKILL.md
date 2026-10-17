@@ -91,8 +91,8 @@ Check it: same length as the source (within a second). Then ask them to listen t
 
 `/short-editing <slug>-<lang>`, and tell it:
 
-- **The language changed**: in `video-agent/studio/whisper-config.mjs`, set `WHISPER_LANG` to `<lang>` for this transcription (English: `WHISPER_MODEL = "medium.en"` works best; any other language: `"medium"`), and put it back after. The hook card, callouts and `post.md` are written in `<lang>`.
-- **Same edit as the original** when there is one: same hook card and callouts (translated), placed on the matching words of the new transcript.
+- **The language changed**: in `video-agent/studio/whisper-config.mjs`, set `WHISPER_LANG` to `<lang>` for this transcription (English: `WHISPER_MODEL = "medium.en"` works best; any other language: `"medium"`), and put it back after. The hook, the boards and `post.md` are written in `<lang>`.
+- **Same edit as the original** when there is one: same hook and boards (translated), placed on the matching words of the new transcript.
 - The ask (CTA) in `<lang>`: ask them once for its translation, or translate the one in voice.md and show it.
 
 Name everything `<slug>-<lang>` so both versions sit side by side. Then `/publish <slug>-<lang>` on the account for that language.
