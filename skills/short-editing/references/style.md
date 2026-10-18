@@ -1,66 +1,58 @@
 # The edit style
 
-One take of a person talking, turned into a fast, clean short that holds attention with the sound off. The same rules every time, so a creator can post daily. These rules never change; the colors, fonts, captions, grade and sound come from the creator's style file ([looks.md](looks.md)).
+One take of a person talking, turned into a fast, clean short that holds attention with the sound off. The same rules every time, so a creator can post daily. The colors, fonts, captions, grade and pace come from the creator's style (`video-agent/styles/<name>/style.json`, keys in [style-schema.md](style-schema.md), starting looks in `assets/looks.json`); a rule written in the style's `notes` wins over this page.
 
 ## Cuts
 
 | Rule | Value | Why |
 |---|---|---|
-| Silences | cut every pause longer than 0.3 s | dead air is where people swipe |
-| Breathing room | keep 0.10 s before a word and 0.15 s after | word timings drift a little; this keeps every word whole |
-| Retakes | keep the last complete attempt of a line, drop the earlier ones | creators repeat a line until it sounds right |
+| Silences | every micro silence is cut by `prepare` (`tighten`) | dead air is where people swipe |
+| Retakes | keep the last complete attempt of a line, drop the earlier ones with `cut: [[a, b]]` | creators repeat a line until it sounds right |
 | False starts | drop a half word or "uh" right before a restart | |
 | Start | the first kept word is the first word of the hook | no breath, no "ok", no look at the camera before |
-| End | cut 0.15 s after the last word | a loop restarts faster |
 | Off-script talk | drop "wait", "let me redo that", asides to someone in the room | |
-| Speed | the whole take plays at 1.15 (pitch kept) | ultra cut: no slack between sentences |
-| Sound at a cut | a 2-frame fade out and in | a cut never clicks |
+| Speed | 1.15 (pitch kept), `pace.speed` of the style | no slack between sentences |
 
-A cut is only safe in a real silence: check the gaps between words against `silencedetect` (see the skill) before cutting.
+## The views (`layout.keys`)
 
-## The three views (hard cuts, never a slide or a resize)
-
-| view | what's on screen | when |
+| seam | what's on screen | when |
 |---|---|---|
-| **split** (default) | paper on top with one board, the camera as a card under one seam at y 1160 (white 6 px top border, bleeds to the left, right and bottom) | most of the short |
-| **paper** | the camera leaves, one big board takes the whole frame | one big moment per short: the key number, a screenshot |
-| **full camera** | the face fills the frame | on its own when no board is planned for 5 s or more: a story, an emotion, a punchline |
-| **cta** | full face, an Instagram comment sheet slides up, the comment word gets typed, then a DM notification drops in | the comment ask at the end |
+| **1160** split (default) | the paper on top with one board, the camera card below | most of the short |
+| **1920** paper | the camera leaves, one big board takes the frame | the big moment: the key number, a screenshot, a component |
+| **0** full camera | the face fills the frame | a story, an emotion, a punchline, the CTA; 5 s of short time or more |
 
-- The seam never moves and the camera card never resizes: one layout for the whole short.
-- Every cut alternates the camera framing between 1 and the style's `zoom` (a piece under 0.8 s keeps the previous one). That hides the jump and gives rhythm.
-- 16:9 (`Wide`): the same, with the seam vertical at x 900 and the camera on the right.
+- A style with a fixed `layout.seam` keeps the camera card at that size for the whole short.
+- The window card plays on its own between split and full camera; never fake it with a slide.
 
 ## Boards
 
-- One every 2 to 3 s while the person explains something, each on the exact word it illustrates (`atMs` = that word's `startMs`), held until the next one. Boards **illustrate**, they never paraphrase whole sentences: 2 to 4 words, a number, a list of steps, a before/after, a command.
-- Types: `title` (picto or real logo + 2-4 words, one `*accent*` word), `list` (items light up on their word), `number` (counts to the value, thud on landing), `compare` (before / after), `terminal` (a prompt or an agent working), `image` (a real screenshot in a browser frame), `cta`. Details in [remotion-short.md](remotion-short.md).
-- A named tool always shows its real logo ([looks.md](looks.md)). Everything else gets a drawn picto. Never emojis, never stock illustrations.
-- Vary the types: never three `title` boards in a row.
-- No kicker, no label above a board, no slanted or wobbling text, no text on the camera.
+- One every 2 to 4 s while the person explains, each on the exact word it illustrates. Boards **illustrate**, they never paraphrase: a number, a command, a folder, a logo, a before/after, a real screen. 2 to 4 words of text at most.
+- The items (all in [scene-library.md](scene-library.md)): `text` with an `emph` word, `counter`, `term`, `tree`, `logo`, `check`, `chip`, `screen`, `bar`, `img`; whole scenes `tweet`, `stat`, `bars`, `title`, `cta`, `overlay` (a captured HTML component).
+- A named tool always shows its real logo. Never emojis as logos, never stock illustrations.
+- Vary them: never three text boards in a row.
+- No slanted or wobbling text, no text on the face.
 
 ## Hook
 
-- The first 2 to 3 s: the on-screen hook on the paper above the camera, with one picto, a boom and a quick punch-in on the face.
-- 6 words or fewer, one `*word*` in the accent, never the same words as the spoken hook (it adds to it).
-- It hands off to the first board or to the content with a zhhh and a 4-frame glitch.
+- The first 2 s, readable on frame 0, never blank paper.
+- 6 words or fewer, one accent word, never the same words as the spoken hook (it adds to it).
+- Something already moving: a terminal typing, a counter running, a component in action.
 
 ## Captions
 
-- 1 to 3 words at a time, one line, as spoken (not uppercase), DM Sans 900.
-- White with a dark outline; the word being said sits on an accent block that blurs in. Words never move or bounce.
-- They straddle the seam in split view (half on the paper, half on the camera), sit low in paper view and lower third in full camera. Always on: most people watch muted.
+- 1 to 3 words at a time, as spoken, on the seam in split view. The style picks the look (`captions.style`: `rise` = the word said on an accent block that blurs in, `hard` = hard shadow, ...).
+- `captions.emph` = the accent words, `captions.hide` = off while a board shows the same words.
 
 ## Sound
 
-- Voice at -14 LUFS integrated, peak under -1 dBFS.
-- SFX: a quiet pop when a board or a list item arrives, a thud when a number lands or the "after" side of a compare appears, a boom on the hook. Nothing on cuts, no whooshes, no clicks, no risers.
-- Music is optional, royalty-free only, 22 dB under the voice. None is better than a wrong one.
+- Voice about -14 LUFS, true peak under -1 dBTP (`final` checks it).
+- One calm bed from the library ([music.md](music.md)), under the voice, breathing between sentences.
+- Hits only on real payoffs: a `thud` when a number lands or dies, a quiet `pop` on a real arrival. No whooshes, no clicks, no paper slides (`sfx: { swish: 0, accents: 0 }`).
 
 ## CTA
 
-When the person asks for a comment ("comment GUIDE and I'll send it to you"): a `cta` board with that word, from the ask to the end of the sentence. The handle shown is the creator's (`handle` in the style).
+"Comment GUIDE and I'll send it": full camera, the Instagram (or TikTok) comment sheet as an HTML overlay with the word typed in, then the DM notification (copy `examples/thinking-orbs/source/ig-cta.html`). The handle and avatar are the creator's.
 
 ## Safe zone
 
-Text stays between y 170 and y 1500 and clear of the right 220 px from y 1100 down: the apps cover the rest with their tabs, buttons, name and description. The boards and captions are already placed inside it.
+Text stays between y 170 and y 1500 and clear of the right 220 px from y 1100 down ([shorts-codes.md](shorts-codes.md)).

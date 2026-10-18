@@ -111,11 +111,11 @@ English words of what the image should show; synonyms joined with `|`, a second 
 
 The short in progress (`video-agent/edits/<slug>/` or named): its B-roll from its words.
 
-1. Read the transcript (`public/<slug>.json` in the studio, source ms). Mark the lines that show a moment or a place ("I moved to Lisbon"), a feeling ("I was exhausted"), the creator doing something ("I code at night"), a thing they use. Numbers, ideas and proof stay as boards.
+1. Read the transcript (`files/words.md` of the short, source seconds). Mark the lines that show a moment or a place ("I moved to Lisbon"), a feeling ("I was exhausted"), the creator doing something ("I code at night"), a thing they use. Numbers, ideas and proof stay as boards.
 2. One search per line; Read the sheets. A clip goes in only if the image fits the sentence (a calm line over a calm image), the clean part from `best_start` lasts the whole stretch, and nothing is wrong on screen (blur, a stranger's face, a private screen). At most one B-roll every 8 to 15 s, 2 to 5 s each, 5 s of the creator between two.
-3. Copy each picked clip into the studio: `mkdir -p video-agent/studio/public/broll && cp "<file>" video-agent/studio/public/broll/<id>.<ext>`.
-4. Add them to `public/<slug>.edit.json`: `"broll": [{ "src": "broll/<id>.mp4", "atMs": <startMs of the first word>, "toMs": <endMs of the last word>, "startSec": <best_start> }]`. The composition needs the `broll` layer of `short-editing` (its `references/remotion-short.md`, section 3): a studio made before it lacks it, add it once.
-5. Render a still in the middle of each stretch, Read it, then the full render (`short-editing` steps 6 to 8).
+3. Name each picked clip in the spec's `media` (`source/spec.js`): `<id>: { src: '<file>', from: <best_start>, dur: <s>, fill: true }` (`fill` crops a landscape clip to 9:16, `focus: [x, y]` keeps a part of it).
+4. Add them to `broll` in the same spec: `{ media: '<id>', from: <source s of the first word>, to: <source s of the last word> }` (short-editing's `references/scene-library.md`, "Full-screen B-roll"), then `prepare` again (it extracts the frames).
+5. `short.mjs stills` in the middle of each stretch, Read them, then the full render (`short-editing` steps 5 and 6).
 6. The creator keeps the short: add the slug to each clip's `used` in `library.json` and rebuild `library.md`, so the next shorts prefer fresh clips.
 
 No good hit = the library lacks that image: keep the creator on screen or a board, never a random clip.

@@ -2,15 +2,15 @@
 
 Free Claude Code skills to script, edit, translate and publish your videos: short-form (YouTube Shorts, TikTok, Instagram Reels) and full YouTube videos.
 
-Only markdown. No app, no server. The skills tell Claude how to work and which tools to call: ffmpeg, yt-dlp, and Remotion with whisper.cpp for the edit. Optional: [Treg](https://treg.to) to audit your Instagram and publish on YouTube, Instagram and TikTok, an ElevenLabs key to translate, Codex to generate images.
+No app, no server, no subscription. The skills tell Claude how to work, and `short-editing` ships its own render engine (Node + Chrome + ffmpeg, whisper.cpp for the words, all on your computer, macOS, Windows and Linux), with six real shorts made with it as examples. Optional: [Treg](https://treg.to) to audit your Instagram and publish on YouTube, Instagram and TikTok, an ElevenLabs key to translate, Codex to generate images.
 
 ## Start here
 
 Three steps to your first edited video:
 
 1. **Install** the skills (below), open Claude Code in your project folder.
-2. **`/studio-setup`**: checks your tools, sets up the editing studio, writes your `voice.md` and makes the default look yours (8 quick questions: color, paper, fonts, captions, sound, Instagram CTA, the real logos of your tools, previewed on your own footage). About 15 minutes, once.
-3. Record a take (phone, webcam, camera), drop it in `video-agent/takes/`, then **`/short-editing`**. You get `video-agent/edits/<slug>/final.mp4`, opened for you, plus captions and the post text.
+2. **`/studio-setup`**: checks your tools, sets up the render engine, writes your `voice.md` and makes the default look yours (7 quick questions: look, color, fonts, captions, pace, Instagram CTA, the real logos of your tools, previewed on your own footage). About 15 minutes, once.
+3. Record a take (phone, webcam, camera), drop it in `video-agent/takes/`, then **`/short-editing`**. You get `video-agent/edits/short-<slug>/output/short-<slug>.mp4`, opened for you, plus the .srt captions and the post text.
 
 Not sure which skill to use next? Type `/editing <what you want>`: it picks the right one.
 
@@ -22,8 +22,8 @@ Every short comes out in the same finished look, with no setting to touch:
 
 - **Split screen**: a textured paper on top, the camera as a card under one fixed seam.
 - **Hard cuts between views**: split, paper only for the big moments, full camera for the stories, a punch-in that alternates on every cut.
-- **Boards on the exact word**: titles with a picto or the tool's real logo, lists that light up item by item, numbers that count up, before/after, a terminal, a screenshot.
-- **Hook** with a boom, a zhhh + glitch into the content, pops and thuds on the payoffs (no whooshes).
+- **Boards on the exact word**: numbers that count up and get struck, a terminal that types, a folder tree, the tool's real logo, a tweet, a real screen with zooms and rings, bar charts, and HTML motion components captured into clips (see `skills/short-editing/examples/`).
+- **Hook** already moving on frame 0, thuds and pops only on the payoffs (no whooshes), one of 8 calm music beds under the voice.
 - **Captions** 1 to 3 words, the said word on your color, sitting on the seam.
 - **Comment CTA**: the Instagram comment sheet with your word typed in, then the DM notification.
 - Ultra cut: every pause over 0.3 s gone, the take at 1.15x, voice at -14 LUFS.
@@ -94,13 +94,13 @@ On claude.ai: zip one skill folder and upload it in the Skills part of the setti
 ## The flow
 
 ```text
-/studio-setup          once: tools, studio, voice.md, your style, permissions, accounts
+/studio-setup          once: tools, engine, voice.md, your style, permissions, accounts
 /insta-audit           what works on your own Instagram → audit.md
 /studio-script viral   what works in your niche → swipe.md
 /outliers              what blew up for your competitors → 5 remake scripts
 /studio-script         this week's scripts → video-agent/scripts/
                        record them (phone, camera, webcam) → video-agent/takes/
-/short-editing         each take → video-agent/edits/<slug>/final.mp4 (short or long)
+/short-editing         each take → video-agent/edits/short-<slug>/output/ (9:16, 1:1 or 16:9)
 /broll                 your own clips → a library, placed on your edits
 /steal                 a creator's reel → a second style short-editing can use
 /clips                 a long video → finished shorts
@@ -123,15 +123,15 @@ video-agent/
 ├── log.md        one line per script, so nothing repeats
 ├── scripts/      one file per week
 ├── takes/        raw recordings
-├── styles/       default.md + default/ (your look: logo, logos/ of your tools, end card), and styles copied with steal
+├── style.json    names your default style
+├── styles/       default/ (your look: style.json + assets/logos of your tools), and styles copied with steal
 ├── competitors.json  the watchlist of /outliers
 ├── outliers/     the outlier rankings
-├── edits/        one folder per edited video (final.mp4, post.md, cover.jpg, published.md)
+├── edits/        one folder per edited video (source/spec.js, output/ with the mp4, .srt, post.md)
 ├── repurpose/    one plan per long video
 ├── images/       generated images not tied to a video
 ├── broll/        your B-roll library (index, frames, clips)
 ├── vox/          one folder per Vox animation
-├── studio/       the Remotion project
 ├── .env          your API keys (git-ignored)
 └── .tmp/         scratch files
 ```
@@ -140,11 +140,10 @@ video-agent/
 
 | Tool | For | Cost |
 |---|---|---|
-| Node 20+, git | the edit (Remotion) | free |
+| Node 20+, git | the render engine of short-editing | free |
 | ffmpeg | cuts, audio, conversions | free |
 | yt-dlp + deno | YouTube views, captions, transcripts | free |
-| build tools | whisper.cpp compiles on the first edit (`xcode-select --install`, `build-essential`) | free |
-| Remotion + whisper.cpp | captions and motion design, downloaded on the first edit | free for individuals and small teams ([Remotion license](https://www.remotion.dev/license)) |
+| Chrome (or a headless Chromium) + whisper.cpp | the render and the word timings, installed by `engine/setup.mjs` on the first edit (about 0.6 GB, once) | free |
 | Treg (optional) | your Instagram audit, publishing on YouTube, Instagram and TikTok, TikTok and Instagram numbers of other accounts (CLI with Python 3.12+ on macOS and Linux, or the MCP on any OS) | your own accounts free, other accounts about $0.001 a call, $1 free credit on signup |
 | ElevenLabs (optional) | `short-translate`, with your API key | your ElevenLabs plan |
 | Codex (optional) | `codex-images`, `vox` (`npm i -g @openai/codex`) | your ChatGPT plan |
@@ -153,11 +152,11 @@ video-agent/
 
 ## Permissions
 
-`studio-setup` merges a short allow list into `.claude/settings.json` (`yt-dlp`, `ffmpeg`, `ffprobe`, `npx remotion`, `node sub.mjs`, and Treg's free read-only commands). Never `Bash(*)`. Paid Treg calls always ask first, and the skills say the price before. Publishing and dubbing wait for your explicit yes. Keys live in `video-agent/.env`, never in a chat or a commit.
+`studio-setup` merges a short allow list into `.claude/settings.json` (`yt-dlp`, `ffmpeg`, `ffprobe`, the engine `node .claude/skills/short-editing/engine/*`, and Treg's free read-only commands). Never `Bash(*)`. Paid Treg calls always ask first, and the skills say the price before. Publishing and dubbing wait for your explicit yes. Keys live in `video-agent/.env`, never in a chat or a commit.
 
 ## Honest limits
 
-- One layout on purpose (the split-screen paper look): you change its colors, fonts, captions and sound, not the layout. 7 board types, 4 sound effects, music only from a file you bring. The paid course goes further (more layouts, motion design, music library).
+- One layout family on purpose (the split-screen paper look, with paper-only and full-camera views): you change its colors, fonts, captions, pace and sound. No review studio, no recorder, no B-roll database app: the paid course [Editing IA Pro](https://codelynx.dev/editing) adds them.
 - Auto-captions mishear names and numbers. Check them.
 - Without Treg, research is YouTube only and publishing is manual (the skill hands you a ready kit).
 - Translation has no lip-sync: the image stays the original.

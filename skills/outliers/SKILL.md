@@ -76,7 +76,7 @@ From the ranking, keep a long list of ~15, then cut to 5, each cut with a reason
 4. **Reposts.** A caption or hook that repeats an older reel of the same account: keep the original.
 5. **The mix.** Mode 2 = the language split. A language without a good candidate: say so and fill with the other, never with a weak reel. Max 2 from one account. Mode 1 = the 5 best of that account.
 
-Captions are not hooks. For each finalist, the real first sentence: `yt-dlp -o "video-agent/.tmp/<shortcode>.mp4" "https://www.instagram.com/reel/<shortcode>/"`, then transcribe it like a take with the `short-editing` studio (`node sub.mjs`) when it is set up; otherwise read the caption and ask the creator to watch it and type the first sentence. Two candidates tie: decide on the transcripts.
+Captions are not hooks. For each finalist, the real first sentence: `yt-dlp -o "video-agent/.tmp/<shortcode>.mp4" "https://www.instagram.com/reel/<shortcode>/"`, then transcribe it like a take with the `short-editing` engine (`short.mjs init video-agent/.tmp/reel-<shortcode> --source <file>`, then `short.mjs words`, read `assets/words-scribe.json`) when its setup has run; otherwise read the caption and ask the creator to watch it and type the first sentence. Two candidates tie: decide on the transcripts.
 
 ## 3. Write the 5 scripts
 

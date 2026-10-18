@@ -17,9 +17,11 @@ Talk to them in their language. `<edit>` = `video-agent/edits/<slug>/`.
 
 First match wins:
 
-1. A path, a slug or a title they give: `<edit>/final.mp4`.
+1. A path, a slug or a title they give: `<edit>/output/<name>.mp4` (`<edit>` = `video-agent/edits/<name>/`, never the `-rough` cut).
 2. The video finished in this conversation.
-3. Nothing: the newest `video-agent/edits/*/final.mp4`. Name it in the plan.
+3. Nothing: the newest `video-agent/edits/*/output/*.mp4` (not `-rough`). Name it in the plan.
+
+`<video>` below = that file; `post.md` sits next to it in `output/`.
 
 Then check `<edit>/published.md`: already there with this platform, say so and stop (unless they want to post it again).
 
@@ -55,29 +57,29 @@ They don't want Treg: the manual route (6a) works with no setup.
 
 ## 3. The files
 
-- **Master**: `<edit>/final.mp4`, full quality, for YouTube.
+- **Master**: `<video>`, full quality, for YouTube.
 - **Social export** (shorts only): `<edit>/social.mp4`, H.264 + AAC, under 30 MB so Treg can host it for Instagram (TikTok accepts up to 64 MB). Missing or older than the master, re-encode at a bitrate that fits (about 28 MB × 8000 ÷ duration in seconds, minus 160 kb/s of audio, in kb/s):
   ```bash
-  ffmpeg -y -i <edit>/final.mp4 -c:v libx264 -preset slow -b:v <rate>k -maxrate <rate>k -bufsize <2x rate>k -pix_fmt yuv420p -c:a aac -b:a 160k -movflags +faststart <edit>/social.mp4
+  ffmpeg -y -i <video> -c:v libx264 -preset slow -b:v <rate>k -maxrate <rate>k -bufsize <2x rate>k -pix_fmt yuv420p -c:a aac -b:a 160k -movflags +faststart <edit>/social.mp4
   ```
   Check its size, and that it decodes: `ffmpeg -v error -i <edit>/social.mp4 -f null -`.
 - **Cover**: `<edit>/cover.jpg`, always. Without one, Instagram takes frame 0, often a blink or a blank frame. Images already made with `/codex-images` in `<edit>/images/`: show them, the one they pick is copied as `<edit>/cover.jpg`. Otherwise pick it from the hook: the face with the eyes open, the hook card fully in. Contact sheet of the first 3 seconds, read it, then extract the chosen time `<t>`:
   ```bash
-  ffmpeg -v error -y -ss 0.1 -t 3 -i <edit>/final.mp4 -vf "fps=10,scale=270:-1,tile=6x5" -frames:v 1 video-agent/.tmp/hook-sheet.jpg
-  ffmpeg -v error -y -ss <t> -i <edit>/final.mp4 -frames:v 1 -q:v 2 <edit>/cover.jpg
+  ffmpeg -v error -y -ss 0.1 -t 3 -i <video> -vf "fps=10,scale=270:-1,tile=6x5" -frames:v 1 video-agent/.tmp/hook-sheet.jpg
+  ffmpeg -v error -y -ss <t> -i <video> -frames:v 1 -q:v 2 <edit>/cover.jpg
   ```
   Vertical: keep the key visual inside the central 3:4 (y 240 to 1680), the profile grid crops to it. A long video: a 1280x720 thumbnail is better; offer `/codex-images` to make one, or use a frame.
 
 ## 4. The texts
 
-From `<edit>/post.md` (written by short-editing) when it exists, else from the video's script or transcript and `video-agent/voice.md`, in the video's language:
+From `<edit>/output/post.md` (written by short-editing) when it exists, else from the video's script or transcript and `video-agent/voice.md`, in the video's language:
 
 - **Caption** (Instagram and TikTok): a first line that hooks without repeating the spoken hook word for word (the first 125 characters show before "more"), 2 to 4 short lines on what the viewer gets, the ask from voice.md, then 3 to 5 hashtags of the topic. No #fyp, no wall of emoji.
 - **TikTok caption** only when it should differ (shorter, other hashtags).
 - **YouTube title**: Shorts under 60 characters, long under 70, the promise of the video, true to it.
 - **YouTube description**: the caption, the chapters for a long video (from post.md), then their links (ask once and add them to voice.md).
 
-Run the humanize pass of `studio-script` (its `references/humanize.md`) on all of them when that skill is installed. Every name, number and claim comes from the video; none is added. Save them in `<edit>/post.md`, one heading per text.
+Run the humanize pass of `studio-script` (its `references/humanize.md`) on all of them when that skill is installed. Every name, number and claim comes from the video; none is added. Save them in `<edit>/output/post.md`, one heading per text.
 
 ## 5. The plan (mandatory)
 
@@ -104,7 +106,7 @@ A change on the plan: apply it, show the plan again.
 
 Open the folder (macOS `open <edit>`, Windows `explorer <edit>`, Linux `xdg-open <edit>`), then give the steps:
 
-- **YouTube**: studio.youtube.com → Create → Upload videos → `final.mp4` → title and description from `post.md`, `cover.jpg` as thumbnail → Visibility → Schedule or Public.
+- **YouTube**: studio.youtube.com → Create → Upload videos → `<video>` → title and description from `output/post.md`, `cover.jpg` as thumbnail → Visibility → Schedule or Public.
 - **Instagram**: the app → + → Reel → `social.mp4` → the caption → Edit cover → Add from camera roll → `cover.jpg` → Share (or Schedule in the advanced settings of a professional account).
 - **TikTok**: the app or tiktok.com/upload → `social.mp4` → the caption → cover at the cover time → Post (or Schedule on the web).
 
@@ -131,7 +133,7 @@ An answer `unaudited_client_can_only_post_to_private_accounts` (or only `SELF_ON
 **YouTube**
 
 1. `youtube.youtube.video.upload` with `uploadType=resumable`, the snippet (title, description) and `status` `{"privacyStatus": "private", "selfDeclaredMadeForKids": false}` plus `"publishAt": "<UTC ISO time>"` for a date (`"public"` for now).
-2. PUT `final.mp4` to the session URL it returns.
+2. PUT `<video>` to the session URL it returns.
 3. `youtube.youtube.video.thumbnail.set` with `cover.jpg` (works on verified YouTube accounts; a refusal is fine, say it).
 
 No session URL in the answer: go manual for YouTube.

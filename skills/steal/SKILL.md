@@ -1,6 +1,6 @@
 ---
 name: steal
-description: Copies another creator's editing style into a named style that short-editing applies to your own takes. Use when the user says steal, "copy the style of", "edit like @x", "make a style from this reel", "vole le style de", or gives a reel or short as the model for a look. Downloads the reel (yt-dlp, or Treg for Instagram and TikTok), MEASURES the style with ffmpeg instead of eyeballing it (contact sheets, hard cuts per second, a spectrogram for the beat and the sound effects on the cuts, the music level under the voice, the face size and the zooms), writes video-agent/styles/<name>.md, then edits a test video with short-editing and compares it frame by frame with the original.
+description: Copies another creator's editing style into a named style that short-editing applies to your own takes. Use when the user says steal, "copy the style of", "edit like @x", "make a style from this reel", "vole le style de", or gives a reel or short as the model for a look. Downloads the reel (yt-dlp, or Treg for Instagram and TikTok), MEASURES the style with ffmpeg instead of eyeballing it (contact sheets, hard cuts per second, a spectrogram for the beat and the sound effects on the cuts, the music level under the voice, the face size and the zooms), writes video-agent/styles/<name>/ (style.json for the engine + STYLE.md), then edits a test video with short-editing and compares it frame by frame with the original.
 argument-hint: "<reel URL or video file> [style name]"
 allowed-tools: Bash(yt-dlp *) Bash(ffmpeg *) Bash(ffprobe *) Bash(treg catalog *) Bash(treg balance)
 ---
@@ -11,9 +11,10 @@ Someone's edit works and you want it on your own videos. This skill measures the
 
 Output:
 
-- `video-agent/styles/<name>.md`: the style, read by `/short-editing <take> style <name>`.
-- `video-agent/styles/<name>/`: its stills, sound effects and logos.
-- `video-agent/edits/<slug>-<name>/final.mp4`: the test video.
+- `video-agent/styles/<name>/style.json`: the style the engine reads, used by `/short-editing <take> style <name>`.
+- `video-agent/styles/<name>/STYLE.md`: what was measured and the rules the engine can't hold.
+- `video-agent/styles/<name>/stills/` (key frames of the original) and `assets/` (its sound effects and logos, copied into every short that uses it).
+- `video-agent/edits/short-<slug>-<name>/output/short-<slug>-<name>.mp4`: the test video.
 
 Read [references/learnings.md](references/learnings.md) before you start. Each rule in it comes from a copy that got rejected.
 
@@ -55,10 +56,10 @@ Read EVERY sheet and write down:
 - **Boards and images**: type, border, size, when they land (on the word that names them?), whether they stack.
 - **Hook** (first 2 s), **CTA** (last 3 s), **color grade** (bright and flat, or contrasty and dark).
 
-Save 6 to 10 key stills to `video-agent/styles/<name>/`:
+Save 6 to 10 key stills to `video-agent/styles/<name>/stills/`:
 
 ```bash
-ffmpeg -v error -y -ss <seconds> -i W/reel.mp4 -frames:v 1 video-agent/styles/<name>/t<seconds>.jpg
+ffmpeg -v error -y -ss <seconds> -i W/reel.mp4 -frames:v 1 video-agent/styles/<name>/stills/t<seconds>.jpg
 ```
 
 ### Sound
@@ -104,7 +105,7 @@ Write the range (e.g. face 12 to 25 % of the frame), the punch-ins per 10 s, and
 
 ## 3. Write the style
 
-`video-agent/styles/<name>.md`, in the user's language, with the same sections as `short-editing`'s [style.md](../short-editing/references/style.md). Each line gives a value and the measurement behind it:
+`video-agent/styles/<name>/STYLE.md`, in the user's language, with the same sections as `short-editing`'s [style.md](../short-editing/references/style.md). Each line gives a value and the measurement behind it:
 
 ```markdown
 # Style: <name>
@@ -121,33 +122,33 @@ Copied from <link>, measured on <date>. Applied on top of short-editing's style.
 - ...
 ## Sound
 - boom bap beat ~90 BPM from the hook impact, 12 dB under the voice, drops out 0.3 s on punch-ins
-- a dry high click on most cuts (sfx/cut.wav), a pop on each board (sfx/pop.wav)
+- a dry high click on most cuts (assets/sfx/cut.mp3), a pop on each board (assets/sfx/pop.mp3)
 ## Grade
 - ffmpeg: eq=contrast=1.08:saturation=0.9,vignette=PI/5,unsharp=5:5:0.4
 ## Left out
 - the AI video clips: replaced by your own footage or a board
 ## How short-editing applies it
-- the components to add to the composition and the props they take
+- what goes in each spec by hand (an HTML component, a layout key, a B-roll moment)
 ```
 
-End the file with the two sections short-editing reads, in the format of its [looks.md](../short-editing/references/looks.md): a `Logos` table for the tools it shows (files in `video-agent/styles/<name>/logos/`), and the `Engine` block with the closest values the free engine has (accent, paper, ink, font, captions size and case, zoom, grade as a CSS filter, sfx, glitch). The layout stays the engine's split screen: a creator with flat color boards becomes a `paper` in that color. What the engine can't draw stays in the sections above as notes for Claude.
+Then write `video-agent/styles/<name>/style.json` with the closest values the engine has, every key from short-editing's [style-schema.md](../short-editing/references/style-schema.md): `colors`, `font` / `display`, `captions` (26 looks: `stack` for big condensed words on the camera, `band`, `dim`, `rise`, `hard`...), `paper` (`bg: 'flat'` for a solid color background), `layout.seam`, `cuts: 'hard'`, `zoom.drift`, `pace.speed`, `grade` (an ffmpeg chain), `sfx.kit` (the cut, pop and punch files of `assets/sfx/`), `music.dropOn`, and the rules the engine can't hold as `notes`. The poster look of `assets/looks.json` is a measured copy of a hard-cut creator: start from it when the reel cuts hard. Logos the reel shows go in `assets/logos/`.
 
-**Sound effects** (in `video-agent/styles/<name>/sfx/`):
+**Sound effects** (in `video-agent/styles/<name>/assets/sfx/`):
 
 - With an ElevenLabs key, generate 2 or 3 takes per sound and keep the one closest to the original on the spectrogram:
   ```bash
-  curl -s -X POST https://api.elevenlabs.io/v1/sound-generation -H "xi-api-key: $ELEVENLABS_API_KEY" -H "content-type: application/json" -d '{"text":"single dry short high click, tight transient, no reverb","duration_seconds":0.5}' -o video-agent/styles/<name>/sfx/cut-a.mp3
+  curl -s -X POST https://api.elevenlabs.io/v1/sound-generation -H "xi-api-key: $ELEVENLABS_API_KEY" -H "content-type: application/json" -d '{"text":"single dry short high click, tight transient, no reverb","duration_seconds":0.5}' -o video-agent/styles/<name>/assets/sfx/cut-a.mp3
   ```
 - Otherwise, use a royalty-free library.
 
-**Images**: a picture the creator puts on screen (a product, a screenshot) becomes an `image` board; generate one with `/codex-images` only when they have none, never a generated face.
+**Images**: a picture the creator puts on screen (a product, a screenshot) becomes an `img` item on a board; generate one with `/codex-images` only when they have none, never a generated face.
 
 **Logos**: every app named on screen shows its real logo, never a letter in a circle.
 
 ## 4. Test it
 
 1. Pick a 10 to 20 s take of the user from `video-agent/takes/`.
-2. Run `/short-editing <take> style <name>`. It reads the style file and adds what it describes to the composition: boards on the word that names them, its sound effects, the grade.
+2. Run `/short-editing <take> style <name>`. `init` snapshots the style and copies its `assets/`; the spec adds what STYLE.md asks per short (layout keys, punch-ins, boards on the word that names them).
 3. The slug is `<take slug>-<name>`.
 
 ## 5. Compare before showing
@@ -155,7 +156,7 @@ End the file with the two sections short-editing reads, in the format of its [lo
 Put the original on top and the copy below, at the same seconds:
 
 ```bash
-ffmpeg -v error -y -i W/reel.mp4 -i video-agent/edits/<slug>/final.mp4 -filter_complex "[0:v]fps=1,scale=216:384,trim=end_frame=15,tile=15x1[a];[1:v]fps=1,scale=216:384,trim=end_frame=15,tile=15x1[b];[a][b]vstack" -frames:v 1 W/compare.jpg
+ffmpeg -v error -y -i W/reel.mp4 -i video-agent/edits/short-<slug>/output/short-<slug>.mp4 -filter_complex "[0:v]fps=1,scale=216:384,trim=end_frame=15,tile=15x1[a];[1:v]fps=1,scale=216:384,trim=end_frame=15,tile=15x1[b];[a][b]vstack" -frames:v 1 W/compare.jpg
 ```
 
 Go tile by tile:
@@ -173,10 +174,10 @@ With sub-agents, give the compare sheet, the key stills and the list above to a 
 
 ## 6. Deliver
 
-Open `final.mp4`, then tell the user in a few lines:
+Open the test video, then tell the user in a few lines:
 
 - what was measured (seconds per shot, BPM, music level, zooms)
 - what was copied, and what was left out and why
 - where the style lives
 
-From now on, `/short-editing <take> style <name>` uses it. Each time the user rejects something, write it in the style file. When the lesson is general, add it to [references/learnings.md](references/learnings.md).
+From now on, `/short-editing <take> style <name>` uses it. Each time the user rejects something, write it in STYLE.md (and `notes` of style.json). When the lesson is general, add it to [references/learnings.md](references/learnings.md).

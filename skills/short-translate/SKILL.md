@@ -31,12 +31,11 @@ Every command below loads it with `set -a; . video-agent/.env; set +a` and never
 
 Translate the **take**, not a finished video: a finished video has captions burned in the old language. Then short-editing cuts, captions and times everything on the new voice.
 
-- **A take already edited** (`video-agent/edits/<slug>/edit.json` exists): send only the kept parts, so no silence, stutter or retake is paid for. Make the plain cut with short-editing's ranges (from `video-agent/studio/`):
+- **A take already edited** (`video-agent/edits/short-<slug>/source/spec.js` exists): send only the kept parts, so no silence, stutter or retake is paid for. Make the plain cut at normal speed with short-editing's engine: add `speed: 1` to the spec for this one command, then
   ```bash
-  SEL=$(node -e 'const e=require("./public/<slug>.edit.json");console.log(e.ranges.map(r=>`between(t,${r.fromMs/1000},${r.toMs/1000})`).join("+"))')
-  ffmpeg -y -i public/<slug>.mp4 -vf "select='$SEL',setpts=N/FRAME_RATE/TB" -af "aselect='$SEL',asetpts=N/SR/TB" -c:v libx264 -crf 18 -c:a aac -b:a 192k ../.tmp/<slug>-cut.mp4
+  node <skill>/engine/short.mjs rough video-agent/edits/short-<slug>
   ```
-  The source is `video-agent/.tmp/<slug>-cut.mp4`.
+  (`<skill>` = the short-editing skill folder) and remove `speed: 1` again. The source is `video-agent/edits/short-<slug>/output/short-<slug>-rough.mp4`.
 - **A raw take**: offer to run `/short-editing` up to its cut list first (steps 1 to 4) for the same reason. In a hurry: send the raw take as it is.
 
 ## 3. Estimate, then send

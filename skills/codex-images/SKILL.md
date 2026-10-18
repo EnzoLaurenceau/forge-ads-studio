@@ -71,7 +71,7 @@ No `IMAGE_PATH` in the answer: the newest file in `~/.codex/generated_images/` (
 Write `<out>/manifest.json`: one entry per image with `file`, `prompt`, `refs`, `date`. Show the images, then:
 
 - A thumbnail or cover: `/publish` uses `<edit>/images/` (they pick one, it is copied as `<edit>/cover.jpg`, the cover and the YouTube thumbnail).
-- A still for a video: `/short-editing` can place it as an `image` board (copy it into `video-agent/studio/public/`).
+- A still for a video: `/short-editing` can place it as an `img` item on a board (copy it into the short's `assets/images/`).
 
 Delete `<out>/logs/` once everything is fine.
 
