@@ -175,7 +175,7 @@ Three things, each only if they want the skill that needs it. Ask once, in one m
 | For | What | Cost |
 |---|---|---|
 | `/insta-audit` and `/publish` | Treg, with their Instagram, TikTok and YouTube connected | free on their own accounts |
-| exact transcripts in `/short-editing` (every retake and false start heard, so they get cut), `/short-translate`, `/steal`'s music level and sound effects | an ElevenLabs API key (recommended) | their ElevenLabs plan |
+| exact transcripts in `/short-editing` (every retake and false start heard, so they get cut), `/short-translate`, `/steal`'s music level under the voice (sound effects ship with the pack, no key needed) | an ElevenLabs API key (recommended) | their ElevenLabs plan |
 | `/codex-images` | Codex logged in with their ChatGPT account | their ChatGPT plan |
 
 **ElevenLabs**: they create a key at elevenlabs.io/app/settings/api-keys and paste it themselves into `video-agent/.env` as `ELEVENLABS_API_KEY=...` (create the empty file and open it for them). Never ask for a key in the chat. Check it is there without printing it: `grep -c ELEVENLABS_API_KEY video-agent/.env`.

@@ -48,7 +48,7 @@ One take of a person talking, turned into a fast, clean short that holds attenti
 
 - Voice about -14 LUFS, true peak under -1 dBTP (`final` checks it).
 - One calm bed from the library ([music.md](music.md)), under the voice, breathing between sentences.
-- Hits only on real payoffs: a `thud` when a number lands or dies, a quiet `pop` on a real arrival. No whooshes, no clicks, no paper slides (`sfx: { swish: 0, accents: 0 }`).
+- Hits only on real payoffs: a `thud` when a number lands or dies, a quiet `pop` on a real arrival. No whooshes, no clicks, no paper slides (`sfx: { swish: 0, accents: 0 }`). Bigger hits (the hook cut, the payoff) come from the bundled library: [sfx.md](sfx.md).
 
 ## CTA
 

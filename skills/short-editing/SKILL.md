@@ -75,7 +75,7 @@ Plan the beats first, in a comment block at the top of the spec:
 - **Motion components**: what the library cannot draw well (a real app in its own UI, an Instagram comment sheet, a notification, an illustration that acts) becomes an HTML page with `window.setT(t)`, captured into a clip (step 3b). The examples hold a dozen of them to copy.
 - **Captions**: on by default, on the seam. `captions.emph` = the words in the accent color, `captions.hide: [[a, b]]` over a board that carries the same words.
 - **Music**: one bed from [music.md](references/music.md) picked by the hook's emotion, `music: { bed: '<id>', offset }`. Never the same bed as the previous short.
-- **Sound**: `sfx: { swish: 0, accents: 0, extra: [[t, 'thud', -6]] }`: no movement noise, a `thud` or `pop` only on a real payoff.
+- **Sound**: `sfx: { swish: 0, accents: 0, extra: [[t, 'thud', -6]] }`: no movement noise, a `thud` or `pop` only on a real payoff. Bigger moments (the hook cut, the payoff, a shatter) take a bundled file from `assets/sfx/` (`zhhh`, `impact-boom`, `riser`, `glass-shatter`...), all in [references/sfx.md](references/sfx.md). Never generate a sound with ElevenLabs unless the creator asks for one the library lacks.
 - **Real logos, always**: every tool or app named on screen shows its real icon in `assets/logos/<name>.png` (the App Store icon, the official site or repo), never a letter glyph, never an emoji, never a look-alike. Download it into the project and say from where.
 - No em-dashes in any on-screen text.
 

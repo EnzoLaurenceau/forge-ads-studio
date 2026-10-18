@@ -133,13 +133,14 @@ Copied from <link>, measured on <date>. Applied on top of short-editing's style.
 
 Then write `video-agent/styles/<name>/style.json` with the closest values the engine has, every key from short-editing's [style-schema.md](../short-editing/references/style-schema.md): `colors`, `font` / `display`, `captions` (26 looks: `stack` for big condensed words on the camera, `band`, `dim`, `rise`, `hard`...), `paper` (`bg: 'flat'` for a solid color background), `layout.seam`, `cuts: 'hard'`, `zoom.drift`, `pace.speed`, `grade` (an ffmpeg chain), `sfx.kit` (the cut, pop and punch files of `assets/sfx/`), `music.dropOn`, and the rules the engine can't hold as `notes`. The poster look of `assets/looks.json` is a measured copy of a hard-cut creator: start from it when the reel cuts hard. Logos the reel shows go in `assets/logos/`.
 
-**Sound effects** (in `video-agent/styles/<name>/assets/sfx/`):
+**Sound effects** (in `video-agent/styles/<name>/assets/sfx/`): take them from the library that ships with short-editing, never generate them by default.
 
-- With an ElevenLabs key, generate 2 or 3 takes per sound and keep the one closest to the original on the spectrogram:
+- Pick the closest file in `<short-editing>/assets/sfx/` (list and uses in short-editing's [references/sfx.md](../short-editing/references/sfx.md)): `kit-hardcut/` holds a dry cut click, a pop and a boom / glass punch for hard-cut creators; `zhhh`, `impact-boom`, `riser`, `whoosh-in`, `whip` cover hook transitions and payoffs. Copy them into the style's `assets/sfx/` and point `sfx.kit` / the notes at them.
+- The engine's own sounds (`thud`, `pop`, `tap`, `bell`, `tom` in `sfx.extra`) cover soft hits with no file at all.
+- Only when the original has a sound none of these comes close to, and the creator agrees (it uses their credits), generate 2 or 3 takes with ElevenLabs and keep the closest:
   ```bash
   curl -s -X POST https://api.elevenlabs.io/v1/sound-generation -H "xi-api-key: $ELEVENLABS_API_KEY" -H "content-type: application/json" -d '{"text":"single dry short high click, tight transient, no reverb","duration_seconds":0.5}' -o video-agent/styles/<name>/assets/sfx/cut-a.mp3
   ```
-- Otherwise, use a royalty-free library.
 
 **Images**: a picture the creator puts on screen (a product, a screenshot) becomes an `img` item on a board; generate one with `/codex-images` only when they have none, never a generated face.
 
