@@ -743,7 +743,7 @@ async function renderJPEG({ scale, fps, n0, N, out, W, H, draft, start }) {
 // {"default": "<name>"} (a plain file, no link). An older profile keeps its default style right in <profile>/style.json.
 const HOME = (start = PROJ || process.cwd()) => expand(process.env.SHORT_EDITING_HOME || (s => { for (let d = s; d !== path.dirname(d); d = path.dirname(d)) if (d !== os.homedir() && (fs.existsSync(path.join(d, '.short-editing')) || fs.existsSync(path.join(d, 'video-agent')))) return path.join(d, fs.existsSync(path.join(d, '.short-editing')) ? '.short-editing' : 'video-agent'); return path.join(s, '.short-editing'); })(path.resolve(start)));
 const styleDir = (home, name) => { if (name) return path.join(home, 'styles', name); try { const d = readJSON(path.join(home, 'style.json')).default; if (typeof d === 'string') return path.join(home, 'styles', d); } catch {} return home; };
-const KEYFILES = () => [path.join(HOME(), '.env'), path.join(os.homedir(), '.short-editing/.env')];   // keys only may be shared machine-wide
+const KEYFILES = () => [path.join(HOME(), '.env'), path.join(process.cwd(), '.env'), path.join(os.homedir(), '.short-editing/.env')];   // keys only may be shared machine-wide
 // newest take in the profile's A-roll folder (style.folders.aroll), for `init --source latest`
 function latestTake(st) {
   const dir = st?.folders?.aroll && expand(st.folders.aroll);

@@ -105,6 +105,13 @@ export async function buildAudio(proj, raw) {
 
   // ---- score + sfx
   const lib = path.join(path.dirname(fileURLToPath(import.meta.url)), '../assets/music'), bed = raw.music?.bed && path.join(lib, `${raw.music.bed}.mp3`);
+  // free pack: the beds are not in git, each one is generated in code the first time it is used (about 30 s)
+  if (bed && !fs.existsSync(bed) && JSON.parse(fs.readFileSync(path.join(lib, 'tracks.json'), 'utf8')).some(x => x.id === raw.music.bed)) {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'bed-'));
+    console.log(`[audio] music: generating the "${raw.music.bed}" bed once (about 30 s)`);
+    execFileSync(process.execPath, [path.join(path.dirname(fileURLToPath(import.meta.url)), 'music.mjs'), raw.music.bed, '--out', tmp], { stdio: 'inherit' });
+    if (fs.existsSync(path.join(tmp, `${raw.music.bed}.mp3`))) fs.copyFileSync(path.join(tmp, `${raw.music.bed}.mp3`), bed);
+  }
   if (bed && !fs.existsSync(bed)) throw new Error(`music.bed "${raw.music.bed}" not in ${lib} (ids: ${fs.readdirSync(lib).filter(f => f.endsWith('.mp3')).map(f => f.slice(0, -4)).join(', ')})`);
   // music.chapters: [[at, bedId], ...] (SOURCE s): long-form, one library bed per chapter, 2 s crossfade on each change
   const ch = !spec.music?.mute && raw.music?.chapters;

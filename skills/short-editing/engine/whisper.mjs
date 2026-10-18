@@ -70,6 +70,17 @@ function toWords(json) {
   return words.filter(w => w.text);
 }
 
+// whisper drops repeats and false starts and spreads their time over the next words, so a retake
+// becomes invisible. A prompt written with hesitations makes it transcribe what was really said.
+const VERBATIM = {
+  fr: "Euh, alors, j'ai, j'ai testé tous les, euh, tous les.",
+  en: 'Um, so, I, I tried all the, uh, all the.',
+  es: 'Eh, bueno, yo, yo probé todos los, eh, todos los.',
+  de: 'Äh, also, ich, ich hab alle, äh, alle.',
+  it: 'Ehm, allora, ho, ho provato tutti i, ehm, tutti i.',
+  pt: 'Hum, então, eu, eu testei todos os, hum, todos os.',
+};
+
 export async function whisperWords(PROJ, lang, wav, log = console.log) {
   const cli = findWhisper();
   if (!cli) throw new Error(IS_WIN ? 'whisper.cpp not found: run node <skill>/engine/setup.mjs (it installs it)'
@@ -80,7 +91,8 @@ export async function whisperWords(PROJ, lang, wav, log = console.log) {
   if (r.status) throw new Error(`ffmpeg could not read ${wav}: ${String(r.stderr).slice(-300)}`);
   log(`whisper: transcribing on this computer (${path.basename(model)}, about real time)`);
   const threads = String(Math.max(2, Math.min(8, os.cpus().length)));
-  r = spawnSync(cli, ['-m', model, '-f', w16, '-l', lang || 'auto', '-t', threads, '-ojf', '-of', path.join(tmp, 'out'), '-np'],
+  r = spawnSync(cli, ['-m', model, '-f', w16, '-l', lang || 'auto', '-t', threads, '-ojf', '-of', path.join(tmp, 'out'), '-np',
+    ...(VERBATIM[lang] ? ['--prompt', VERBATIM[lang]] : [])],
     { encoding: 'utf8', maxBuffer: 1 << 28 });
   if (r.status) throw new Error(`whisper-cli failed (${r.status}): ${(r.stderr || '').slice(-400)}`);
   const json = JSON.parse(fs.readFileSync(path.join(tmp, 'out.json'), 'utf8'));
@@ -92,6 +104,7 @@ export async function whisperWords(PROJ, lang, wav, log = console.log) {
   const res = { language_code: json.result?.language || lang || '', text: words.map(w => w.text).join(' '), words: out, source: 'whisper.cpp' };
   fs.writeFileSync(path.join(PROJ, 'assets/words-scribe.json'), JSON.stringify(res, null, 2));
   log(`words: ${words.length} words, lang ${res.language_code} (${((Date.now() - t0) / 1000).toFixed(1)}s, whisper.cpp) -> assets/words-scribe.json`);
+  log('tip: an ElevenLabs key (ELEVENLABS_API_KEY in video-agent/.env) makes words use Scribe, which hears every retake and false start');
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

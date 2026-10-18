@@ -8,8 +8,9 @@ One take of a person talking, turned into a fast, clean short that holds attenti
 |---|---|---|
 | Silences | every micro silence is cut by `prepare` (`tighten`) | dead air is where people swipe |
 | Retakes | keep the last complete attempt of a line, drop the earlier ones with `cut: [[a, b]]` | creators repeat a line until it sounds right |
-| False starts | drop a half word or "uh" right before a restart | |
+| False starts | drop a half word or "uh" right before a restart, the opening one included: a line said twice at the start (`J'ai testé tous les… j'ai testé tous les scripts`) starts the short at the second one | |
 | Start | the first kept word is the first word of the hook | no breath, no "ok", no look at the camera before |
+| Hidden retakes | whisper can still merge a retake: a word lasting over ~0.6 s, a repeated phrase, or a word that makes no sense (`clics cloud`) marks one. Listen to that spot (`ffmpeg -ss a -t 4`), or re-run `words` with an ElevenLabs key, and cut it; never patch it with `captions.replace` | the short must start clean |
 | Off-script talk | drop "wait", "let me redo that", asides to someone in the room | |
 | Speed | 1.15 (pitch kept), `pace.speed` of the style | no slack between sentences |
 

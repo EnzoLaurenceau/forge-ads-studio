@@ -24,7 +24,7 @@ video-agent/
 
 | look | says | for |
 |---|---|---|
-| `default` | minimal: textured paper, the system font (San Francisco on a Mac, Segoe UI on Windows), the camera full width under one straight seam, white captions with no block on the video, each word appearing when said | anyone, nothing to choose |
+| `default` | minimal: textured paper, the system font (San Francisco on a Mac, Segoe UI on Windows), the camera full width under one straight seam, captions in mono capitals (JetBrains Mono), white on a black rounded band sitting on the seam | anyone, nothing to choose |
 | `classique` | textured paper, sticker captions, blue accent | a more playful paper look |
 | `papier` | deep shadows, the camera as a framed photo, `rise` captions (the said word on an accent block), Bricolage Grotesque | tech, explainers, premium |
 | `pop` | off-white, black and a loud yellow, big `hard` captions with a hard shadow | podcast, opinion, energy |

@@ -48,7 +48,7 @@ No audio stream: stop and say so. Then create the project:
 node <skill>/engine/short.mjs init video-agent/edits/short-<slug> --source "<take>" [--style <name>]
 ```
 
-- The style: `style <name>` in the request = `video-agent/styles/<name>/style.json`, passed as `--style <name>` (only when that folder exists: an unknown name stops `init`, so list `video-agent/styles/` instead). Without it, `init` takes the default one (`video-agent/style.json` names it). No style at all: first write `video-agent/styles/default/style.json` = `{"version": 1, "name": "default"}` plus the `style` of the `default` look of `<skill>/assets/looks.json` (system font, camera full width, minimal white captions), and `video-agent/style.json` = `{"default": "default"}`, then say once that `/studio-setup style` makes it theirs in 2 minutes.
+- The style: `style <name>` in the request = `video-agent/styles/<name>/style.json`, passed as `--style <name>` (only when that folder exists: an unknown name stops `init`, so list `video-agent/styles/` instead). Without it, `init` takes the default one (`video-agent/style.json` names it). No style at all: first write `video-agent/styles/default/style.json` = `{"version": 1, "name": "default"}` plus the `style` of the `default` look of `<skill>/assets/looks.json` (system font, camera full width, mono caps captions on a black band), and `video-agent/style.json` = `{"default": "default"}`, then say once that `/studio-setup style` makes it theirs in 2 minutes.
 - `init` makes `assets/ files/ source/ output/ stills/`, copies the take to `assets/source.mp4`, frames `cam` on the face, writes the starter `source/spec.js` and snapshots the style into `source/style.json` (engine defaults < style < spec: the spec only sets what differs for this one short). The style's `assets/` (logos, images) are copied into the project.
 - Format: `9:16` by default. `1:1` = `format: 'square'` (X feed), `16:9` = `format: 'wide'` in the spec.
 
@@ -58,7 +58,7 @@ node <skill>/engine/short.mjs init video-agent/edits/short-<slug> --source "<tak
 node <skill>/engine/short.mjs words video-agent/edits/short-<slug> [lang]
 ```
 
-whisper.cpp on this computer, about real time (a 60 s take, about a minute), free. With `ELEVEN_KEY=` in `video-agent/.env`, ElevenLabs Scribe instead (sharper on names, a few cents). Never ask for a key in chat, never print one.
+whisper.cpp on this computer, about real time (a 60 s take, about a minute), free. With an ElevenLabs key (`ELEVENLABS_API_KEY=` or `ELEVEN_KEY=` in `video-agent/.env`, the project `.env` or the environment), ElevenLabs Scribe instead, on its own: it hears every retake and false start that whisper smooths over, and names; a few cents a take. Recommend it once when a take has retakes. Never ask for a key in chat, never print one.
 
 Then `prepare` (step 4) once: it writes `files/words.md`, every word with its SOURCE time and the SHORT time it lands on after the cuts. Fix misheard words from the script with `captions.replace: [['clics cloud', 'skills Claude']]`, never by editing the times.
 
