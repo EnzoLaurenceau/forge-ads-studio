@@ -45,7 +45,7 @@ export function setTheme(t = {}) {
   if (t.shadow) SH = DROP = EDGE = String(t.shadow);
 }
 // CSS font shorthand needs quotes around a family with digits or dashes
-export const famCss = f => /^[A-Za-z ]+$/.test(f) ? f : `"${String(f).replace(/"/g, '')}"`;
+export const famCss = f => /^[A-Za-z ,-]+$/.test(f) ? f : `"${String(f).replace(/"/g, '')}"`;
 // Big-text look (style.display): the counters, stat values and big board texts in their own family, flat or embossed.
 //   font: family of counters, stat values, depth texts and board texts of 100 px and more; weight: its weight (400 for a
 //   single-weight face like Archivo Black); text: family of the other board texts; title: color of the board texts of

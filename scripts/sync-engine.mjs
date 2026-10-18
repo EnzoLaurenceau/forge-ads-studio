@@ -50,6 +50,10 @@ const TRANSFORMS = [
   // the free pack has no profile.mjs / preview.mjs: say where its profile lives
   [/^references\/style-schema\.md$/, '# Creator profile: style.json\n',
     '# Creator profile: style.json\n\nIn this free pack the profile folder is `<project>/video-agent/` (it plays the role of `.short-editing/` below): `video-agent/styles/<name>/style.json`, edited by hand. `profile.mjs` and `preview.mjs` belong to the paid kit; check a change with `short.mjs stills`.\n'],
+  // free default look: the system font, the camera full width (no framed card), white captions with no block on the video
+  [/^engine\/lib\/kit\.js$/, "export const famCss = f => /^[A-Za-z ]+$/.test(f)", "export const famCss = f => /^[A-Za-z ,-]+$/.test(f)"],
+  [/^assets\/looks\.json$/, "  \"default\": {\n    \"label\": \"Papier classique\",",
+    "  \"default\": {\n    \"label\": \"Minimal\",\n    \"says\": \"Le style par défaut : papier texturé, police système (celle du Mac), caméra pleine largeur, sous-titres blancs sans bloc sur la vidéo.\",\n    \"style\": {\"font\": {\"family\": \"system-ui, -apple-system, Segoe UI, Helvetica Neue, Arial, sans-serif\"}, \"display\": {\"font\": \"system-ui, -apple-system, Segoe UI, Helvetica Neue, Arial, sans-serif\", \"weight\": 800, \"text\": \"system-ui, -apple-system, Segoe UI, Helvetica Neue, Arial, sans-serif\", \"title\": \"ink2\", \"flat\": true}, \"captions\": {\"style\": \"rise\", \"block\": false, \"font\": \"system-ui, -apple-system, Segoe UI, Helvetica Neue, Arial, sans-serif\", \"weight\": 800, \"size\": 82, \"straddle\": true, \"straddleDy\": 90}, \"layout\": {\"frame\": {\"bleed\": true, \"r\": 0}, \"seam\": 1160}}\n  },\n  \"classique\": {\n    \"label\": \"Papier classique\","],
 ];
 // anything still matching after the transforms is reported (fix it in the kit or add a transform)
 const LEAKS = /melvyn|portly|lepodcast|Brain\/video-editing|~\/cc\b|steveclaw|hermes|tella-to-short/i;

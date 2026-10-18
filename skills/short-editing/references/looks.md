@@ -18,13 +18,14 @@ video-agent/
 
 `short.mjs init` snapshots the style into the project (`source/style.json`) and copies its `assets/` there, so a board logo is `assets/logos/notion.png`. `--style <name>` picks another one. No style at all: the engine defaults, already finished.
 
-## The four tested looks
+## The five tested looks
 
-[`assets/looks.json`](../assets/looks.json) holds four starting points, each a `style` patch to copy into `style.json` and adjust:
+[`assets/looks.json`](../assets/looks.json) holds five starting points, each a `style` patch to copy into `style.json` and adjust:
 
 | look | says | for |
 |---|---|---|
-| `default` | textured paper, sticker captions, blue accent | anyone, nothing to choose |
+| `default` | minimal: textured paper, the system font (San Francisco on a Mac, Segoe UI on Windows), the camera full width under one straight seam, white captions with no block on the video, each word appearing when said | anyone, nothing to choose |
+| `classique` | textured paper, sticker captions, blue accent | a more playful paper look |
 | `papier` | deep shadows, the camera as a framed photo, `rise` captions (the said word on an accent block), Bricolage Grotesque | tech, explainers, premium |
 | `pop` | off-white, black and a loud yellow, big `hard` captions with a hard shadow | podcast, opinion, energy |
 | `poster` | flat orange background, hard cuts, the key word huge in condensed capitals on the camera | fast, viral, very readable |

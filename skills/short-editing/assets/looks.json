@@ -1,6 +1,11 @@
 {
   "_": "Starting looks for the onboarding: a partial style.json each, merged over the engine template. preview.mjs --variants '[{\"label\": \"...\", \"look\": \"<key>\", \"style\": {<patch>}}]'. Never personal: no creator, folders, sfx kit or music file.",
   "default": {
+    "label": "Minimal",
+    "says": "Le style par défaut : papier texturé, police système (celle du Mac), caméra pleine largeur, sous-titres blancs sans bloc sur la vidéo.",
+    "style": {"font": {"family": "system-ui, -apple-system, Segoe UI, Helvetica Neue, Arial, sans-serif"}, "display": {"font": "system-ui, -apple-system, Segoe UI, Helvetica Neue, Arial, sans-serif", "weight": 800, "text": "system-ui, -apple-system, Segoe UI, Helvetica Neue, Arial, sans-serif", "title": "ink2", "flat": true}, "captions": {"style": "rise", "block": false, "font": "system-ui, -apple-system, Segoe UI, Helvetica Neue, Arial, sans-serif", "weight": 800, "size": 82, "straddle": true, "straddleDy": 90}, "layout": {"frame": {"bleed": true, "r": 0}, "seam": 1160}}
+  },
+  "classique": {
     "label": "Papier classique",
     "says": "Le style par défaut : papier texturé, sous-titres stickers, accent bleu.",
     "style": {}
