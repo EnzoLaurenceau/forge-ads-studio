@@ -135,7 +135,7 @@ Then write `video-agent/styles/<name>/style.json` with the closest values the en
 
 **Sound effects** (in `video-agent/styles/<name>/assets/sfx/`): take them from the library that ships with short-editing, never generate them by default.
 
-- Pick the closest file in `<short-editing>/assets/sfx/` (list and uses in short-editing's [references/sfx.md](../short-editing/references/sfx.md)): `kit-hardcut/` holds a dry cut click, a pop and a boom / glass punch for hard-cut creators; `zhhh`, `impact-boom`, `riser`, `whoosh-in`, `whip` cover hook transitions and payoffs. Copy them into the style's `assets/sfx/` and point `sfx.kit` / the notes at them.
+- Pick the closest file in `<short-editing>/assets/sfx/` (list and uses in short-editing's [references/sfx.md](../short-editing/references/sfx.md)): `zhhh`, `impact-boom`, `riser`, `glass-shatter`, `pop-back` cover hook transitions, reveals and payoffs. Copy them into the style's `assets/sfx/` and point `sfx.kit` / `sfx.files` / the notes at them.
 - The engine's own sounds (`thud`, `pop`, `tap`, `bell`, `tom` in `sfx.extra`) cover soft hits with no file at all.
 - Only when the original has a sound none of these comes close to, and the creator agrees (it uses their credits), generate 2 or 3 takes with ElevenLabs and keep the closest:
   ```bash
