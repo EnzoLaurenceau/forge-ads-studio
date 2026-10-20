@@ -1,7 +1,7 @@
 ---
 name: outliers
-description: Finds the outlier reels of Instagram accounts (3x their own account's median views or more) through Treg and turns the 5 best into remake scripts in the creator's voice. Two modes - /outliers @handle digs one account; /outliers with no account starts from the creator's own reels, uses and grows a competitor watchlist (video-agent/competitors.json, 70 % main language / 30 % second language when they watch two), ranks every account's outliers against its own median and writes 5 scripts into video-agent/scripts/. Use when the user says outliers, find outliers, what blew up for my competitors, what works in my niche, find me videos to remake, ideas from @someone.
-argument-hint: "[@handle ...] [--min 3] [--scripts 5] [--search]"
+description: Finds the outlier reels of Instagram accounts or videos of TikTok accounts (3x their own account's median views or more) through Treg and turns the 5 best into remake scripts in the creator's voice. Two modes - /outliers @handle digs one account; /outliers with no account starts from the creator's own reels, uses and grows a competitor watchlist (video-agent/competitors.json, 70 % main language / 30 % second language when they watch two), ranks every account's outliers against its own median and writes 5 scripts into video-agent/scripts/. Use when the user says outliers, find outliers, what blew up for my competitors, what works in my niche, find me videos to remake, ideas from @someone, what blew up on TikTok.
+argument-hint: "[@handle | tiktok:handle ...] [--min 3] [--scripts 5] [--search] [--platform tiktok]"
 allowed-tools: Bash(treg --version) Bash(treg balance) Bash(treg catalog *) Bash(treg connections ls)
 ---
 
@@ -21,7 +21,9 @@ Raw views lie: 50 000 views is a flop for a 2M account and a miracle for a 5 000
 2. Sort their views and take the **median**: the middle value (11 reels sorted, the 6th; an even count, the upper of the two middle ones). Half the reels did better, half worse. One viral reel doesn't move it; an average would.
 3. **x median** = the reel's views ÷ that median. **3x or more = an outlier**: the account's usual audience can't explain it, something in the reel did. 1.5x to 3x = maybe, under 1.5x = normal.
 4. Fewer than 10 reels in the window: the median means nothing. Mark the account "sample too small" and rank none of its reels.
-5. Sponsored reels (caption with `#ad`, `#...partner`, "paid partnership") are out: ads bought their views.
+5. Sponsored reels (caption with `#ad`, `#...partner`, "paid partnership", or TikTok's own `paidPartnership` flag) are out: ads bought their views.
+
+TikTok views are far more skewed than Instagram's (medians of a few thousand, outliers at x100 and more): a high x is common there, so the recipe test of step 2 matters even more. An Instagram x and a TikTok x are never compared, even for the same creator: each reel against its own account, on its own platform.
 
 ## 0. Treg
 
@@ -42,16 +44,26 @@ The response holds `reels` (each with `shortcode` or `code`, `views` or `plays`,
 treg call anyapi.instagram.user.reels --method POST --data '{"userId":"<userId>","cursor":"<next_cursor>"}' 2>/dev/null > video-agent/outliers/<handle>/page2.json
 ```
 
-An endpoint gone or renamed: `treg catalog search "an Instagram account's reels with view counts"`, then `treg catalog get <id>` for the parameters and the price. A page fetched less than 7 days ago is reused, not fetched again.
+**A TikTok account** (written `tiktok:<handle>` by the creator, or a `tiktok.com/@handle` URL), 20 videos a page:
+
+```bash
+mkdir -p video-agent/outliers/tiktok-<handle>
+treg call anyapi.tiktok.user.videos --method POST --data '{"handle":"<handle>"}' 2>/dev/null > video-agent/outliers/tiktok-<handle>/page1.json
+treg call anyapi.tiktok.user.videos --method POST --data '{"handle":"<handle>","cursor":"<nextCursor>"}' 2>/dev/null > video-agent/outliers/tiktok-<handle>/page2.json
+```
+
+The response holds `videos` (each with `id`, `url`, `views`, `likes`, `comments`, `createdUtc`, `durationSeconds`, `caption`, `isPinned`, `paidPartnership`, `videoUrl`) and a `nextCursor`. TikTok accounts often post every day: keep fetching pages until the window holds the last 180 days, and stop as soon as every non-pinned video of a page is older than a year (pinned videos are old hits shown first, they say nothing about the page). The reel id is `id`, its link is `url`.
+
+An endpoint gone or renamed: `treg catalog search "an Instagram account's reels with view counts"` (or "a TikTok account's videos with view counts"), then `treg catalog get <id>` for the parameters and the price. A page fetched less than 7 days ago is reused, not fetched again.
 
 Then the math above for each account, one line per reel: `views`, date, median, x median, comments per 1 000 views, the caption's first line.
 
-**Mode 1, an account given** (`/outliers @handle`, several = same on each): up to 15 outliers of that account.
+**Mode 1, an account given** (`/outliers @handle` or `/outliers tiktok:handle`, several = same on each): up to 15 outliers of that account.
 
 **Mode 2, no account:**
 
-1. Their own reels, threshold **x2** (a smaller account has few big hits): their handle from `treg connections ls` (the Instagram `resource_name`) or `video-agent/voice.md`. Their outliers say what THEIR audience already wants: a candidate on the same subject scores higher at step 2.
-2. The watchlist `video-agent/competitors.json`, every account without `use: false`, threshold x3, 5 outliers max per account.
+1. Their own reels, threshold **x2** (a smaller account has few big hits): their handle from `treg connections ls` (the Instagram `resource_name`) or `video-agent/voice.md`. Their outliers say what THEIR audience already wants: a candidate on the same subject scores higher at step 2. Their TikTok too when they post there.
+2. The watchlist `video-agent/competitors.json`, every account without `use: false`, threshold x3, 5 outliers max per account. An account with `"platform": "tiktok"` is fetched as TikTok; `--platform tiktok` (or `instagram`) keeps only one platform.
 3. No watchlist yet, or thin (fewer than 8 usable accounts in one language, or fewer than 15 candidates on their niche), or they wrote `--search`: grow it with [references/discovery.md](references/discovery.md), then go back to 2.
 
 Write the ranking to `video-agent/outliers/<date>-<handle or watchlist>.md`:
@@ -66,6 +78,8 @@ Write the ranking to `video-agent/outliers/<date>-<handle or watchlist>.md`:
 | # | account | lang | reel | date | views | x median | com ‰ | hook (caption until transcribed) |
 ```
 
+A TikTok account is written `@handle (TikTok)` in both tables.
+
 ## 2. Pick the 5
 
 From the ranking, keep a long list of ~15, then cut to 5, each cut with a reason (step 4):
@@ -76,7 +90,7 @@ From the ranking, keep a long list of ~15, then cut to 5, each cut with a reason
 4. **Reposts.** A caption or hook that repeats an older reel of the same account: keep the original.
 5. **The mix.** Mode 2 = the language split. A language without a good candidate: say so and fill with the other, never with a weak reel. Max 2 from one account. Mode 1 = the 5 best of that account.
 
-Captions are not hooks. For each finalist, the real first sentence: `yt-dlp -o "video-agent/.tmp/<shortcode>.mp4" "https://www.instagram.com/reel/<shortcode>/"`, then transcribe it like a take with the `short-editing` engine (`short.mjs init video-agent/.tmp/reel-<shortcode> --source <file>`, then `short.mjs words`, read `assets/words-scribe.json`) when its setup has run; otherwise read the caption and ask the creator to watch it and type the first sentence. Two candidates tie: decide on the transcripts.
+Captions are not hooks. For each finalist, the real first sentence: `yt-dlp -o "video-agent/.tmp/<shortcode>.mp4" "https://www.instagram.com/reel/<shortcode>/"` (a TikTok: its `url`; when TikTok refuses yt-dlp, download the `videoUrl` of its row with `curl -L`, a link that expires within days), then transcribe it like a take with the `short-editing` engine (`short.mjs init video-agent/.tmp/reel-<shortcode> --source <file>`, then `short.mjs words`, read `assets/words-scribe.json`) when its setup has run; otherwise read the caption and ask the creator to watch it and type the first sentence. Two candidates tie: decide on the transcripts.
 
 ## 3. Write the 5 scripts
 
@@ -118,6 +132,6 @@ In chat: accounts scanned and outliers found, the 5 picks (account, x median, ho
 
 ## Honest limits
 
-- Instagram only (Treg). For YouTube Shorts the same math works for free with yt-dlp: `/studio-script viral`.
+- Instagram and TikTok (Treg). For YouTube Shorts the same math works for free with yt-dlp: `/studio-script viral`.
 - An outlier can come from outside the hook: a trend, a collab, a repost, ads not tagged. The ranking says what over-performed, not exactly why: the transcript and the recipe test do that.
 - Never reuse someone's hook word for word in a caption or a title. The structure is free; the script is rewritten in their words.
