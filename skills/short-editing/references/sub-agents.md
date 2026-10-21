@@ -16,9 +16,13 @@ A sub-agent never edits `spec.js`, `style.json`, the engine or another component
 
 Anything the scene library cannot draw well, written as an HTML page and turned into a clip by `short.mjs capture`:
 
-- a real app played in its own UI: a terminal typing a command, a chat answering, the Instagram comments of a CTA, a dashboard filling, a phone notification. A finger or a cursor does the actions;
+- a real app played in its own UI: a terminal typing a command, a chat answering, the Instagram comments of a CTA, a dashboard filling, a phone notification. A finger or a cursor does the actions. Every UI and motion design text (titles, labels, tags, counters included, captions excepted) uses the Apple system font (`"SF Pro"` first, `"SF Mono"` for monospace, never `-apple-system` alone), in its Text cut (`font-variation-settings: "opsz" 17`, letter-spacing 0, only titles of 60 px and up keep the Display cut), see design-system "Type";
+- a software idea played in a recreated UI that acts: code that scrolls then blacks out line by line, a lock that closes, a price that drops to 0 under a stamp; a platform named with a number in its real interface (the GitHub repo page, its stars curve, the Star button filling);
+- the hook's mini story: 2 or 3 acts with a reversal, several layers, an impact on each keyword, the payoff as a badge (e.g. the big apps crush the viewer's app under a REPLACED stamp, the story flips on the turning word, the viewer's app becomes the giant);
 - a fun illustration that acts: a mascot, an object or a character that does something, with a new action every 2 to 3 s;
-- a code-drawn still (a chart, a diagram) when a moving one is not needed.
+- a chart or a diagram, drawn and animated in code (a curve that draws, bars that fill), never a still.
+
+A component never pastes a screenshot or a generated image as the beat (the creator 2026-10-21: source code = motion design, never an image). A screenshot is a reference to rebuild in HTML; a generated illustration is a layer that moves and acts inside the page.
 
 The engine-native beats (cards, tiles, counters, `term`, texts, `board`) stay with the supervisor: writing them in `spec.js` is faster than a round trip.
 
@@ -30,7 +34,7 @@ The engine-native beats (cards, tiles, counters, `term`, texts, `board`) stay wi
    - its SHORT start and end;
    - its size: `1080x1920 --alpha` for an `overlay` over the camera, the card's own size for an actor on the paper;
    - the spoken words over it with their τ (short time of the word minus the component's short start);
-   - the assets it needs (logos in `assets/logos/`, the avatar, screenshots).
+   - the assets it needs (logos in `assets/logos/`, the avatar, a reference image of a real UI to rebuild: never an image to paste).
 3. Launch one sub-agent per component in ONE message: several Agent calls, each in the background, general-purpose type. Leave out the model so they run on the supervisor's model. Up to about 6 at a time; past that, give one agent 2 small components.
 4. While they work, write the engine-native beats, run `prepare`, then stills on those beats.
 5. When a report lands, wire the clip in:
@@ -53,7 +57,7 @@ Voice over it, τ = seconds since the component starts:
 <τ  word, one per line or as "0.00 Ton, 0.12 monteur, ...">
 Leave free: <the caption band, e.g. y 1180 to 1420, and the face if it is over the camera>.
 
-Look: font family "<style.json font.family>" for every text (display: "<display.family> <weight>"), paper <colors.paper>, ink <colors.ink>, accent <colors.accent>. Creator notes that apply: <the STYLE.md lines that matter here>.
+Look: font family "<style.json font.family>" for every text (display: "<display.family> <weight>"), paper <colors.paper>, ink <colors.ink>, accent <colors.accent>. Creator notes that apply, copied word for word from STYLE.md: <the style's originality and motion-design notes, always, plus the lines that matter here>. Never restate a caption, font or music rule from memory: the style owns them.
 Assets: <real logos and images, paths relative to the HTML>.
 
 Build:
@@ -63,7 +67,9 @@ Build:
 3. Read the sheet, then zoom the full frames that matter. Fix and capture again until the bar below passes. At least 2 rounds.
 
 Bar:
+- It acts: every second shows an action (typing, scrolling, a curve climbing, a lock closing, a stamp landing), never a still image sitting on the frame. On each sheet ask « is something happening, or is it an image sitting there? ».
 - It looks like the real app (its layout, icons, colors and type), never a generic card. Real logos only, never a letter glyph.
+- A hook component is the most ambitious clip of the short: 2 or 3 acts with a reversal, several layers moving together, an impact on each keyword (its event in the report, a thud), the payoff as a badge. One object that slides is not a hook.
 - Something moves every .5 to 1 s, a new action every 2 to 3 s, each action lands on the word that says it.
 - Entries stagger and ease in; nothing pops, bounces or overshoots; nothing jitters between two frames.
 - Every text is 34 px or more at 1080 wide; important content stays inside x 60 to 940, y 220 to 1500.

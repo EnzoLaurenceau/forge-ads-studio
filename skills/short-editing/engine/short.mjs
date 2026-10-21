@@ -452,10 +452,28 @@ function prepareSilent(spec) {
   log(`silent timeline: ${d}s, no voice, no camera`);
 }
 
+// iPhone takes are HDR (HLG, BT.2020): read as SDR they come out grey, washed and purple. Tone-map them once to SDR
+// BT.709 with Apple's own mapping (avconvert H.264 preset = the iPhone's SDR export look); the HDR original stays as
+// assets/source-hlg.mp4. Same frames and duration, the rotation is applied (ffmpeg already showed it rotated).
+function sdrSource() {
+  const s = P('assets/source.mp4');
+  if (!fs.existsSync(s)) return;
+  const trc = execFileSync(FFPROBE, ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=color_transfer', '-of', 'default=nw=1:nk=1', s]).toString().trim();
+  if (trc !== 'arib-std-b67' && trc !== 'smpte2084') return;
+  if (process.platform !== 'darwin') { log(`WARNING: HDR take (${trc}), colors will look washed: convert it to SDR BT.709 first`); return; }
+  const hdr = P('assets/source-hlg.mp4'), tmp = P('assets/source-sdr.mov');
+  if (!fs.existsSync(hdr)) fs.copyFileSync(s, hdr, fs.constants.COPYFILE_FICLONE);
+  execFileSync('avconvert', ['-s', hdr, '-o', tmp, '-p', 'Preset1920x1080', '--replace'], { stdio: ['ignore', 'ignore', 'inherit'] });
+  ff(['-i', tmp, '-map', '0:v:0', '-map', '0:a:0?', '-c', 'copy', '-movflags', '+faststart', s]);
+  fs.rmSync(tmp);
+  log(`source: HDR (${trc}) tone-mapped to SDR BT.709, original kept as assets/source-hlg.mp4`);
+}
+
 async function prepare() {
   const spec = loadSpec();
   fs.mkdirSync(P('files'), { recursive: true }); fs.mkdirSync(P('assets'), { recursive: true });
   if (spec.silent) return prepareSilent(spec);
+  sdrSource();
   sourceWav();
   const tl = tighten(spec);
   fs.writeFileSync(P('assets/timeline.json'), JSON.stringify(tl));
@@ -531,6 +549,8 @@ async function preview() {
   await new Promise(() => {});
 }
 
+// No GPU switches: headless Chrome on Apple silicon already draws the canvas, rasterizes and encodes on the GPU (ANGLE
+// Metal). Benchmarked 2026-10-21 with --use-angle=metal --enable-gpu-rasterization --ignore-gpu-blocklist: no gain.
 // One headless Chrome with the runtime booted. Each worker gets its own browser, so its own renderer process.
 // projects prepared before the mask-only matte still have RGBA frames/cutout: rematte instead of rendering him away
 async function ensureMatte() {
@@ -540,17 +560,21 @@ async function ensureMatte() {
 
 async function openPage(srv, scale) {
   const { chromium } = await import('playwright-core');
-  const browser = await chromium.launch({ executablePath: CHROME, headless: true, args: ['--renderer-process-limit=1', '--disable-extensions', '--mute-audio'] });
+  // launchServer + kill: a graceful browser.close() of headless Chrome takes ~2.4 s on macOS, kill() ~30 ms. Nothing is
+  // lost: every caller awaits its last result (encodeRange awaits its final POST) before closing.
+  const bs = await chromium.launchServer({ executablePath: CHROME, headless: true, args: ['--renderer-process-limit=1', '--disable-extensions', '--mute-audio'] });
+  const browser = await chromium.connect(bs.wsEndpoint()), kill = () => bs.kill();
   const [WW, HH] = frameWH(), page = await browser.newPage({ viewport: { width: WW / 2, height: HH / 2 } });
   page.on('console', m => { if (m.type() === 'error' || m.text().startsWith('[rt]')) console.log('  page:', m.text()); });
   page.on('response', r => { if (r.status() === 404) console.log('  page 404:', r.url().replace(/^https?:\/\/[^/]+/, '')); });
   page.on('pageerror', e => console.log('  pageerror:', e.message));
   const [SW, SH] = stageWH();
-  await page.goto(`http://127.0.0.1:${srv.address().port}/engine/short.html?scale=${scale}&w=${SW}&h=${SH}&ow=${WW}&oh=${HH}`);
+  await page.goto(`http://127.0.0.1:${srv.address().port}/engine/short.html?scale=${scale}&w=${SW}&h=${SH}&ow=${WW}&oh=${HH}${flag('ahead') ? '&ahead=' + flag('ahead') : ''}`);
   await page.waitForFunction(() => window.READY === true || window.READY_ERROR, null, { timeout: 60000 });
   const err = await page.evaluate(() => window.READY_ERROR);
-  if (err) { await browser.close(); throw new Error(err); }
-  return { page, close: () => browser.close() };
+  if (err) { await kill(); throw new Error(err); }
+  if (flag('bench')) { const b = await page.evaluate(() => window.PERF_BOOT); b && log(`boot: fonts ${b.fonts?.toFixed(0)} ms, paper background ${b.bg?.toFixed(0)} ms, ready at ${b.ready?.toFixed(0)} ms`); }
+  return { page, close: kill };
 }
 
 async function withPage(scale, fn) {
@@ -596,7 +620,8 @@ async function capture() {
   const faces = fs.readFileSync(path.join(ENGINE, 'short.html'), 'utf8').match(/@font-face[^}]*\}/g).join('\n')
     .replace(/url\('fonts\//g, `url('${pathToFileURL(path.join(ENGINE, 'fonts')).href}/`);
   const { chromium } = await import('playwright-core');
-  const browser = await chromium.launch({ executablePath: CHROME, headless: true, args: ['--disable-extensions', '--mute-audio', '--allow-file-access-from-files'] });
+  const bs = await chromium.launchServer({ executablePath: CHROME, headless: true, args: ['--disable-extensions', '--mute-audio', '--allow-file-access-from-files'] });
+  const browser = await chromium.connect(bs.wsEndpoint());   // killed at the end, not closed (see openPage)
   try {
     const page = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
     page.on('pageerror', e => console.log('  pageerror:', e.message));
@@ -611,7 +636,7 @@ async function capture() {
       await page.evaluate(t => window.setT(t), i / fps);
       fs.writeFileSync(path.join(tmp, `${pad5(i)}.png`), await page.screenshot({ omitBackground: alpha, type: 'png' }));
     }
-  } finally { await browser.close(); }
+  } finally { await bs.kill(); }
   fs.mkdirSync(path.dirname(out), { recursive: true });
   ff(['-framerate', String(fps), '-i', path.join(tmp, '%05d.png'), ...(alpha ? ['-c:v', 'png', '-pix_fmt', 'rgba']
     : ['-c:v', 'libx264', '-crf', '10', '-preset', 'medium', '-pix_fmt', 'yuv420p', ...BT709]), out]);
@@ -662,7 +687,8 @@ async function render() {
   const out = flag('out') ? path.resolve(PROJ, flag('out')) : P('output', draft ? 'draft-video.mp4' : 'video.mp4');   // --out <path>: e.g. a test clip
   const W = Math.round(frameWH()[0] * scale / 2) * 2, H = Math.round(frameH() * scale / 2) * 2;
   const rate = draft ? 4e6 : W * H > 1.5e6 ? 32e6 : 18e6;
-  // workers: parallel Chrome renderers, each on a contiguous range (default 2: 18 s for 92 s at 1080p, 4 only saves 1 s; --workers n)
+  // workers: parallel Chrome renderers pulling 10 s chunks (default 2: ~8x realtime at 1080p on an M4 Max, 1 = ~7x, 4 is slower:
+  // the hardware encoder is the limit; --workers n)
   const K = Math.max(1, Math.min(+flag('workers', 2), Math.floor(N / 30) || 1));
   const start = Date.now(), jpeg = () => renderJPEG({ scale, fps, n0, N, out, W, H, draft, start });
   if (flag('jpeg')) return jpeg();
@@ -674,21 +700,23 @@ async function render() {
   log(`render ${N} frames ${W}x${H}@${fps}: ${chunks.length - todo.length}/${chunks.length} chunks cached, ${N2} frames to encode, ${Math.min(K, todo.length)} workers -> ${out}`);
   let fallback = null;
   if (todo.length) {
-    const sinks = {}; let lastPct = -1, base = 0;
+    const sinks = {}, perf = {}; let lastPct = -1, base = 0;
     const tick = () => {
       const d = base + Object.values(sinks).reduce((x, s) => x + s.done, 0), pct = Math.floor(d / N2 * 20) * 5;
       if (pct !== lastPct) { lastPct = pct; const el = (Date.now() - start) / 1000; log(`${pct}% (${d}/${N2}) ${(d / el).toFixed(1)} fps, eta ${Math.round((N2 - d) / (d / el || 1))}s`); }
     };
     const s2 = await serve(sinks), queue = [...todo];
     try {
-      const pages = await Promise.all(Array.from({ length: Math.min(K, todo.length) }, () => openPage(s2, scale)));
+      const b0 = Date.now(), pages = await Promise.all(Array.from({ length: Math.min(K, todo.length) }, () => openPage(s2, scale)));
+      perf.boot = Date.now() - b0;
       try {
         fallback = !(await pages[0].page.evaluate(async ([width, height, bitrate]) => window.HAS_WEBCODECS && (await VideoEncoder.isConfigSupported({ codec: 'avc1.640034', width, height, bitrate, framerate: 30, avc: { format: 'annexb' } }).catch(() => ({}))).supported, [W, H, rate]));
         // each worker pulls the next missing chunk; a chunk lands in the cache only once fully encoded (.part, then rename)
         if (!fallback) await Promise.all(pages.map(async ({ page }) => {
           for (let c; (c = queue.shift());) {
             const sk = sinks[c.id] = { out: fs.createWriteStream(c.f + '.part'), done: 0, tick };
-            await page.evaluate(([a, b, fps, sink, rate]) => window.encodeRange(a, b, fps, sink, rate), [c.a, c.b, fps, `/sink/${c.id}`, rate]);
+            const r = await page.evaluate(([a, b, fps, sink, rate]) => window.encodeRange(a, b, fps, sink, rate), [c.a, c.b, fps, `/sink/${c.id}`, rate]);
+            for (const [k, v] of Object.entries(r?.perf || {})) perf[k] = (perf[k] || 0) + v;
             await new Promise(r => sk.out.end(r)); fs.renameSync(c.f + '.part', c.f);
             base += c.b - c.a; delete sinks[c.id]; tick();
           }
@@ -696,6 +724,10 @@ async function render() {
       } finally { await Promise.all(pages.map(p => p.close().catch(() => {}))); }
     } finally { s2.close(); }
     if (fallback) { log('no H.264 WebCodecs in this browser: JPEG fallback'); return jpeg(); }
+    // benchmark: where each frame's time goes, summed over the workers (ms per frame), and the wall clock of the encode
+    if (perf.frames) { const per = k => (perf[k] / perf.frames).toFixed(1), wall = (Date.now() - start) / 1000;
+      log(`bench: boot ${(perf.boot / 1000).toFixed(1)}s, ${N2} frames in ${wall.toFixed(1)}s = ${(N2 / wall).toFixed(0)} fps (${(N2 / fps / wall).toFixed(1)}x realtime), per frame: images ${per('load')} ms, draw ${(+per('render') - +per('load')).toFixed(1)} ms, encode ${(+per('submit') + +per('encWait')).toFixed(1)} ms`);
+      if (flag('bench')) fs.writeFileSync(flag('bench'), JSON.stringify({ frames: N2, wall, workers: Math.min(K, todo.length), ...perf }, null, 2)); }
   }
   // join: every chunk starts on an IDR with its own SPS/PPS, so the Annex B streams concatenate as is
   const all = P('output', '.all.h264'), now = new Date();
@@ -712,7 +744,7 @@ async function render() {
     const keep = new Set(chunks.map(c => path.basename(c.f))), dir = path.dirname(chunks[0].f);
     for (const f of fs.readdirSync(dir)) if (!keep.has(f)) fs.unlinkSync(path.join(dir, f));
   }
-  log(`video done in ${((Date.now() - start) / 1000).toFixed(0)}s`);
+  log(`video done in ${((Date.now() - start) / 1000).toFixed(1)}s`);
 }
 
 // Fallback (--jpeg, or no H.264 WebCodecs): one page, canvas JPEG over CDP, piped to ffmpeg (Apple hardware encoder, else x264).

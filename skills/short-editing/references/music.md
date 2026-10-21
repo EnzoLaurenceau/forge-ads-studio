@@ -17,7 +17,7 @@ music: { bed: '<id>', offset: <s> },   // resolves to <skill>/assets/music/<id>.
 
 | Track (`id`) | BPM | Energy | What it sounds like | Perfect for | Avoid for |
 |---|---|---|---|---|---|
-| Sonar (`sonar`) | 80 | 1, the calmest | Sonar pings in echo, deep drone, slow pulse | Serious or reflective takes: careers, "is AI replacing devs", a confession, a lesson learned. Also dense explanations and fast talkers, since it leaves the most room for the voice | Hype, launches |
+| Sonar (`sonar`) | 80 | 1, the calmest | Sonar pings in echo, deep drone, slow pulse | Serious or reflective takes: careers, "is AI replacing devs", a confession, a lesson learned. Also dense explanations and fast talkers, since it leaves the most room for the voice. **Rejected under a voice on 2026-10-21** (« la music background est très étrange »: its pings read as odd noises): never in a talking-head short | Hype, launches, any talking-head short |
 | Enquête (`enquete`) | 90 | 2 | Low drone, filtered pulse, heartbeat, muted piano | Revelations and behind the scenes: "j'ai découvert", what a company really pays, a leak, numbers nobody shows, story-led shorts. **Default when unsure** | Upbeat tutorials |
 | Thriller (`thriller`) | 84 | 3 | Staccato 3-3-2 ostinato, distant low impacts, dark piano | Drama and warnings: controversies, lawsuits, security holes, "arrête de faire ça", company vs company, a model that cheats | Good news, wins |
 | Filature (`filature`) | 92 | 3 | Muted pluck ostinato, prowling double bass, film-noir vibraphone | Hidden tricks and secret features, a competitor's quiet move, "ils ne veulent pas que tu saches", clever hacks. Slightly playful | Emotional or heavy topics. Its brushed hit every ~1.3 s sounds like a sound effect under motion design: use it low-passed at 2.4 kHz (project copy, `music.src`) |
@@ -36,11 +36,11 @@ Fast pick:
 | Like building something | Code noir |
 | Time pressure ("who wins?") | Compte à rebours |
 | Excited | Néon |
-| Thoughtful | Sonar |
+| Thoughtful | Enquête (never Sonar, rejected 2026-10-21) |
 
 Tie-breakers:
 
-- **Voice density:** a fast, dense talker goes one step calmer (Sonar, Enquête). A sparse voice with lots of paper can take one step more (Code noir, Néon).
+- **Voice density:** a fast, dense talker goes one step calmer (Enquête; Sonar is rejected under a voice). A sparse voice with lots of paper can take one step more (Code noir, Néon).
 - **Rotation:** never use the bed of the previous short again. Check the last few:
   ```bash
   ls -t <shorts folder>/*/source/spec.js | head -5 | xargs grep -hoE "bed: '[a-z-]+'|music/[a-z-]+\.mp3"   # <shorts folder> = folders.shorts of the profile

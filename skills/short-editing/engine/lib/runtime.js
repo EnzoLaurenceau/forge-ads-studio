@@ -10,6 +10,7 @@ import { withStyle, themeOf, captionStyleIndex, CAPTION_STYLES, CAPTION_FONTS, m
 const { C, W, H, S, clamp, lerp, track, noise1 } = K;
 const pad5 = i => String(i).padStart(5, '0');
 
+const PERF_BOOT = {};
 export async function boot() {
   const q = new URLSearchParams(location.search), scale = +q.get('scale') || 1;
   // /style.json: the project's source/style.json (creator colors, font, captions, pace, music), {} for legacy projects
@@ -29,8 +30,14 @@ export async function boot() {
   document.body.appendChild(canvas);
   const ctx = canvas.getContext('2d', { alpha: false });
   K.initSheet(ctx);
-  const BG = K.makeBackground();
+  const bg0 = performance.now(), BG = K.makeBackground(); PERF_BOOT.bg = performance.now() - bg0; PERF_BOOT.fonts = bg0;
 
+  // render benchmark (ms, per encodeRange call): load = waiting on frame images (fetch + decode), render = the whole
+  // render(t) including load, submit = VideoFrame + encode(), encWait = encoder backpressure, flush = the final flush
+  // frames prefetched ahead of the one drawn (?ahead=n, default 8): fetch + JPEG decode run in parallel instead of one
+  // frame at a time. Benchmark 2026-10-21, 5 shorts, M4 Max: images waited 11.6 ms per frame with 1 ahead, 3.7 with 8
+  const AHEAD = +new URLSearchParams(location.search).get('ahead') || 8;
+  const PERF = { load: 0, render: 0, submit: 0, encWait: 0, flush: 0, total: 0, frames: 0 };
   // ---- image cache (LRU of decoded bitmaps)
   const bitmap = url => fetch(url).then(r => r.ok ? r.blob() : null).then(b => b ? createImageBitmap(b) : null).catch(() => null);
   // a cutout frame is virtual: the cam JPG masked by frames/matte (gray+alpha PNG from matte.swift)
@@ -405,7 +412,9 @@ export async function boot() {
     ctx.restore();
   }
   // captions.radius: corner radius of the band block as a multiple of size (.06); captions.shadow: a soft drop under it
-  function bandCaption(c, y) {
+  // captions.active (a colour, e.g. '#8A8A8A'): karaoke on the band, the words not being said take that colour and the
+  // word being said takes captions.color (white); an emphasised word keeps captions.hi when it is not the current one
+  function bandCaption(c, y, t) {
     const sp = spW(), padX = CS * .2, h = CS * 1.2, x0 = W / 2 - c.w / 2, b = K.midBase(y, CS);
     // captions.bg 'none': no block, the words sit on the video with a soft shadow (captions.shadow false = none)
     ctx.save(); if (cap.bg === 'none') { if (cap.shadow !== false) K.drop(ctx, .35, CS * .25, CS * .04, '0,0,0'); }
@@ -413,8 +422,10 @@ export async function boot() {
     ctx.font = K.font(CS, WT, CF); ctx.letterSpacing = LS + 'px'; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
     // captions.bold: faux bold for a single-weight font, a square stroke in the text colour of bold x size px (pixel fonts stay square)
     const BW = cap.bold ? cap.bold * CS : 0; if (BW) { ctx.lineWidth = BW; ctx.lineJoin = 'miter'; ctx.miterLimit = 2; }
-    let x = x0; for (const w of c.words) {
-      ctx.fillStyle = ctx.strokeStyle = w.emph ? cap.hi || C.tint : cap.color || '#FFFFFF';
+    let cur = -1; if (cap.active && t !== undefined) c.words.forEach((w, i) => { if (w.start - .02 <= t) cur = i; });
+    let x = x0; for (const [i, w] of c.words.entries()) {
+      const fg = cap.color || '#FFFFFF';
+      ctx.fillStyle = ctx.strokeStyle = cap.active ? (i === cur ? fg : w.emph ? cap.hi || C.tint : cap.active) : w.emph ? cap.hi || C.tint : fg;
       if (BW) ctx.strokeText(w.text, x, b); ctx.fillText(w.text, x, b); x += wordW(w) + sp;
     }
     ctx.restore();
@@ -449,7 +460,7 @@ export async function boot() {
     ctx.restore();
   }
   function captionLine(c, t, y, base) {
-    if (CNAME === 'band') return bandCaption(c, y);
+    if (CNAME === 'band') return bandCaption(c, y, t);
     if (CNAME === 'dim') return dimCaption(c, t, y);
     if (CSTY) {   // whole-chunk look: fades and rises per chunk like capStyles, scaled from its 84 px design size
       const p = S(t - c.start + .12, 30), k = CS / (cdraw.base || 84); ctx.save(); ctx.globalAlpha *= Math.min(1, p * 1.4);
@@ -908,9 +919,10 @@ export async function boot() {
   }
   async function render(t) { await compose(t); if (GL.length) glitch(t); }
   async function compose(t) {
-    const urls = needs(t); imgCap = Math.max(imgCap, urls.length * 2 + 16);
-    const imgs = new Map(await Promise.all(urls.map(async u => [u, await load(u)])));
-    needs(t + 1 / FPS).forEach(load);  // prefetch next frame
+    const urls = needs(t); imgCap = Math.max(imgCap, urls.length * (AHEAD + 2) + 16);
+    const w0 = performance.now(), imgs = new Map(await Promise.all(urls.map(async u => [u, await load(u)])));
+    PERF.load += performance.now() - w0;
+    for (let k = 1; k <= AHEAD; k++) needs(t + k / FPS).forEach(load);  // prefetch: AHEAD frames fetched and decoded in parallel
     R_imgs = imgs;
     ctx.setTransform(scale, 0, 0, scale, 0, 0);
     if (spec.shake?.keys) {   // spec.shake {keys: [[t, amp px, dur .5]]}: an impact shake of the whole frame, slightly zoomed so no edge shows
@@ -947,23 +959,31 @@ export async function boot() {
   // The bytes stream in order to the CLI's local server (`sink`), so no JPEG is ever made and nothing big crosses CDP.
   window.encodeRange = async (n0, n1, fps, sink, bitrate) => {
     let post = Promise.resolve(), buf = [], size = 0, done = 0, err = null;
+    for (const k in PERF) PERF[k] = 0;
+    const T0 = performance.now();
     const send = () => { if (!size) return; const body = new Blob(buf), n = done; buf = []; size = 0; post = post.then(() => fetch(`${sink}?n=${n}`, { method: 'POST', body })); };
     const enc = new VideoEncoder({ output: c => { const b = new Uint8Array(c.byteLength); c.copyTo(b); buf.push(b); size += b.length; if (size > 2e6) send(); }, error: e => err = e });
     enc.configure({ codec: 'avc1.640034', width: canvas.width, height: canvas.height, bitrate, framerate: fps, bitrateMode: 'variable',
       latencyMode: 'quality', hardwareAcceleration: /Mac/.test(navigator.userAgent) ? 'prefer-hardware' : 'no-preference', avc: { format: 'annexb' } });
     for (let n = n0; n < n1; n++) {
       if (err) throw err;
-      await render(n / fps);
+      const r0 = performance.now(); await render(n / fps);
+      const e0 = performance.now(); PERF.render += e0 - r0;
       const f = new VideoFrame(canvas, { timestamp: Math.round((n - n0) * 1e6 / fps), duration: Math.round(1e6 / fps) });
       enc.encode(f, { keyFrame: (n - n0) % (2 * fps) === 0 }); f.close(); done = n - n0 + 1;
+      const q0 = performance.now(); PERF.submit += q0 - e0;
       while (enc.encodeQueueSize > 3) await new Promise(r => enc.addEventListener('dequeue', r, { once: true }));
+      PERF.encWait += performance.now() - q0;
     }
-    await enc.flush(); if (err) throw err; send(); await post; return done;
+    const f0 = performance.now(); await enc.flush(); if (err) throw err; send(); await post; PERF.flush = performance.now() - f0;
+    PERF.total = performance.now() - T0; PERF.frames = done;
+    return { done, perf: { ...PERF } };
   };
   window.HAS_WEBCODECS = typeof VideoEncoder === 'function';
   window.framePNG = async t => { await render(t); return canvas.toDataURL('image/png').split(',')[1]; };   // lossless, for QC
   window.frameJPEG = async (t, q = .92) => { await render(t); return canvas.toDataURL('image/jpeg', q).split(',')[1]; };
   window.DUR = tl.duration;
   window.LIVE = { render, spec, tl, canvas, FPS };   // the live preview (lib/player.js) drives render(t) itself
+  PERF_BOOT.ready = performance.now(); window.PERF_BOOT = PERF_BOOT;
   window.READY = true;
 }

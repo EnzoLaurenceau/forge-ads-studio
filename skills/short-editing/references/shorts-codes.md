@@ -22,7 +22,7 @@
 
 - Something moves every 2 to 4 s: a layout seam move, a new card, a counter, typing or a punch-in zoom.
 - Alternate proof (paper takes over) with face (full-bleed camera) so the viewer never sits on one layout.
-- SUPER FAST by default. Every micro silence is cut: the cutter finds the real quiet run in the audio at each word boundary and keeps only a tiny breath (`tighten.sentence` .08, `comma` .05, `word` .03). `speed: 1.15` plays the whole short faster (voice via atempo, no pitch shift). Expect a 64 s take to land around 44 s.
+- SUPER FAST by default. Every micro silence is cut: the cutter finds the real quiet run in the audio at each word boundary and keeps only a tiny breath (`tighten.sentence` .08, `comma` .05, `word` .03). `speed: 1.1` (the creator style, from the profile `pace.speed`) plays the whole short faster (voice via atempo, no pitch shift). Expect a 64 s take to land around 44 s.
 
 ## Mobile legibility
 

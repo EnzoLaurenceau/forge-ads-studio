@@ -36,11 +36,14 @@ export async function boot() {
   // ---- image cache (LRU of decoded bitmaps)
   const bitmap = url => fetch(url).then(r => r.ok ? r.blob() : null).then(b => b ? createImageBitmap(b) : null).catch(() => null);
   const cache = new Map();
+  // prefetch depth (?ahead=n, default 8) and an LRU that grows with it, so a prefetch never evicts the frame being drawn
+  const AHEAD = +new URLSearchParams(location.search).get('ahead') || 8;
+  let imgCap = 48;
   const load = url => {
     let p = cache.get(url);
     if (p) { cache.delete(url); cache.set(url, p); return p; }
     p = bitmap(url); cache.set(url, p);
-    while (cache.size > 48) { const [k, v] = cache.entries().next().value; cache.delete(k); v.then(b => b && b.close?.()); }
+    while (cache.size > imgCap) { const [k, v] = cache.entries().next().value; cache.delete(k); v.then(b => b && b.close?.()); }
     return p;
   };
   const camURL = t => `/p/frames/cam/${pad5(clamp(Math.round(t * FPS), 0, frames.cam - 1))}.jpg`;
@@ -219,8 +222,9 @@ export async function boot() {
     }
   }
   async function render(t) {
-    const urls = needs(t), imgs = new Map(await Promise.all(urls.map(async u => [u, await load(u)])));
-    needs(t + 1 / FPS).forEach(load);
+    const urls = needs(t); imgCap = Math.max(imgCap, urls.length * (AHEAD + 2) + 16);
+    const imgs = new Map(await Promise.all(urls.map(async u => [u, await load(u)])));
+    for (let k = 1; k <= AHEAD; k++) needs(t + k / FPS).forEach(load);   // prefetch AHEAD frames in parallel (see runtime.js)
     ctx.setTransform(scale, 0, 0, scale, 0, 0);
     ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none';
     const x = seamAt(t), dx = stageX(x);

@@ -1,7 +1,7 @@
 ---
 name: studio-script
-description: The scriptwriter of the creator's videos - short-form scripts (YouTube Shorts, TikTok, Instagram Reels, 30 to 60 s) in their own voice from video-agent/voice.md, each on a concept proven by the niche's outliers, with 3 scored hooks from 22 formulas, a re-hook, triggers, offer proximity, quality gates, timing at their pace and visual notes, then a humanize pass (invisible characters, AI words in English and French, AI sentence shapes, facts kept). Modes - the week (default), one topic, hook printer, rewrite, humanize, and viral (what over-performs in their niche, scored against each account's median, YouTube free with yt-dlp, TikTok and Instagram through Treg, into video-agent/swipe.md). Use when the user asks for scripts, ideas, this week's videos, a hook, a better hook, to rewrite a script, what goes viral, viral hooks, what works in my niche, competitor research, swipe file, outliers, or to humanize any text (sounds like AI, make it sound like me, a caption before posting).
-argument-hint: "[topic | hook <topic> | rewrite <script> | viral [@handles] | humanize [check] <text or file>]"
+description: The scriptwriter of the creator's videos - short-form scripts (YouTube Shorts, TikTok, Instagram Reels, 30 to 60 s) in their own voice from video-agent/voice.md, each on a concept proven by the niche's outliers, with 3 scored hooks from 22 formulas, a re-hook, triggers, offer proximity, quality gates, timing at their pace and visual notes, then a humanize pass (invisible characters, AI words in English and French, AI sentence shapes, facts kept). Modes - the week (default), one topic, a funnel or divisive script, a making-of, hook printer, rewrite, humanize, and viral (what over-performs in their niche, scored against each account's median, YouTube free with yt-dlp, TikTok and Instagram through Treg, into video-agent/swipe.md). Use when the user asks for scripts, ideas, this week's videos, a funnel or divisive (clivant) script, a making-of, a hook, a better hook, to rewrite a script, what goes viral, viral hooks, what works in my niche, competitor research, swipe file, outliers, or to humanize any text (sounds like AI, make it sound like me, a caption before posting).
+argument-hint: "[topic | funnel <topic> | making-of <what you did> | hook <topic> | rewrite <script> | viral [@handles] | humanize [check] <text or file>]"
 allowed-tools: Bash(grep *) Bash(perl -CSD -pi -e *) Bash(yt-dlp *) Bash(treg catalog *) Bash(treg balance)
 ---
 
@@ -17,7 +17,7 @@ Read, in this order:
 2. `video-agent/swipe.md`: hooks that worked in their niche and, on top, the "Concepts" that over-performed with their proof (from `/studio-script viral`). Every script sits on one of them ([references/viral.md](references/viral.md)). Missing: run `/studio-script viral` first (5 minutes); a week written without it is written blind.
 3. `video-agent/audit.md` if it exists: what works on their own account (from `/insta-audit`). Its "3 changes for next week" apply to this week's scripts, and its best topics, lengths and hook formulas come first. Their own data beats the niche's.
 4. The last 20 lines of `video-agent/log.md`: topics and hook formulas already used. Never repeat a topic from the last 4 weeks unless they ask.
-5. [references/viral.md](references/viral.md), [references/hooks.md](references/hooks.md), [references/script-rules.md](references/script-rules.md) and [references/humanize.md](references/humanize.md).
+5. [references/viral.md](references/viral.md), [references/hooks.md](references/hooks.md), [references/script-rules.md](references/script-rules.md), [references/funnel.md](references/funnel.md) (the videos that reach new people are funnels), [references/making-of.md](references/making-of.md) (the Proof and Story videos the creator lived are making-ofs) and [references/humanize.md](references/humanize.md).
 
 Talk to them in their language, and write the scripts in the language they record in.
 
@@ -25,6 +25,8 @@ Talk to them in their language, and write the scripts in the language they recor
 
 - `/studio-script` → a week of scripts (default 5).
 - `/studio-script <topic or idea>` → one script.
+- `/studio-script funnel <topic>` → a funnel script ([references/funnel.md](references/funnel.md)): opens on a wide door (often a divisive take the niche's crowd already argues about), then bridge, tension, pivot, pearl down to the creator's niche and a soft ask. 3 bridges rated by door size, the pearl written first, the two widening tests on the notes line.
+- `/studio-script making-of <what you did>` → a making-of script ([references/making-of.md](references/making-of.md)): what the creator did with a real result, in 4 beats (setting, action, result in their numbers, moral), the advice only at the end. No result yet = episode 1 of a series.
 - `/studio-script hook <script or topic>` → the hook printer: 20 hooks from at least 10 formulas, grouped by concept of swipe.md (proven concepts first), filled with voice.md (the viewer's words, their phrases, their proof, their myths), scored, through the quality gates, best 3 on top. Each keeps its formula name, so a hook that works can be reposted with a new wording.
 - `/studio-script rewrite <script>` → their script, tightened: same content and facts, better hook, shorter lines, timing checked, humanized. Show what changed.
 - `/studio-script viral [@handles or niche keywords]` → what over-performs in their niche, measured: recent Shorts of 10 to 12 accounts scored against each account's median, the first 3 seconds of every outlier, its hook formula, and the Concepts on top of `video-agent/swipe.md` ([references/viral-research.md](references/viral-research.md)). About 5 minutes, once a month.
@@ -51,6 +53,8 @@ Each video gets a type. Plan the week before writing:
 | Story | a moment, a turn, a lesson | 1 |
 | Opinion | a position against the usual advice in the niche | 1 |
 | Offer | the problem, what they made for it, who it's for, the ask | 0 or 1, never 2 |
+
+A Teach or an Opinion meant to reach new people is written as a funnel ([references/funnel.md](references/funnel.md)); a Proof or a Story the creator lived, as a making-of ([references/making-of.md](references/making-of.md)).
 
 Each video also gets its offer proximity, the rung of voice.md "The ask" it points to (0 to 3, script-rules.md), following the week mix there.
 

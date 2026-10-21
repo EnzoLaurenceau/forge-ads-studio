@@ -33,6 +33,8 @@ Show the score as `hook 8/10` with the weakest point named when it is below 2 ("
 - **Story**: the moment (mid-scene) → what went wrong or changed → the turn → the lesson in one line.
 - **Opinion**: the position → why most people believe the opposite (fairly) → their reason, with an example → what to do instead.
 - **Offer**: the viewer's problem → what they made for it → who it is for, and who it isn't for → the ask.
+- **Funnel** (a Teach or an Opinion made to reach new people): bridge → tension → pivot → pearl, then a soft ask ([funnel.md](funnel.md)).
+- **Making-of** (a Proof or a Story they lived): the setting → what they did, concretely → the result in their numbers → the moral, the advice only here ([making-of.md](making-of.md)).
 
 ## Lines
 
