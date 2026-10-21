@@ -5,3 +5,7 @@ skills/short-editing/.runtime/
 skills/short-editing/assets/music/*.mp3
 skills/short-editing/assets/icons/*.png
 skills/short-editing/assets/icons/glyph/
+
+# Forge: market research and ad scripts stay local (public fork)
+research/
+video-agent/
