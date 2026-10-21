@@ -75,10 +75,15 @@ if (!W.findWhisper()) {
     ensureRuntime();
     const dir = path.join(RUNTIME, 'whisper'), zip = path.join(RUNTIME, 'whisper-bin-x64.zip');
     fs.mkdirSync(dir, { recursive: true });
-    const r = await fetch('https://github.com/ggml-org/whisper.cpp/releases/latest/download/whisper-bin-x64.zip');
+    // "latest" can be a tag without binaries (v1.9.5 had none): take the newest release that ships the zip
+    const rels = await (await fetch('https://api.github.com/repos/ggml-org/whisper.cpp/releases?per_page=20')).json();
+    const asset = (Array.isArray(rels) ? rels : []).flatMap(x => x.assets || []).find(a => a.name === 'whisper-bin-x64.zip');
+    const r = await fetch(asset ? asset.browser_download_url : 'https://github.com/ggml-org/whisper.cpp/releases/latest/download/whisper-bin-x64.zip');
     if (!r.ok) { console.log(`download failed (HTTP ${r.status}): get whisper-bin-x64.zip from https://github.com/ggml-org/whisper.cpp/releases and unzip it into ${dir}`); process.exit(1); }
     fs.writeFileSync(zip, Buffer.from(await r.arrayBuffer()));
-    if (spawnSync('tar', ['-xf', zip, '-C', dir], { stdio: 'inherit' }).status) process.exit(1);
+    // Windows' own bsdtar: a GNU tar first on the PATH (Git Bash) reads "C:" as a remote host
+    const tar = path.join(process.env.SystemRoot || 'C:\\Windows', 'System32', 'tar.exe');
+    if (spawnSync(fs.existsSync(tar) ? tar : 'tar', ['-xf', zip, '-C', dir], { stdio: 'inherit' }).status) process.exit(1);
     fs.unlinkSync(zip);
     missing--;
   } else { console.log('whisper.cpp: build it (https://github.com/ggml-org/whisper.cpp) and put whisper-cli on the PATH, or set WHISPER_CLI'); process.exit(1); }
